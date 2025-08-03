@@ -1,0 +1,114 @@
+/**
+ * Copyright (C) 2025 Ahmed El-Hajjar
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package net.cdahmedeh.poetwrite.engine.mary;
+
+import lombok.SneakyThrows;
+import marytts.LocalMaryInterface;
+import marytts.MaryInterface;
+import marytts.datatypes.MaryDataType;
+import net.cdahmedeh.poetwrite.tools.XmlTools;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import javax.inject.Inject;
+import java.util.Locale;
+
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * For words that aren't in the CMU pronunciation dictionary, we need to use a
+ * rule-based approach for extracing phonemes. This also deals with the case
+ * where the words aren't dictionary words, or neologisms, or proper names.
+ * At the end of the day, this isn't a perfect approach.
+ *
+ * The English language due to its virtual lack of pronuncitation rules for
+ * written words. I swear, sometimes I just want to strangle the poets and
+ * writers of English in the middle-ages and before for having constructed such
+ * a terrible spelling system.
+ *
+ * A YouTuber Aaron Alon pokes fun at this with the hypotethical scenario where
+ * English was phonetically consistent. I can only dream.
+ * https://www.youtube.com/watch?v=A8zWWp0akUU
+ *
+ * There's a bunch of Python libraries that deal with this perfectly, but the
+ * core rhetorical analysis in PoetWrite is about syllables and rhymes, so we
+ * can't rely on interop, it will be too slow. So I kind of cheated and thought
+ * that a text-to-speech engine would be good enough at that.
+ *
+ * MaryTTS is a pure Java library for doing this, and has outputs that aren't
+ * audio which is nice and can extract allophones and phonemes into a nice XML
+ * (not that XML is nice) format. And it's quite fast too, once the server is
+ * intialized. I'm trying to avoid using it as much as possible because it's
+ * still massively slower than the CMU lookup.
+ *
+ * I designed the engines to rely on ARPAbet phonemes while MaryTTS uses SAMPA
+ * instead but they map relatively neatly into each other since ChatGPT
+ * generated us a nice equivalence table.
+ */
+public class MaryEngine {
+    // Config Stuff
+
+    // The default settings for MaryTTS, wondering if this one day could become
+    // a configuration option if we start supporting various English dialects.
+    public static final Locale MARY_LOCALE = Locale.US;
+
+    // Just picked the noisiest output. I just need the phonemes but with the
+    // ALLOPHONES output each phoneme is a node so I don't have to waste my time
+    // parsing the phonemes.
+    public static final String MARY_OUTPUT_TYPE = MaryDataType.ALLOPHONES.name();
+
+    // Default voice for MaryTTS. It's apparently lightweight.
+    public static final String MARY_VOICE = "cmu-slt-hsmm";
+
+    // Containers
+
+    // Just the magic server for MaryTTS
+    private MaryInterface mary;
+
+    @Inject
+    @SneakyThrows
+    /**
+     * Just loads up the MaryTTS server. Will think about async later.
+     */
+    protected MaryEngine() {
+        mary = new LocalMaryInterface();
+
+        mary.setLocale(MARY_LOCALE);
+        mary.setOutputType(MARY_OUTPUT_TYPE);
+        mary.setVoice(MARY_VOICE);
+    }
+
+    /**
+     * Counts the number of syllables in the given text.
+     *
+     * Ideally, it should be a word and somewhere the words would be split and
+     * fed to this. But I'm not doing any sanitaization. in case doing an entire
+     * line is faster than word for word.
+     */
+    @SneakyThrows
+    public int countSyllables(String text) {
+        org.w3c.dom.Document maryDoc = mary.generateXML(text);
+
+        String xmlText = XmlTools.parseXmlDocToString(maryDoc);
+        Document xmlDoc = XmlTools.parseXmlTextToDocument(xmlText);
+
+        Elements elements = xmlDoc.select("syllable");
+
+        return elements.size();
+    }
+}
