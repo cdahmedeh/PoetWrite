@@ -28,6 +28,20 @@ import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * Testing the ability to count syllables using the engines I've implemented so
+ * far.
+ *
+ * Some of these tests fail because the syllable counting methods I've been
+ * using, right now CMU and MaryTTS aren't perfectly accurate. So I'm not going
+ * to fudge the numbers just to get these tests to pass.
+ *
+ * I know some people get squeemish when code is shipped with failing tests,
+ * then find other code to contribute to. Or if you have more reliable ways of
+ * counting syllables, ship it to me and I'll give you a big hug.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SyllableTest {
     @Inject
@@ -89,4 +103,32 @@ public class SyllableTest {
         assertEquals(2, analyzer.count("release"));
     }
 
+    @Test
+    void testMedicationNames() {
+        assertEquals(3, analyzer.count("Lamictal"));
+        assertEquals(3, analyzer.count("Seroquel"));
+    }
+
+    @Test
+    void testMedicalTerms() {
+        assertEquals(7, analyzer.count("agranulocytosis"));
+    }
+
+    @Test
+    void testWordsNotInDictionary() {
+        assertEquals(4, analyzer.count("neologism"));
+    }
+
+    @Test
+    void testNeologisms() {
+        assertEquals(7, analyzer.count("supertautological"));
+    }
+
+    @Test
+    void testNonExistingWords() {
+        assertEquals(4, analyzer.count("endothalmic"));
+        assertEquals(3, analyzer.count("adaptance"));
+        assertEquals(4, analyzer.count("communiti"));
+        assertEquals(5, analyzer.count("hospictacular"));
+    }
 }

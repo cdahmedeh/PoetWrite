@@ -36,6 +36,10 @@ import java.util.Locale;
  * where the words aren't dictionary words, or neologisms, or proper names.
  * At the end of the day, this isn't a perfect approach.
  *
+ * Keep in mind that the CMU dictionary is ideal and much more precise because
+ * it was created by humans rather than having heuristics. So this is more of a
+ * fallback.
+ *
  * The English language due to its virtual lack of pronuncitation rules for
  * written words. I swear, sometimes I just want to strangle the poets and
  * writers of English in the middle-ages and before for having constructed such
@@ -55,6 +59,56 @@ import java.util.Locale;
  * (not that XML is nice) format. And it's quite fast too, once the server is
  * intialized. I'm trying to avoid using it as much as possible because it's
  * still massively slower than the CMU lookup.
+ *
+ * For example, for "Endothalmic Adaptance", we get this.
+ *
+ * <maryxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="en-US" xmlns="http://mary.dfki.de/2002/MaryXML">
+ *   <p>
+ *     <s>
+ *       <phrase>
+ *         <t accent="L+H*" g2p_method="rules" ph="' E n - d A - T { l - m I k" pos="NNP">
+ *           Endothalmic
+ *           <syllable accent="L+H*" ph="E n" stress="1">
+ *             <ph p="E"/>
+ *             <ph p="n"/>
+ *           </syllable>
+ *           <syllable ph="d A">
+ *             <ph p="d"/>
+ *             <ph p="A"/>
+ *           </syllable>
+ *           <syllable ph="T { l">
+ *             <ph p="T"/>
+ *             <ph p="{"/>
+ *             <ph p="l"/>
+ *           </syllable>
+ *           <syllable ph="m I k">
+ *             <ph p="m"/>
+ *             <ph p="I"/>
+ *             <ph p="k"/>
+ *           </syllable>
+ *         </t>
+ *         <t accent="!H*" g2p_method="rules" ph="' @ - d { p - t @ n s" pos="NN">
+ *           Adaptance
+ *           <syllable accent="!H*" ph="@" stress="1">
+ *             <ph p="@"/>
+ *           </syllable>
+ *           <syllable ph="d { p">
+ *             <ph p="d"/>
+ *             <ph p="{"/>
+ *             <ph p="p"/>
+ *           </syllable>
+ *           <syllable ph="t @ n s">
+ *             <ph p="t"/>
+ *             <ph p="@"/>
+ *             <ph p="n"/>
+ *             <ph p="s"/>
+ *           </syllable>
+ *         </t>
+ *         <boundary breakindex="5" tone="L-L%"/>
+ *       </phrase>
+ *     </s>
+ *   </p>
+ * </maryxml>
  *
  * I designed the engines to rely on ARPAbet phonemes while MaryTTS uses SAMPA
  * instead but they map relatively neatly into each other since ChatGPT
@@ -77,15 +131,17 @@ public class MaryEngine {
 
     // Containers
 
-    // Just the magic server for MaryTTS
-    private MaryInterface mary;
+    /**
+     * Just the magic server for MaryTTS
+     */
+    private final MaryInterface mary;
 
     @Inject
     @SneakyThrows
     /**
      * Just loads up the MaryTTS server. Will think about async later.
      */
-    protected MaryEngine() {
+    /*package*/ MaryEngine() {
         mary = new LocalMaryInterface();
 
         mary.setLocale(MARY_LOCALE);
@@ -95,6 +151,9 @@ public class MaryEngine {
 
     /**
      * Counts the number of syllables in the given text.
+     *
+     * MaryTTS allophones output gives XML with syllables as XML elements. So we
+     * just count them! Magic!
      *
      * Ideally, it should be a word and somewhere the words would be split and
      * fed to this. But I'm not doing any sanitaization. in case doing an entire

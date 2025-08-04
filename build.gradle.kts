@@ -34,6 +34,10 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.38")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 
+    // Utilities for Common Stuff
+    implementation("commons-io:commons-io:2.20.0")
+    implementation("com.google.guava:guava:33.4.8-jre")
+
     // Dependency Injection
     implementation("com.google.dagger:dagger:2.57")
     annotationProcessor("com.google.dagger:dagger-compiler:2.57")

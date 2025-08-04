@@ -17,6 +17,7 @@
 
 package net.cdahmedeh.poetwrite.analyzer;
 
+import net.cdahmedeh.poetwrite.engine.cmu.CmuEngine;
 import net.cdahmedeh.poetwrite.engine.mary.MaryEngine;
 
 import javax.inject.Inject;
@@ -28,8 +29,8 @@ import javax.inject.Inject;
  * it accepts any text input. Right now, it's one way, text to syllables, but it
  * can't do the reverse by outputing the original word separate into syllables.
  *
- * There's a plan to use multiple engines to do the counting, but for now, only
- * MaryTTS is supported. Nothing fancy for now.
+ * This uses CMU database for counting, and if the word isn't in CMU, then we
+ * go for a more heuristic approach using MaryTTS.
  *
  * This is a key part of the rhetoical analysis, especially for forms of poetry
  * where you want each line to have the same number of syllables.
@@ -38,10 +39,12 @@ import javax.inject.Inject;
  * injection for use as a business logic.
  */
 public class SyllableAnalyzer {
+    /* package */ CmuEngine cmuEngine;
     /* package */ MaryEngine maryEngine;
 
     @Inject
-    /* package */ SyllableAnalyzer(MaryEngine maryEngine) {
+    /* package */ SyllableAnalyzer(CmuEngine cmuEngine, MaryEngine maryEngine) {
+        this.cmuEngine = cmuEngine;
         this.maryEngine = maryEngine;
     }
 
@@ -51,6 +54,10 @@ public class SyllableAnalyzer {
      * keep that way for performance.
      */
     public int count(String text) {
+        if (cmuEngine.hasWord(text)) {
+            return cmuEngine.countSyllables(text);
+        }
+
         return maryEngine.countSyllables(text);
     }
 }
