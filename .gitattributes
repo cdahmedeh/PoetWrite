@@ -1,0 +1,4 @@
+# Ignore mysterious Roff files from stats.
+# I think it measures size rather than code length.code
+# Probably the Balsamiq file hogging all the space.
+*.bmpr linguist-detectable=false
