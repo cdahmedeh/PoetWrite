@@ -1,5 +1,7 @@
 # Ignore mysterious Roff files from stats.
 # I think it measures size rather than code length.code
-# Probably the Balsamiq file hogging all the space.
 *.bmpr linguist-detectable=false
 *.png linguist-detectable=false
+
+# Turns out the culprit is the massive CMU dict
+src/main/resources/dicts/cmudict-0.7b linguist-detectable=false
