@@ -5,3 +5,7 @@
 
 # Turns out the culprit is the massive CMU dict
 src/main/resources/dicts/cmudict-0.7b linguist-detectable=false
+/src/main/resources/dicts/cmudict-0.7b linguist-detectable=false
+/src/main/resources/dicts/* linguist-detectable=false
+src/main/resources/dicts/* linguist-detectable=false
+cmudict-0.7b
