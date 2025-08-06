@@ -102,21 +102,6 @@ public class CmuEngine {
     }
 
     /**
-     * Counts the number of syllables for the word.
-     *
-     * I'm just lazy right now, all I do is this:
-     * 1. Get the phonemes
-     *    { "calculation" , "K AE2 L K Y AH0 L EY1 SH AH0 N" }
-     * 2. Count the ones with numbers, those are vowels.
-     *
-     * This needs to be cleaned up.
-     *
-     * The check is a bit lazy because it does not sanitize the input in any
-     * way. No lower cases, no splitting of words, God knows what happens if
-     * there are non-alphanumeric characters in the input. Very easy to crash.
-     */
-
-    /**
      * This just checks if the word is in CMU. Just to know when to fallback to
      * other methods.
      */
