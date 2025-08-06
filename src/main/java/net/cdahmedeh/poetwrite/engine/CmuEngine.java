@@ -1,4 +1,5 @@
 /**
+ * PoetWrite - A Poetry Writing Application
  * Copyright (C) 2025 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
