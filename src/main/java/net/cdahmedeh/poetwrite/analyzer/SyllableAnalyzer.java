@@ -17,6 +17,8 @@
 
 package net.cdahmedeh.poetwrite.analyzer;
 
+import net.cdahmedeh.poetwrite.domain.Phoneme;
+import net.cdahmedeh.poetwrite.domain.Word;
 import net.cdahmedeh.poetwrite.engine.cmu.CmuEngine;
 import net.cdahmedeh.poetwrite.engine.mary.MaryEngine;
 
@@ -37,6 +39,18 @@ import javax.inject.Inject;
  *
  * Unlike the engines which are internal use, this one is exposed via dependency
  * injection for use as a business logic.
+ *
+ * I'm still trying to decide where the magic should be done. It's a bit all
+ * over the place right now.
+ *
+ * 1a. CmuEngine will load the CMU database in memory.
+ * 1b. MaryEngine will load the MaryTTS server
+ *
+ * 2a. CmuEngine precomputes the phonemes using WordConstructor which parses
+ *     the entries.
+ * 2b. MaryEngine only computers the phonemes on word lookup.
+ *
+ * 3.  This component, SyllableAnalyzer, runs the algorithm.
  */
 public class SyllableAnalyzer {
     /* package */ CmuEngine cmuEngine;
@@ -54,10 +68,25 @@ public class SyllableAnalyzer {
      * keep that way for performance.
      */
     public int count(String text) {
-        if (cmuEngine.hasWord(text)) {
-            return cmuEngine.countSyllables(text);
-        }
+        Word word = getSafeWord(text);
 
-        return maryEngine.countSyllables(text);
+        int syllables = (int) word.getPhonemes().stream()
+                                .filter(Phoneme::isVowel)
+                                .count();
+        return syllables;
+    }
+
+    /**
+     * Gets the word from CMU, and if it's not in CMU, get MaryTTS to do its
+     * thing.
+     *
+     * Not foolproof.
+     */
+    private Word getSafeWord(String text) {
+        if (cmuEngine.hasWord(text)) {
+            return cmuEngine.getWord(text);
+        } else {
+             return maryEngine.getWord(text);
+        }
     }
 }

@@ -19,14 +19,15 @@ package net.cdahmedeh.poetwrite.engine.cmu;
 
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
+import net.cdahmedeh.poetwrite.constructor.WordConstructor;
+import net.cdahmedeh.poetwrite.domain.Word;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Ahmed El-Hajjar
@@ -52,9 +53,9 @@ import java.util.regex.Pattern;
  * Here's two words.
  * We get these wonderful phonemes in the ARBAbet format.
  *
- *                       Matching phonemes = Rhyming
- *                          ||| | ||| || ||| |
- *                          VVV V VVV VV VVV V
+ *                     Matching phonemes = Rhyming
+ *                      | | ||| | ||| || ||| |
+ *                      V V VVV V VVV VV VVV V
  * CALCULATION  K AE2 L K Y AH0 L EY1 SH AH0 N
  * SPECULATION  S P EH2 K Y AH0 L EY1 SH AH0 N
  *                  ^^^     ^^^   ^^^    ^^^
@@ -65,12 +66,11 @@ import java.util.regex.Pattern;
  * wonder if it could be used for analyzing meters. If I find out I get
  * something out of MaryTTS that is similar, then this will be a no-brainer.
  *
- * Right now, this one is just a big mess with a bunch of regex sorcery. Will
- * have to fix it later and make it like some properly over-engineered Java.
  */
 public class CmuEngine {
-    // Containers
+    public static final String CMUDICT_FILE = "dicts/cmudict-0.7b";
 
+    // Containers
 
     /**
      * Just maps the word to their phonemes verbatim from CMU file.
@@ -78,30 +78,27 @@ public class CmuEngine {
      * { "calculation" , "K AE2 L K Y AH0 L EY1 SH AH0 N" }
      * { "speculation" , "S P EH2 K Y AH0 L EY1 SH AH0 N" }
      */
-    private final Map<String, String> cmuMap = Maps.newHashMap();
+    // The lower case is in WordContrustor
+    private final Map<String, Word> cmuMap = Maps.newHashMap();
 
     @Inject
     @SneakyThrows
         /*package*/ CmuEngine() {
-        List<String> lines = IOUtils.readLines(ClassLoader.getSystemResourceAsStream("dicts/cmudict-0.7b"), Charset.defaultCharset());
+        InputStream stream = ClassLoader.getSystemResourceAsStream(CMUDICT_FILE);
+        List<String> entries = IOUtils.readLines(stream, Charset.defaultCharset());
 
-        for (String line : lines) {
-            if (line.startsWith(";;;")) {
+        for (String entry : entries) {
+            if (isCommentEntry(entry)) {
                 continue;
             }
 
-            String regex = "(.+)\\s\\s(.+)";
-
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(line);
-
-            matcher.find();
-
-            String mapping = matcher.group(1).toLowerCase();
-            String phonemes = matcher.group(2);
-
-            cmuMap.put(mapping, phonemes);
+            Word word = WordConstructor.fromCmuEntry(entry);
+            cmuMap.put(word.getWord(), word);
         }
+    }
+
+    public Word getWord(String word) {
+        return cmuMap.get(word);
     }
 
     /**
@@ -118,19 +115,6 @@ public class CmuEngine {
      * way. No lower cases, no splitting of words, God knows what happens if
      * there are non-alphanumeric characters in the input. Very easy to crash.
      */
-    public int countSyllables(String text) {
-        int count = 0;
-
-        String[] split = cmuMap.get(text).split("\\s");
-
-        for (String p : split) {
-            if (p.matches(".*\\d.*")) {
-                count++;
-            }
-        }
-
-        return count;
-    }
 
     /**
      * This just checks if the word is in CMU. Just to know when to fallback to
@@ -138,5 +122,15 @@ public class CmuEngine {
      */
     public boolean hasWord(String text) {
         return cmuMap.containsKey(text);
+    }
+
+    /**
+     * Checks if the line in the CMU file is a comment so that it can be
+     * ignored.
+     *
+     * Just for some syntaxic sugar to make the code more readable.
+     */
+    private boolean isCommentEntry(String entry) {
+        return entry.startsWith(";;;");
     }
 }

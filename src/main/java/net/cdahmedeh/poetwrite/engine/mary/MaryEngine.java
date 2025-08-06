@@ -21,9 +21,8 @@ import lombok.SneakyThrows;
 import marytts.LocalMaryInterface;
 import marytts.MaryInterface;
 import marytts.datatypes.MaryDataType;
-import net.cdahmedeh.poetwrite.tools.XmlTools;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+import net.cdahmedeh.poetwrite.constructor.WordConstructor;
+import net.cdahmedeh.poetwrite.domain.Word;
 
 import javax.inject.Inject;
 import java.util.Locale;
@@ -39,15 +38,6 @@ import java.util.Locale;
  * Keep in mind that the CMU dictionary is ideal and much more precise because
  * it was created by humans rather than having heuristics. So this is more of a
  * fallback.
- *
- * The English language due to its virtual lack of pronuncitation rules for
- * written words. I swear, sometimes I just want to strangle the poets and
- * writers of English in the middle-ages and before for having constructed such
- * a terrible spelling system.
- *
- * A YouTuber Aaron Alon pokes fun at this with the hypotethical scenario where
- * English was phonetically consistent. I can only dream.
- * https://www.youtube.com/watch?v=A8zWWp0akUU
  *
  * There's a bunch of Python libraries that deal with this perfectly, but the
  * core rhetorical analysis in PoetWrite is about syllables and rhymes, so we
@@ -110,9 +100,8 @@ import java.util.Locale;
  *   </p>
  * </maryxml>
  *
- * I designed the engines to rely on ARPAbet phonemes while MaryTTS uses SAMPA
- * instead but they map relatively neatly into each other since ChatGPT
- * generated us a nice equivalence table.
+ * SAMPA is converted to ARPAbet. I explain in the Phoneme entity header on why
+ * ARPAbet is the universal phoneme representation.
  */
 public class MaryEngine {
     // Config Stuff
@@ -149,6 +138,11 @@ public class MaryEngine {
         mary.setVoice(MARY_VOICE);
     }
 
+    @SneakyThrows
+    public Word getWord(String word) {
+        org.w3c.dom.Document maryDoc = mary.generateXML(word);
+        return WordConstructor.fromMaryDoc(word, maryDoc);
+    }
     /**
      * Counts the number of syllables in the given text.
      *
@@ -159,15 +153,4 @@ public class MaryEngine {
      * fed to this. But I'm not doing any sanitaization. in case doing an entire
      * line is faster than word for word.
      */
-    @SneakyThrows
-    public int countSyllables(String text) {
-        org.w3c.dom.Document maryDoc = mary.generateXML(text);
-
-        String xmlText = XmlTools.parseXmlDocToString(maryDoc);
-        Document xmlDoc = XmlTools.parseXmlTextToDocument(xmlText);
-
-        Elements elements = xmlDoc.select("syllable");
-
-        return elements.size();
-    }
 }
