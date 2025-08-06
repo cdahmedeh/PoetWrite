@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.engine.cmu;
+package net.cdahmedeh.poetwrite.engine;
 
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;

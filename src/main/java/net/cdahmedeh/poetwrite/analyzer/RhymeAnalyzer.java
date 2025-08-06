@@ -20,8 +20,8 @@ package net.cdahmedeh.poetwrite.analyzer;
 import com.google.common.collect.Lists;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
-import net.cdahmedeh.poetwrite.engine.cmu.CmuEngine;
-import net.cdahmedeh.poetwrite.engine.mary.MaryEngine;
+import net.cdahmedeh.poetwrite.engine.CmuEngine;
+import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
 import java.util.List;
