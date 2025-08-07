@@ -67,6 +67,8 @@ public class SyllableTest {
         assertEquals(1, analyzer.count("stress"));
         assertEquals(1, analyzer.count("screeched"));
         assertEquals(1, analyzer.count("strengths"));
+        assertEquals(1, analyzer.count("gone"));
+        assertEquals(1, analyzer.count("flat"));
     }
 
     @Test
