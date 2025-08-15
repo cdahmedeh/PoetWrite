@@ -37,7 +37,7 @@ Each line starts with a **Line** which has a set of **Nodes**. Those can be eith
 
 ⁉️ The **Words** entites contains a list of **Word** which hold an individual word and the phonemes calculated from the various methods described elsewhere. It is not relevant to the discussion here. 
 
-❓ This is very much a work-in-progress and obviously subject to change. I really hate the concept of having to design your domain objects first. There still some brainwashing left when I was introduced to OOP. These won't be used for persistence no there's no considerations for ORMs.
+❓ This is very much a work-in-progress and obviously subject to change. I really hate the concept of having to design your domain objects first. There still some brainwashing left when I was introduced to OOP. These won't be used for persistence so there's no considerations for ORMs.
 
 ⛅ My plan is to eventually put the results of the analyses into this structure as some kind of optimization. 
 
