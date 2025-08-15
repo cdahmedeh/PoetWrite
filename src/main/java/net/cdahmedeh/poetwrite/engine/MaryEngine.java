@@ -139,19 +139,17 @@ public class MaryEngine {
         mary.setVoice(MARY_VOICE);
     }
 
+    /**
+     * Takes in a word and computes the phonemes using the MaryTTS allophone
+     * output.
+     *
+     * As usual, the input is not sanitized, it's just assumed that it is one
+     * word in lowercase. I'm sure if you feed something like a sentence, it
+     * will happily combine it all. (Not verified and not foolproof)
+     */
     @SneakyThrows
     public Word getWord(String word) {
         org.w3c.dom.Document maryDoc = mary.generateXML(word);
         return WordConstructor.fromMaryDoc(word, maryDoc);
     }
-    /**
-     * Counts the number of syllables in the given text.
-     *
-     * MaryTTS allophones output gives XML with syllables as XML elements. So we
-     * just count them! Magic!
-     *
-     * Ideally, it should be a word and somewhere the words would be split and
-     * fed to this. But I'm not doing any sanitaization. in case doing an entire
-     * line is faster than word for word.
-     */
 }

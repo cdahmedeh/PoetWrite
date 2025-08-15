@@ -63,6 +63,7 @@ import java.util.Map;
  *                  |||     |||   |||    |||
  *                  Four vowels = 4 Syllables
  *
+ * TODO:
  * It gives these numbers for the vowels for the stresses on the syllables, I
  * wonder if it could be used for analyzing meters. If I find out I get
  * something out of MaryTTS that is similar, then this will be a no-brainer.

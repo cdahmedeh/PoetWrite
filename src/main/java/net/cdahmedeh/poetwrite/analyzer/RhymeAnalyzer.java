@@ -35,8 +35,8 @@ import java.util.Objects;
  * they rhymes, and returns the number of syllables they have in common. See
  * the compareWords(..) comment for the algorithm.
  *
- * I'm still trying to decide where the magic should be done. It's a bit all
- * over the place right now.
+ * TODO: I'm still trying to decide where the magic should be done. It's a bit
+ * all over the place right now.
  *
  * 1a. CmuEngine will load the CMU database in memory.
  * 1b. MaryEngine will load the MaryTTS server

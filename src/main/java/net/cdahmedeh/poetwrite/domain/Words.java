@@ -16,17 +16,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.app;
+package net.cdahmedeh.poetwrite.domain;
+
+import com.google.common.collect.Lists;
+import lombok.Getter;
+
+import java.util.List;
 
 /**
- * Once we get all the business logic stuff working, this will be the starter of
- * all the magic. I promise I won't make this complicated like starting a Spring
- * Boot app or even worse JavaFX.
+ * @author Ahmed El-Hajjar
  *
- * TODO: Take a deep breath Ahmed, and take it easy.
+ * Lazy way to make an array of words. I just did this so I keep the Word object
+ * as is until I have a better idea of all of this will be tied together.
+ *
+ * We can see as the 'default' node type for a line.
+ *
+ * This is still an early design. See the comments in Line.
+ *
+ * See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
  */
-public class MainApp {
-    public static void main(String[] args) {
-        System.out.println("Welcome to the world of PoetWrite");
+public class Words extends Node {
+    @Getter
+    private final List<Word> words = Lists.newArrayList();
+
+    public Words(String text) {
+        super(text);
     }
 }

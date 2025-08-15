@@ -1,0 +1,40 @@
+{
+  "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+  "text" : "this is another (aside) with a [note]",
+  "nodes" : [ "java.util.ArrayList", [ {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+    "text" : "this is another ",
+    "words" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "this",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "is",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "another",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Aside",
+    "text" : "aside"
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+    "text" : " with a ",
+    "words" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "with",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "a",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+    "text" : "note"
+  } ] ]
+
+}

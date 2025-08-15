@@ -1,0 +1,25 @@
+{
+  "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+  "text" : "some words are here",
+  "nodes" : [ "java.util.ArrayList", [ {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+    "text" : "some words are here",
+    "words" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "some",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "words",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "are",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+      "word" : "here",
+      "phonemes" : [ "java.util.ArrayList", [ ] ]
+    } ] ]
+  } ] ]
+}
