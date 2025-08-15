@@ -15,7 +15,7 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 
 [Rhetorical Analysis Basics](/docs/rhetoric-analysis-basics.md) - Introductory topics for basic rhetorical analysis features such as syllable counting and rhyme detection.
 
-[User Experience](/docs/ux-wireframes.md) - UX Wireframes or Prototypes to show various planned features for poet-write.
+[User Experience](/docs/ux-wireframes.md) - UX Wireframes or Prototypes to show various planned features for PoetWrite.
 
 ## Development
 
