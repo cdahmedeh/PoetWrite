@@ -44,6 +44,9 @@ public class FileTools {
 
     /**
      * List all files in a folder with a certain extension. Not recursive.
+     *
+     * TODO: Sort the files because the order is based on hopes and dreams right
+     * now.
      */
     @SneakyThrows
     public static List<File> listFiles(String folder, String extension) {
