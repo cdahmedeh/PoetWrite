@@ -15,6 +15,8 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 
 [Rhetorical Analysis Basics](/docs/rhetoric-analysis-basics.md) - Introductory topics for basic rhetorical analysis features such as syllable counting and rhyme detection.
 
+[User Experience](/docs/ux-wireframes.md) - UX Wireframes or Prototypes to show various planned features for poet-write.
+
 ## Development
 
 PoetWrite is an open-source project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
@@ -24,7 +26,7 @@ The design is UX first, meaning that the user-experience dictates the design and
 As a technical writer, I believe that good documentation is part of the development process. Feel free to explore the ever-growing collection in the [documentation](/docs/) folder.
 
 ## Wireframe Prototype
-This is how the PoetWrite idea was born.
+This is how the PoetWrite idea was born. You can see more [here](/docs/ux-wireframes.md).
 
 ![PoetWrite Main Screen Prototype](./assets/main-screen-prototype.png)
 
