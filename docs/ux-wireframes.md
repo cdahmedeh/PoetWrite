@@ -22,6 +22,6 @@ The goal here was to minimize the amount of keyboard shortcuts. All the user nee
 
 ## Hover Information
 
-If the user puts their cursor over a word, they will get various statistics about. Hovering over the cutter will bring pertinent statistics about the line as well.
+If the user puts their cursor over a word, they will get various statistics about. Hovering over the gutter will bring pertinent statistics about the line as well.
 
 ![Hover Cards](../assets/hovercard-prototype.png)
