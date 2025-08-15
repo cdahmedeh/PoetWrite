@@ -16,17 +16,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.app;
-
 /**
- * Once we get all the business logic stuff working, this will be the starter of
- * all the magic. I promise I won't make this complicated like starting a Spring
- * Boot app or even worse JavaFX.
+ * @author Ahmed El-Hajjar
  *
- * TODO: Take a deep breath Ahmed, and take it easy.
+ * This is just a comment that can be inserted into the text. It is completely
+ * ignored by PoetWrite.
+ *
+ * This is another poem [fill in this with a word] about food.
+ * (Inspired by Weird Al's extensive discography about food)
+ *
+ * This is still an early design. See the comments in Line.
+ *
+ * See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
  */
-public class MainApp {
-    public static void main(String[] args) {
-        System.out.println("Welcome to the world of PoetWrite");
+package net.cdahmedeh.poetwrite.domain;
+
+public class Note extends Node{
+    public Note(String text) {
+        super(text);
     }
 }

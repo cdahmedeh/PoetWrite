@@ -65,7 +65,7 @@ public class XmlTools {
     /**
      * Uses Jsoup to parse an XML document as text into a Document. Keep in mind
      * that org.w3m.doc.Document and org.jsoup.nodes.Document are different,
-     * so be careful with your imputs.
+     * so be careful with your imports.
      */
     public static Document parseXmlTextToDocument(String xmlText) {
         return Jsoup.parse(xmlText);

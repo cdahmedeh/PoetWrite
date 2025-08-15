@@ -18,6 +18,7 @@
 
 plugins {
     id("java")
+    id("antlr")
 }
 
 group = "net.cdahmedeh.poetwrite"
@@ -46,18 +47,32 @@ dependencies {
 
     // Parsing and Serialization
     implementation("org.jsoup:jsoup:1.21.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
 
-    // Testing Frameworks
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    // Syntax Grammar
+    antlr("org.antlr:antlr4:4.13.2")
+    implementation("org.antlr:antlr4-runtime:4.13.2")
 
     // Word Analysis Tools
     implementation("de.dfki.mary:voice-cmu-slt-hsmm:5.2.1") {
         exclude(group = "com.twmacinta", module = "fast-md5")
         exclude(group = "gov.nist.math", module = "Jampack")
     }
+
+    // Testing Frameworks
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("net.javacrumbs.json-unit:json-unit:4.1.1")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.generateGrammarSource {
+    arguments = arguments + listOf(
+        "-visitor",
+        "-long-messages",
+        "-package", "${project.group}.parser"
+    )
 }

@@ -1,8 +1,16 @@
+### Build Folders ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+### Generated ANTLR parser
+/src/main/antlr/.antlr/
+/src/main/antlr/net/cdahmedeh/poetwrite/parser/.antlr/
+### Allow the launch file in the Antlr source
+!src/main/antlr/.vscode/
+!src/main/antlr/.vscode/launch.json
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

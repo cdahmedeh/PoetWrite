@@ -37,10 +37,11 @@ import java.util.regex.Pattern;
  * CMU entries and MaryTTS XML allophone outputs.
  *
  * Right now, the current idea is to parse the phonemes while the words are
- * being generated. Premature optimization.
+ * being generated. TODO: Premature optimization.
  *
- * I feel like the use of these constructors is going to cause confusing. One day
- * I'll consider refactoring once I start doing some async magic.
+ * TODO:
+ * I feel like the use of these constructors is going to cause confusion. One
+ * day I'll consider refactoring once I start doing some async magic.
  */
 public class WordConstructor {
     public static final Pattern CMU_ENTRY_PATTERN = Pattern.compile("(.+)\\s\\s(.+)");
@@ -73,15 +74,13 @@ public class WordConstructor {
     }
 
     /**
+     * TODO:
      * Once we start parsing real poems there will more than just making words
      * lowercase like removing symbols and numbers.
      */
     private static String sanitize(String entryWord) {
         return entryWord.toLowerCase();
     }
-
-    // Can't bother to object
-    // XML surprises SOAP nightmares
 
     /**
      * Takes the MaryTTS XML allophones output to parse it's SAMPA phonemes and
