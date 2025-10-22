@@ -24,9 +24,9 @@ The design is UX first, meaning that the user-experience dictates the design and
 As a technical writer, I believe that good documentation is part of the development process. Feel free to explore the ever-growing collection in the [documentation](/docs/) folder.
 
 ## Wireframe Prototype
-This is how the PoetWrite idea was born. You can see more [here](/docs/ux-wireframes.md).
+This is how the PoetWrite idea was born.
 
-You can note some functionality that will be present in PoetWrite. As featured below.
+You can note some planned functionality that will be present in PoetWrite. As featured below.
 
 - In the gutter on the left, you can see the syllable count of each line or verse.
 - In the gutter again, you can see colour-coded indications for the rhyming pattern detected in the poem.
