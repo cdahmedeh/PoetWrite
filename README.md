@@ -32,7 +32,7 @@ You can note some planned functionality that will be present in PoetWrite. As fe
 - In the gutter again, you can see colour-coded indications for the rhyming pattern detected in the poem.
 - When hovering over an entry in the gutter, the user will see the part that rhymes within the pattern, the syllable count, the belonging of which verse and even the meter of the line or verse.
 - When hovering over a word, a variety of information that is shown about the word, such as definitions, part-of-speech and detailed information about the rhyming.
-- One of the powerful features of PoetWrite will be the lexical assistance. In the example below, the user wants to look for a word that rhymes with the last word in the line, that is synonymous with a certain term. The initially design was to rely on keyboard shortcuts, but they'd too many. So I've gone for a 'wizard' style auto-complete system. 
+- One of the powerful features of PoetWrite will be the lexical assistance. In the example below, the user wants to look for a word that rhymes with the last word in the line, that is synonymous with a certain term. The initial design was to rely on keyboard shortcuts, but they'd be too many to remember. So I've gone for a 'wizard' style auto-complete system. 
 
 ![PoetWrite Main Screen Prototype](./assets/main-screen-prototype.png)
 
