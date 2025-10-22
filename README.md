@@ -15,8 +15,6 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 
 [Rhetorical Analysis Basics](/docs/rhetoric-analysis-basics.md) - Introductory topics for basic rhetorical analysis features such as syllable counting and rhyme detection.
 
-[User Experience](/docs/ux-wireframes.md) - UX Wireframes or Prototypes to show various planned features for PoetWrite.
-
 ## Development
 
 PoetWrite is an open-source project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
@@ -27,6 +25,14 @@ As a technical writer, I believe that good documentation is part of the developm
 
 ## Wireframe Prototype
 This is how the PoetWrite idea was born. You can see more [here](/docs/ux-wireframes.md).
+
+You can note some functionality that will be present in PoetWrite. As featured below.
+
+- In the gutter on the left, you can see the syllable count of each line or verse.
+- In the gutter again, you can see colour-coded indications for the rhyming pattern detected in the poem.
+- When hovering over an entry in the gutter, the user will see the part that rhymes within the pattern, the syllable count, the belonging of which verse and even the meter of the line or verse.
+- When hovering over a word, a variety of information that is shown about the word, such as definitions, part-of-speech and detailed information about the rhyming.
+- One of the powerful features of PoetWrite will be the lexical assistance. In the example below, the user wants to look for a word that rhymes with the last word in the line, that is synonymous with a certain term. The initially design was to rely on keyboard shortcuts, but they'd too many. So I've gone for a 'wizard' style auto-complete system. 
 
 ![PoetWrite Main Screen Prototype](./assets/main-screen-prototype.png)
 
