@@ -99,6 +99,16 @@ public class RhymeTest {
     void testRhymingWithNonDictionaryWords() {
         assertEquals(2, analyzer.compare("lastest", "vastest"));
         assertEquals(1, analyzer.compare("mostest", "vastest"));
+
+        // Fails
         assertEquals(3, analyzer.compare("supertautological", "teleological"));
+    }
+
+    @Test
+    void testRhymingWihAcronyms() {
+        assertEquals(1, analyzer.compare("PhD", "sea"));
+
+        // Fails
+        assertEquals(1, analyzer.compare("BaSC", "personality"));
     }
 }

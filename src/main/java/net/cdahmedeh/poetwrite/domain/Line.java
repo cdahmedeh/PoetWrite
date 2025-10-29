@@ -21,6 +21,7 @@ package net.cdahmedeh.poetwrite.domain;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 

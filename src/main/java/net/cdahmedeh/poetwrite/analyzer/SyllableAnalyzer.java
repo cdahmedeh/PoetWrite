@@ -18,6 +18,9 @@
 
 package net.cdahmedeh.poetwrite.analyzer;
 
+import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
+import net.cdahmedeh.poetwrite.cache.AnalysisCache;
+import net.cdahmedeh.poetwrite.computer.PoemComputer;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import net.cdahmedeh.poetwrite.engine.CmuEngine;
@@ -54,40 +57,46 @@ import javax.inject.Inject;
  * 3.  This component, SyllableAnalyzer, runs the algorithm.
  */
 public class SyllableAnalyzer {
-    /* package */ CmuEngine cmuEngine;
-    /* package */ MaryEngine maryEngine;
+//    /* package */ CmuEngine cmuEngine;
+//    /* package */ MaryEngine maryEngine;
+    AnalysisCache analysisCache = AnalysisCache.instance;
 
+    PoemComputer poemComputer;
+
+    //
     @Inject
-    /* package */ SyllableAnalyzer(CmuEngine cmuEngine, MaryEngine maryEngine) {
-        this.cmuEngine = cmuEngine;
-        this.maryEngine = maryEngine;
+    /* package */ SyllableAnalyzer(PoemComputer poemComputer) {
+        this.poemComputer = poemComputer;
     }
-
-    /**
-     * Does the magical counting. Ideally, it should only accept a single word
-     * through some kind of sanitization but it accepts any kind of text. Might
-     * keep that way for performance.
-     */
+//
+//    /**
+//     * Does the magical counting. Ideally, it should only accept a single word
+//     * through some kind of sanitization but it accepts any kind of text. Might
+//     * keep that way for performance.
+//     */
     public int count(String text) {
-        Word word = getSafeWord(text);
+        Word word = new Word(text);
 
-        int syllables = (int) word.getPhonemes().stream()
-                                .filter(Phoneme::isVowel)
-                                .count();
-        return syllables;
-    }
-
-    /**
-     * Gets the word from CMU, and if it's not in CMU, get MaryTTS to do its
-     * thing.
-     *
-     * Not foolproof.
-     */
-    private Word getSafeWord(String text) {
-        if (cmuEngine.hasWord(text)) {
-            return cmuEngine.getWord(text);
-        } else {
-             return maryEngine.getWord(text);
+        WordAnalysis analysis = analysisCache.getWord(word);
+        if (analysis.isWordAnalyzed() == false) {
+            poemComputer.analyzeWordPhonemes(word);
+            analysisCache.putWord(word, analysis);
         }
+
+        return analysis.getNumberOfSyllables();
     }
+//
+//    /**
+//     * Gets the word from CMU, and if it's not in CMU, get MaryTTS to do its
+//     * thing.
+//     *
+//     * Not foolproof.
+//     */
+//    private Word getSafeWord(String text) {
+//        if (cmuEngine.hasWord(text)) {
+//            return cmuEngine.getWord(text);
+//        } else {
+//             return maryEngine.getWord(text);
+//        }
+//    }
 }

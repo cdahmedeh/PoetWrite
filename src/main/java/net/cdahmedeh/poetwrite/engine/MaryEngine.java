@@ -22,10 +22,17 @@ import lombok.SneakyThrows;
 import marytts.LocalMaryInterface;
 import marytts.MaryInterface;
 import marytts.datatypes.MaryDataType;
+import net.cdahmedeh.poetwrite.cache.AnalysisCache;
+import net.cdahmedeh.poetwrite.constructor.PhonemeConstructor;
 import net.cdahmedeh.poetwrite.constructor.WordConstructor;
+import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.tools.XmlTools;
+import org.jsoup.nodes.Document;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -105,6 +112,7 @@ import java.util.Locale;
  * ARPAbet is the universal phoneme representation.
  */
 public class MaryEngine {
+    AnalysisCache analysisCache = AnalysisCache.instance;
     // Config Stuff
 
     // The default settings for MaryTTS, wondering if this one day could become
@@ -148,8 +156,33 @@ public class MaryEngine {
      * will happily combine it all. (Not verified and not foolproof)
      */
     @SneakyThrows
-    public Word getWord(String word) {
-        org.w3c.dom.Document maryDoc = mary.generateXML(word);
-        return WordConstructor.fromMaryDoc(word, maryDoc);
+    public List<Phoneme> getWord(Word word) {
+        org.w3c.dom.Document maryDoc = mary.generateXML(word.getWord());
+        List<Phoneme> phonemes = fromMaryDoc(word.getWord(), maryDoc);
+        return phonemes;
+    }
+
+    public static List<Phoneme> fromMaryDoc(String input, org.w3c.dom.Document document) {
+        String xmlText = XmlTools.parseXmlDocToString(document);
+        Document xmlDoc = XmlTools.parseXmlTextToDocument(xmlText);
+
+        List<String> elements = xmlDoc
+                .select("ph")
+                .eachAttr("p");
+
+        List<Phoneme> phonemes = new ArrayList<>();
+
+        for (String element : elements) {
+            Phoneme phoneme = PhonemeConstructor.fromSampa(element);
+
+            if (phoneme.getPhone() == null) {
+                System.out.println("Phoneme is null for " + element);
+            }
+
+            phonemes.add(phoneme);
+        }
+
+
+        return phonemes;
     }
 }

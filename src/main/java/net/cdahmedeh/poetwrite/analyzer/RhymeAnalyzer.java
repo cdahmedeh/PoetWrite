@@ -19,6 +19,9 @@
 package net.cdahmedeh.poetwrite.analyzer;
 
 import com.google.common.collect.Lists;
+import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
+import net.cdahmedeh.poetwrite.cache.AnalysisCache;
+import net.cdahmedeh.poetwrite.computer.PoemComputer;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import net.cdahmedeh.poetwrite.engine.CmuEngine;
@@ -48,13 +51,13 @@ import java.util.Objects;
  * 3.  This component, RhymeAnalyzer, runs the algorithm.
  */
 public class RhymeAnalyzer {
-    /* package */ CmuEngine cmuEngine;
-    /* package */ MaryEngine maryEngine;
+    AnalysisCache analysisCache = AnalysisCache.instance;
+
+    PoemComputer poemComputer;
 
     @Inject
-    /* package */ RhymeAnalyzer(CmuEngine cmuEngine, MaryEngine maryEngine) {
-        this.cmuEngine = cmuEngine;
-        this.maryEngine = maryEngine;
+    /* package */ RhymeAnalyzer(PoemComputer poemComputer) {
+        this.poemComputer = poemComputer;
     }
 
     /**
@@ -66,8 +69,18 @@ public class RhymeAnalyzer {
      * with only lowercase characters, and no numbers or symbols.
      */
     public int compare(String textA, String textB) {
-        Word wordA = getSafeWord(textA);
-        Word wordB = getSafeWord(textB);
+        WordAnalysis wordA = analysisCache.getWord(new Word(textA));
+        WordAnalysis wordB = analysisCache.getWord(new Word(textB));
+
+        if (wordA.isWordAnalyzed() == false) {
+            poemComputer.analyzeWordPhonemes(new Word(textA));
+            analysisCache.putWord(new Word(textA), wordA);
+        }
+
+        if (wordB.isWordAnalyzed() == false) {
+            poemComputer.analyzeWordPhonemes(new Word(textB));
+            analysisCache.putWord(new Word(textB), wordB);
+        }
 
         return compareWords(wordA, wordB);
     }
@@ -95,7 +108,7 @@ public class RhymeAnalyzer {
      * through that traversal. This is roughly what the algorithm below does.
      *
      */
-    private int compareWords(Word word1, Word word2) {
+    private int compareWords(WordAnalysis word1, WordAnalysis word2) {
         List<Phoneme> phonemes1 = Lists.reverse(word1.getPhonemes());
         List<Phoneme> phonemes2 = Lists.reverse(word2.getPhonemes());
 
@@ -117,19 +130,5 @@ public class RhymeAnalyzer {
         }
 
         return syllableCount;
-    }
-
-    /**
-     * Gets the word from CMU, and if it's not in CMU, get MaryTTS to do its
-     * thing.
-     *
-     * Not foolproof.
-     */
-    private Word getSafeWord(String text) {
-        if (cmuEngine.hasWord(text)) {
-            return cmuEngine.getWord(text);
-        } else {
-            return maryEngine.getWord(text);
-        }
     }
 }
