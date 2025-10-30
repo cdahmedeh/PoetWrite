@@ -6,7 +6,6 @@ import lombok.Setter;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class WordAnalysis {
     @Setter
     private Integer numberOfSyllables = null;
 
-    public boolean isWordAnalyzed() {
+    public boolean arePhonemesAnalyzed() {
         return phonemes != null && numberOfSyllables != null;
     }
 }

@@ -97,8 +97,9 @@ public class PhonemeConstants {
             entry("n",  "N"),
             entry("N",  "NG"),
             entry("p",  "P"),
+            entry("r",  "R"),    // Not in any conversaion table.
             entry("r\\", "R"),   // Java string for SAMPA r\ is "r\\"
-            entry("r=", "ER"),   // What not in any conversion table.
+            entry("r=", "ER"),   // Not in any conversion table.
             entry("s",  "S"),
             entry("S",  "SH"),
             entry("t",  "T"),

@@ -20,11 +20,8 @@ package net.cdahmedeh.poetwrite.analyzer;
 
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
-import net.cdahmedeh.poetwrite.computer.PoemComputer;
-import net.cdahmedeh.poetwrite.domain.Phoneme;
+import net.cdahmedeh.poetwrite.computer.WordComputer;
 import net.cdahmedeh.poetwrite.domain.Word;
-import net.cdahmedeh.poetwrite.engine.CmuEngine;
-import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
 
@@ -57,46 +54,15 @@ import javax.inject.Inject;
  * 3.  This component, SyllableAnalyzer, runs the algorithm.
  */
 public class SyllableAnalyzer {
-//    /* package */ CmuEngine cmuEngine;
-//    /* package */ MaryEngine maryEngine;
-    AnalysisCache analysisCache = AnalysisCache.instance;
+    AnalysisCache analysisCache;
 
-    PoemComputer poemComputer;
-
-    //
     @Inject
-    /* package */ SyllableAnalyzer(PoemComputer poemComputer) {
-        this.poemComputer = poemComputer;
+    /* package */ SyllableAnalyzer(AnalysisCache analysisCache) {
+        this.analysisCache = analysisCache;
     }
-//
-//    /**
-//     * Does the magical counting. Ideally, it should only accept a single word
-//     * through some kind of sanitization but it accepts any kind of text. Might
-//     * keep that way for performance.
-//     */
-    public int count(String text) {
-        Word word = new Word(text);
 
+    public int count(Word word) {
         WordAnalysis analysis = analysisCache.getWord(word);
-        if (analysis.isWordAnalyzed() == false) {
-            poemComputer.analyzeWordPhonemes(word);
-            analysisCache.putWord(word, analysis);
-        }
-
         return analysis.getNumberOfSyllables();
     }
-//
-//    /**
-//     * Gets the word from CMU, and if it's not in CMU, get MaryTTS to do its
-//     * thing.
-//     *
-//     * Not foolproof.
-//     */
-//    private Word getSafeWord(String text) {
-//        if (cmuEngine.hasWord(text)) {
-//            return cmuEngine.getWord(text);
-//        } else {
-//             return maryEngine.getWord(text);
-//        }
-//    }
 }

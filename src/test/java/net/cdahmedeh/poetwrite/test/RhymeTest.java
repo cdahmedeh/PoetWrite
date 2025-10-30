@@ -19,8 +19,10 @@
 package net.cdahmedeh.poetwrite.test;
 
 import net.cdahmedeh.poetwrite.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.component.DaggerRhymeAnalyzerComponent;
-import net.cdahmedeh.poetwrite.component.RhymeAnalyzerComponent;
+import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
+import net.cdahmedeh.poetwrite.component.TestComponent;
+import net.cdahmedeh.poetwrite.computer.RhymeComputer;
+import net.cdahmedeh.poetwrite.domain.Word;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -42,73 +44,85 @@ public class RhymeTest {
     @Inject
     RhymeAnalyzer analyzer;
 
+    @Inject
+    RhymeComputer rhymeComputer;
+
     @BeforeAll
     void setup() {
-        RhymeAnalyzerComponent component = DaggerRhymeAnalyzerComponent.create();
+        TestComponent component = DaggerTestComponent.create();
         analyzer = component.getRhymeAnalyzer();
+        rhymeComputer = component.getRhymeComputer();
+    }
+
+    void assertRhymes(int syllables, String inputA, String inputB) {
+        Word wordA = new Word(inputA);
+        Word wordB = new Word(inputB);
+
+        rhymeComputer.analyze(wordA, wordB);
+        assertEquals(syllables, analyzer.compare(wordA, wordB));
     }
 
     @Test
     void testBasicRhyming() {
-        assertEquals(1, analyzer.compare("cat", "hat"));
-        assertEquals(1, analyzer.compare("light", "night"));
-        assertEquals(1, analyzer.compare("stone", "alone"));
-        assertEquals(1, analyzer.compare("play", "day"));
-        assertEquals(1, analyzer.compare("go", "snow"));
-        assertEquals(1, analyzer.compare("hopeless", "darkness"));
-        assertEquals(1, analyzer.compare("shades", "maids"));
-        assertEquals(1, analyzer.compare("shine", "line"));
-        assertEquals(1, analyzer.compare("proclaim", "exclaim"));
+        assertRhymes(1, "cat", "hat");
+        assertRhymes(1, "light", "night");
+        assertRhymes(1, "stone", "alone");
+        assertRhymes(1, "play", "day");
+        assertRhymes(1, "go", "snow");
+        assertRhymes(1, "hopeless", "darkness");
+        assertRhymes(1, "shades", "maids");
+        assertRhymes(1, "shine", "line");
+        assertRhymes(1, "proclaim", "exclaim");
 
-        assertEquals(2, analyzer.compare("creation", "station"));
-        assertEquals(2, analyzer.compare("desire", "entire"));
-        assertEquals(2, analyzer.compare("confusion", "illusion"));
-        assertEquals(2, analyzer.compare("relation", "vacation"));
-        assertEquals(2, analyzer.compare("logical", "teleological"));
-        assertEquals(2, analyzer.compare("magical", "logical"));
+        assertRhymes(2, "creation", "station");
+        assertRhymes(2, "desire", "entire");
+        assertRhymes(2, "confusion", "illusion");
+        assertRhymes(2, "relation", "vacation");
+        assertRhymes(2, "logical", "teleological");
+        assertRhymes(2, "magical", "logical");
 
-        assertEquals(3, analyzer.compare("accidental", "coincidental"));
-        assertEquals(3, analyzer.compare("calibration", "celebration"));
-        assertEquals(3, analyzer.compare("examination", "determination"));
+        assertRhymes(3, "accidental", "coincidental");
+        assertRhymes(3, "calibration", "celebration");
+        assertRhymes(3, "examination", "determination");
     }
 
     @Test
     void testNoRhymes() {
-        assertEquals(0, analyzer.compare("dancing", "notebook"));
-        assertEquals(0, analyzer.compare("table", "running"));
-        assertEquals(0, analyzer.compare("orange", "silver"));
-        assertEquals(0, analyzer.compare("window", "garden"));
-        assertEquals(0, analyzer.compare("music", "apple"));
-        assertEquals(0, analyzer.compare("drive", "fish"));
+        assertRhymes(0, "dancing", "notebook");
+        assertRhymes(0, "table", "running");
+        assertRhymes(0, "orange", "silver");
+        assertRhymes(0, "window", "garden");
+        assertRhymes(0, "music", "apple");
+        assertRhymes(0, "drive", "fish");
     }
 
     @Test
     void testSimilarConsonantButDifferentVowels() {
-        assertEquals(0, analyzer.compare("moon", "man"));
-        assertEquals(0, analyzer.compare("bit", "bet"));
-        assertEquals(0, analyzer.compare("look", "luck"));
-        assertEquals(0, analyzer.compare("ran", "run"));
+        assertRhymes(0, "moon", "man");
+        assertRhymes(0, "bit", "bet");
+        assertRhymes(0, "look", "luck");
+        assertRhymes(0, "ran", "run");
     }
 
     @Test
     void testCloseCalls() {
-        assertEquals(3, analyzer.compare("irritation", "limitation"));
+        assertRhymes(3, "irritation", "limitation");
     }
 
     @Test
     void testRhymingWithNonDictionaryWords() {
-        assertEquals(2, analyzer.compare("lastest", "vastest"));
-        assertEquals(1, analyzer.compare("mostest", "vastest"));
+        assertRhymes(2, "lastest", "vastest");
+        assertRhymes(1, "mostest", "vastest");
 
         // Fails
-        assertEquals(3, analyzer.compare("supertautological", "teleological"));
+        assertRhymes(3, "supertautological", "teleological");
     }
 
     @Test
     void testRhymingWihAcronyms() {
-        assertEquals(1, analyzer.compare("PhD", "sea"));
+        assertRhymes(1, "PhD", "sea");
 
         // Fails
-        assertEquals(1, analyzer.compare("BaSC", "personality"));
+        assertRhymes(1, "BaSC", "personality");
     }
 }

@@ -21,7 +21,6 @@ package net.cdahmedeh.poetwrite.engine;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.constructor.PhonemeConstructor;
-import net.cdahmedeh.poetwrite.constructor.WordConstructor;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import org.apache.commons.io.IOUtils;
@@ -118,7 +117,7 @@ public class CmuEngine {
         return phonemes;
     }
 
-    public List<Phoneme> getWord(Word word) {
+    public List<Phoneme> getPhonemes(Word word) {
         return cmuMap.get(word.getWord());
     }
 
@@ -126,8 +125,8 @@ public class CmuEngine {
      * This just checks if the word is in CMU. Just to know when to fallback to
      * other methods.
      */
-    public boolean hasWord(String word) {
-        return cmuMap.containsKey(word);
+    public boolean hasWord(Word word) {
+        return cmuMap.containsKey(word.getWord());
     }
 
     /**

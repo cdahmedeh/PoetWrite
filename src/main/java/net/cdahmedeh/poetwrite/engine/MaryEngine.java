@@ -24,7 +24,6 @@ import marytts.MaryInterface;
 import marytts.datatypes.MaryDataType;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.constructor.PhonemeConstructor;
-import net.cdahmedeh.poetwrite.constructor.WordConstructor;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import net.cdahmedeh.poetwrite.tools.XmlTools;
@@ -112,7 +111,6 @@ import java.util.Locale;
  * ARPAbet is the universal phoneme representation.
  */
 public class MaryEngine {
-    AnalysisCache analysisCache = AnalysisCache.instance;
     // Config Stuff
 
     // The default settings for MaryTTS, wondering if this one day could become
@@ -156,7 +154,7 @@ public class MaryEngine {
      * will happily combine it all. (Not verified and not foolproof)
      */
     @SneakyThrows
-    public List<Phoneme> getWord(Word word) {
+    public List<Phoneme> getPhonemes(Word word) {
         org.w3c.dom.Document maryDoc = mary.generateXML(word.getWord());
         List<Phoneme> phonemes = fromMaryDoc(word.getWord(), maryDoc);
         return phonemes;

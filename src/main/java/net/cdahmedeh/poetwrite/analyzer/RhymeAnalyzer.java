@@ -19,13 +19,12 @@
 package net.cdahmedeh.poetwrite.analyzer;
 
 import com.google.common.collect.Lists;
+import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
-import net.cdahmedeh.poetwrite.computer.PoemComputer;
+import net.cdahmedeh.poetwrite.computer.WordComputer;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
-import net.cdahmedeh.poetwrite.engine.CmuEngine;
-import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -51,13 +50,11 @@ import java.util.Objects;
  * 3.  This component, RhymeAnalyzer, runs the algorithm.
  */
 public class RhymeAnalyzer {
-    AnalysisCache analysisCache = AnalysisCache.instance;
-
-    PoemComputer poemComputer;
+    AnalysisCache analysisCache;
 
     @Inject
-    /* package */ RhymeAnalyzer(PoemComputer poemComputer) {
-        this.poemComputer = poemComputer;
+        /* package */ RhymeAnalyzer(AnalysisCache analysisCache) {
+        this.analysisCache = analysisCache;
     }
 
     /**
@@ -67,25 +64,7 @@ public class RhymeAnalyzer {
      *
      * There's a hidden assumption that textA and textB are clean single word
      * with only lowercase characters, and no numbers or symbols.
-     */
-    public int compare(String textA, String textB) {
-        WordAnalysis wordA = analysisCache.getWord(new Word(textA));
-        WordAnalysis wordB = analysisCache.getWord(new Word(textB));
-
-        if (wordA.isWordAnalyzed() == false) {
-            poemComputer.analyzeWordPhonemes(new Word(textA));
-            analysisCache.putWord(new Word(textA), wordA);
-        }
-
-        if (wordB.isWordAnalyzed() == false) {
-            poemComputer.analyzeWordPhonemes(new Word(textB));
-            analysisCache.putWord(new Word(textB), wordB);
-        }
-
-        return compareWords(wordA, wordB);
-    }
-
-    /**
+     *
      * Compares two words and returns how many syllables rhyme.
      * calculation speculation
      *    11223344    11223344
@@ -106,29 +85,10 @@ public class RhymeAnalyzer {
      * checking they match until you find the first phonemes that don't match.
      * The number of rhyming syllables basically is the number of vowels
      * through that traversal. This is roughly what the algorithm below does.
-     *
      */
-    private int compareWords(WordAnalysis word1, WordAnalysis word2) {
-        List<Phoneme> phonemes1 = Lists.reverse(word1.getPhonemes());
-        List<Phoneme> phonemes2 = Lists.reverse(word2.getPhonemes());
 
-        int loopSize = Math.min(phonemes1.size(), phonemes2.size());
-
-        int syllableCount = 0;
-
-        for (int i = 0; i < loopSize;  i++) {
-            String phone1 = phonemes1.get(i).getPhone();
-            String phone2 = phonemes2.get(i).getPhone();
-
-            if (Objects.equals(phone1, phone2) == false) {
-                break;
-            }
-
-            if (phonemes1.get(i).isVowel() && phonemes2.get(i).isVowel()) {
-                syllableCount++;
-            }
-        }
-
-        return syllableCount;
+    public int compare(Word wordA, Word wordB) {
+        RhymeAnalysis analysis = analysisCache.getRhyme(wordA, wordB);
+        return analysis.getNumberOfRhymeSyllables();
     }
 }
