@@ -19,9 +19,14 @@
 package net.cdahmedeh.poetwrite.component;
 
 import dagger.Component;
-import net.cdahmedeh.poetwrite.analyzer.RhymeAnalyzer;
+import net.cdahmedeh.poetwrite.computer.RhymeComputer;
+import net.cdahmedeh.poetwrite.computer.WordComputer;
+
+import javax.inject.Singleton;
 
 @Component
-public interface RhymeAnalyzerComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
+@Singleton
+public interface TestComponent {
+    RhymeComputer getRhymeComputer();
+    WordComputer getWordComputer();
 }

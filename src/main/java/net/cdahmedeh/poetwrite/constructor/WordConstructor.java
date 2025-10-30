@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * day I'll consider refactoring once I start doing some async magic.
  */
 public class WordConstructor {
-    public static final Pattern CMU_ENTRY_PATTERN = Pattern.compile("(.+)\\s\\s(.+)");
+//    public static final Pattern CMU_ENTRY_PATTERN = Pattern.compile("(.+)\\s\\s(.+)");
 
     /**
      * Take a CMU entry and builds a Word instance.
@@ -57,30 +57,30 @@ public class WordConstructor {
      * The convention is that words are in lower case. And this is where the
      * lower-casing is done. The map in CMUEngine assumes this.
      */
-    public static Word fromCmuEntry(String entry) {
-        Matcher matcher = CMU_ENTRY_PATTERN.matcher(entry);
-        matcher.find();
-
-        String entryWord = matcher.group(1);
-        String entryPhonemes = matcher.group(2);
-
-        String sanitizedWord = sanitize(entryWord);
-        Word word = new Word(sanitizedWord);
-
-        List<Phoneme> phonemes = PhonemeConstructor.fromArpabets(entryPhonemes);
-        word.getPhonemes().addAll(phonemes);
-
-        return word;
-    }
+//    public static Word fromCmuEntry(String entry) {
+//        Matcher matcher = CMU_ENTRY_PATTERN.matcher(entry);
+//        matcher.find();
+//
+//        String entryWord = matcher.group(1);
+//        String entryPhonemes = matcher.group(2);
+//
+//        String sanitizedWord = sanitize(entryWord);
+//        Word word = new Word(sanitizedWord);
+//
+//        List<Phoneme> phonemes = PhonemeConstructor.fromArpabets(entryPhonemes);
+//        word.getPhonemes().addAll(phonemes);
+//
+//        return word;
+//    }
 
     /**
      * TODO:
      * Once we start parsing real poems there will more than just making words
      * lowercase like removing symbols and numbers.
      */
-    private static String sanitize(String entryWord) {
-        return entryWord.toLowerCase();
-    }
+//    private static String sanitize(String entryWord) {
+//        return entryWord.toLowerCase();
+//    }
 
     /**
      * Takes the MaryTTS XML allophones output to parse it's SAMPA phonemes and
@@ -142,24 +142,24 @@ public class WordConstructor {
      * that MaryTTS outputs can change slightly in terms of schema. Jsoup has
      * really saved me here.
      */
-    public static Word fromMaryDoc(String input, org.w3c.dom.Document document) {
-        String xmlText = XmlTools.parseXmlDocToString(document);
-        Document xmlDoc = XmlTools.parseXmlTextToDocument(xmlText);
-
-        List<String> elements = xmlDoc
-                .select("ph")
-                .eachAttr("p");
-
-        List<Phoneme> phonemes = new ArrayList<>();
-
-        for (String element : elements) {
-            Phoneme phoneme = PhonemeConstructor.fromSampa(element);
-            phonemes.add(phoneme);
-        }
-
-        Word word = new Word(input);
-        word.getPhonemes().addAll(phonemes);
-
-        return word;
-    }
+//    public static Word fromMaryDoc(String input, org.w3c.dom.Document document) {
+//        String xmlText = XmlTools.parseXmlDocToString(document);
+//        Document xmlDoc = XmlTools.parseXmlTextToDocument(xmlText);
+//
+//        List<String> elements = xmlDoc
+//                .select("ph")
+//                .eachAttr("p");
+//
+//        List<Phoneme> phonemes = new ArrayList<>();
+//
+//        for (String element : elements) {
+//            Phoneme phoneme = PhonemeConstructor.fromSampa(element);
+//            phonemes.add(phoneme);
+//        }
+//
+//        Word word = new Word(input);
+//        word.getPhonemes().addAll(phonemes);
+//
+//        return word;
+//    }
 }

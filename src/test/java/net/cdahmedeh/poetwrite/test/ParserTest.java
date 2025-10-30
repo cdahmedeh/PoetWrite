@@ -52,6 +52,11 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
  * The test files can be found in parser-test-cases.
  *     *.input are a poetry line that will be analyzed and parsed
  *     *.json are the expected output.
+ *
+ * TODO: I'm not going to be constantly fixing this right now as the features
+ *       are going to expand quickly.
+ * TODO: The switch to the *Analysis separation means this part needs a
+ *       redesign.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ParserTest {

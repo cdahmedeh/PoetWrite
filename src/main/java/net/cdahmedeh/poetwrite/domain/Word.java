@@ -37,12 +37,29 @@ import java.util.List;
  * This entity will change a lot probably once we get to the point where we do
  * some parsing and represent the poem as an object structure.
  */
-@RequiredArgsConstructor
 @ToString
 public class Word {
     @Getter
     private final String word;
 
-    @Getter
-    private final List<Phoneme> phonemes = Lists.newArrayList();
+    public Word(String word) {
+        this.word = normalize(word);
+    }
+
+    @Override
+    public int hashCode() {
+        return word.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Word) {
+            return word.equals(((Word) obj).word);
+        }
+        return false;
+    }
+
+    private String normalize(String word) {
+        return word.trim().toLowerCase();
+    }
 }

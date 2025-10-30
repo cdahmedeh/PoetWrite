@@ -69,7 +69,8 @@ public class PhonemeConstants {
             entry("{",  "AE"),
             entry("V",  "AH"),  // schwa often "@" in SAMPA; see below
             entry("@",  "AH"),  // consider mapping to AX/AH0 depending on your stress handling
-            entry("Q",  "AO"),
+            entry("Q",  "AO"),  // Not sure if this is a typo.
+            entry("O",  "AO"),  // Not in conversion tables.
             entry("aU", "AW"),
             entry("AI", "AY"),  // actually aI
             entry("E",  "EH"),  // actually e
@@ -96,7 +97,9 @@ public class PhonemeConstants {
             entry("n",  "N"),
             entry("N",  "NG"),
             entry("p",  "P"),
+            entry("r",  "R"),    // Not in any conversaion table.
             entry("r\\", "R"),   // Java string for SAMPA r\ is "r\\"
+            entry("r=", "ER"),   // Not in any conversion table.
             entry("s",  "S"),
             entry("S",  "SH"),
             entry("t",  "T"),

@@ -20,7 +20,8 @@ package net.cdahmedeh.poetwrite.engine;
 
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.constructor.WordConstructor;
+import net.cdahmedeh.poetwrite.constructor.PhonemeConstructor;
+import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import org.apache.commons.io.IOUtils;
 
@@ -29,6 +30,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Ahmed El-Hajjar
@@ -72,6 +75,8 @@ import java.util.Map;
 public class CmuEngine {
     public static final String CMUDICT_FILE = "dicts/cmudict-0.7b";
 
+    public static final Pattern CMU_ENTRY_PATTERN = Pattern.compile("(.+)\\s\\s(.+)");
+
     // Containers
 
     /**
@@ -80,8 +85,7 @@ public class CmuEngine {
      * { "calculation" , "K AE2 L K Y AH0 L EY1 SH AH0 N" }
      * { "speculation" , "S P EH2 K Y AH0 L EY1 SH AH0 N" }
      */
-    // The lower case is in WordContrustor
-    private final Map<String, Word> cmuMap = Maps.newHashMap();
+    private final Map<String, List<Phoneme>> cmuMap = Maps.newHashMap();
 
     @Inject
     @SneakyThrows
@@ -94,21 +98,41 @@ public class CmuEngine {
                 continue;
             }
 
-            Word word = WordConstructor.fromCmuEntry(entry);
-            cmuMap.put(word.getWord(), word);
+            List<Phoneme> phonemes = fromCmuEntry(entry);
         }
     }
 
-    public Word getWord(String word) {
-        return cmuMap.get(word);
+    /**
+     * Parses a CMU entry which is a line in the CMU dictionary file and builds
+     * a cache mapping a word to a set of phonemes in ARPAbet format.
+     */
+    public List<Phoneme> fromCmuEntry(String entry) {
+        Matcher matcher = CMU_ENTRY_PATTERN.matcher(entry);
+        matcher.find();
+
+        String entryWord = matcher.group(1);
+        String entryPhonemes = matcher.group(2);
+
+        List<Phoneme> phonemes = PhonemeConstructor.fromArpabets(entryPhonemes);
+
+        cmuMap.put(entryWord.toLowerCase(), phonemes);
+
+        return phonemes;
+    }
+
+    /**
+     * Pulls in the phonemes for a word from the cached dictionary.
+     */
+    public List<Phoneme> getPhonemes(Word word) {
+        return cmuMap.get(word.getWord());
     }
 
     /**
      * This just checks if the word is in CMU. Just to know when to fallback to
      * other methods.
      */
-    public boolean hasWord(String text) {
-        return cmuMap.containsKey(text);
+    public boolean hasWord(Word word) {
+        return cmuMap.containsKey(word.getWord());
     }
 
     /**

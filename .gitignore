@@ -5,10 +5,16 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### Generated ANTLR parser
+### IDEA Generated Classes ###
+.apt_generated/
+.apt_generated_tests/
+/.apt_generated/
+/.apt_generated_tests/
+
+### Generated ANTLR parser ####
 /src/main/antlr/.antlr/
 /src/main/antlr/net/cdahmedeh/poetwrite/parser/.antlr/
-### Allow the launch file in the Antlr source
+### Allow the launch file in the Antlr source ###
 !src/main/antlr/.vscode/
 !src/main/antlr/.vscode/launch.json
 
