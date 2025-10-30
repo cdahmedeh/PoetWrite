@@ -18,6 +18,7 @@
 
 package net.cdahmedeh.poetwrite.computer;
 
+import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
@@ -49,6 +50,11 @@ public class WordComputer {
         WordAnalysis analysis = analysisCache.getWord(word);
 
         analyzePhonemes(word, analysis);
+    }
+
+    public WordAnalysis getWord(Word word) {
+        WordAnalysis analysis = analysisCache.getWord(word);
+        return analysis;
     }
 
     private void analyzePhonemes(Word word, WordAnalysis analysis) {

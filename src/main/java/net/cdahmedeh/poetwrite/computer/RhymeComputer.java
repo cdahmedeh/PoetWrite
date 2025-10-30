@@ -32,6 +32,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This just pulls in the words from the engines and uses the magic
+ * compareWords(..) method does to compare them. See the comments above that
+ * method for the algorithm.
+ *
+ * There's a hidden assumption that textA and textB are clean single word
+ * with only lowercase characters, and no numbers or symbols.
+ *
+ * Compares two words and returns how many syllables rhyme.
+ * calculation speculation
+ *    11223344    11223344
+ * The above has 4 syllables that rhyme.
+ *
+ * Check RhymeTest for additional examples.
+ *
+ * This is really dirty right now. It's neither readable nor optmized.
+ *
+ * Let's take this example with comparing calculation and speculation. We
+ *                     Matching phonemes = Rhyming
+ *                      | | ||| | ||| || ||| |
+ *                      V V VVV V VVV VV VVV V
+ * CALCULATION  K AE2 L K Y AH0 L EY1 SH AH0 N
+ * SPECULATION  S P EH2 K Y AH0 L EY1 SH AH0 N
+ *
+ * If you notice, if you go backwords through the phonemes, and keep
+ * checking they match until you find the first phonemes that don't match.
+ * The number of rhyming syllables basically is the number of vowels
+ * through that traversal. This is roughly what the algorithm below does.
+ */
 public class RhymeComputer {
     AnalysisCache analysisCache;
 
@@ -52,6 +81,11 @@ public class RhymeComputer {
         RhymeAnalysis analysis = analysisCache.getRhyme(wordA, wordB);
 
         analyzeRhyme(wordA, wordB, analysis);
+    }
+
+    public RhymeAnalysis getRhyme(Word wordA, Word wordB) {
+        RhymeAnalysis analysis = analysisCache.getRhyme(wordA, wordB);
+        return analysis;
     }
 
     private void analyzeRhyme(Word wordA, Word wordB, RhymeAnalysis analysis) {
