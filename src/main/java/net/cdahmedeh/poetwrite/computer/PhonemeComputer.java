@@ -19,12 +19,14 @@
 package net.cdahmedeh.poetwrite.computer;
 
 import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
-import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.engine.CmuEngine;
+import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,24 +36,28 @@ import java.util.List;
  * PhonemeAnalysis object. The output is stored in the AnalysisCache which can
  * retrieved later.
  *
- * All this does for now is count the number of syllables in a word. Which is
- * taken from PhonemeComputer.
+ * SOURCE: The phonemes are calculated by a lookup in the CMU dictionary, and if
+ *         the word doesn't exist, it will the MaryTTS engine using a heuristic
+ *         method.
  */
-public class WordComputer {
+public class PhonemeComputer {
     AnalysisCache analysisCache;
 
-    PhonemeComputer phonemeComputer;
+    CmuEngine cmuEngine;
+    MaryEngine maryEngine;
 
     @Inject
-    WordComputer(
+    PhonemeComputer(
             AnalysisCache analysisCache,
-            PhonemeComputer phonemeComputer) {
+            CmuEngine cmuEngine,
+            MaryEngine maryEngine) {
         this.analysisCache = analysisCache;
-        this.phonemeComputer = phonemeComputer;
+        this.cmuEngine = cmuEngine;
+        this.maryEngine = maryEngine;
     }
 
-    public WordAnalysis get(Word word) {
-        WordAnalysis analysis = analysisCache.getWord(word);
+    public PhonemeAnalysis get(Word word) {
+        PhonemeAnalysis analysis = analysisCache.getPhoneme(word);
 
         if (analysis.analyzed() == false) {
             analyze(word, analysis);
@@ -60,15 +66,15 @@ public class WordComputer {
         return analysis;
     }
 
-    private void analyze(Word word, WordAnalysis analysis) {
-        PhonemeAnalysis phonemeAnalysis = phonemeComputer.get(word);
+    private void analyze(Word word, PhonemeAnalysis analysis) {
+        List<Phoneme> phonemes = new ArrayList<>();
 
-        List<Phoneme> phonemes = phonemeAnalysis.getPhonemes();
+        if (cmuEngine.hasWord(word)) {
+            phonemes.addAll(cmuEngine.getPhonemes(word));
+        } else {
+            phonemes.addAll(maryEngine.getPhonemes(word));
+        }
 
-        int syllables = (int) phonemes.stream()
-                .filter(Phoneme::isVowel)
-                .count();
-
-        analysis.setNumberOfSyllables(syllables);
+        analysis.setPhonemes(phonemes);
     }
 }

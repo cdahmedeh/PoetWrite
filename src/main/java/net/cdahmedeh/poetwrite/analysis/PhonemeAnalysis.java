@@ -21,32 +21,31 @@ package net.cdahmedeh.poetwrite.analysis;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 
+import java.util.List;
+
 /**
- * A result of the computation for related to the phonemes of a word such as
- * syllables in the word.
+ * A result of the computation for analyzing the phonemes of a word.
  *
- * This is computed in WordComputer. See class comments for how the analysis is
- * actually done.
- *
- * Right now, the phonemes themselves are part of the PhonemeAnalysis.
+ * This is computed in PhonemeComputer. See CmuEngine and MaryEngine for details
+ * on how phonemes are calculated. The phonemes are in ARPAbet format.
  *
  * The convention of the *Analysis files is uncomputed parts are 'null' and get
  * filled if after the computation.
  *
  * @author Ahmed El-Hajjar
- *
  */
 @RequiredArgsConstructor
-public class WordAnalysis {
+public class PhonemeAnalysis {
     @Getter
     private final Word word;
 
     @Getter @Setter
-    private Integer numberOfSyllables = null;
+    private List<Phoneme> phonemes = null;
 
     public boolean analyzed() {
-        return numberOfSyllables != null;
+        return phonemes != null;
     }
 }

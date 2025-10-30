@@ -54,8 +54,7 @@ public class RhymeTest {
         Word wordA = new Word(inputA);
         Word wordB = new Word(inputB);
 
-        rhymeComputer.analyze(wordA, wordB);
-        RhymeAnalysis analysis = rhymeComputer.getRhyme(wordA, wordB);
+        RhymeAnalysis analysis = rhymeComputer.get(wordA, wordB);
         assertEquals(syllables, analysis.getNumberOfRhymeSyllables());
     }
 

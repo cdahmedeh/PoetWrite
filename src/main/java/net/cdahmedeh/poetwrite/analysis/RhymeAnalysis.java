@@ -38,8 +38,6 @@ import java.util.List;
  * The convention of the *Analysis files is uncomputed parts are 'null' and get
  * filled if after the computation.
  *
- * TODO: Consider using computation from WordAnalysis for phoneme detection.
- * TODO: Consider having a dedicated PhonemeAnalysis to simplify re-use.
  * TODO: Consider using a pair object for word pairs.
  * TODO: Find a way to make word pairs reversed to be equal.
  * TODO: Partial Rhymes, Slant Rhymes
@@ -58,19 +56,9 @@ public class RhymeAnalysis {
     private final Word wordB;
 
     @Getter @Setter
-    private List<Phoneme> phonemesA = null;
-
-    @Getter @Setter
-    private List<Phoneme> phonemesB = null;
-
-    @Getter @Setter
     private Integer numberOfRhymeSyllables = null;
 
-    public boolean arePhonemesAnalyzed() {
-        return phonemesA != null && phonemesB != null;
-    }
-
-    public boolean isRhymeAnalyzed() {
+    public boolean analyzed() {
         return numberOfRhymeSyllables != null;
     }
 }
