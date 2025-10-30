@@ -66,8 +66,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            wordComputer.analyze(word);
-            WordAnalysis analysis = wordComputer.getWord(word);
+            WordAnalysis analysis = wordComputer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -78,8 +77,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            wordComputer.analyze(word);
-            WordAnalysis analysis = wordComputer.getWord(word);
+            WordAnalysis analysis = wordComputer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -92,8 +90,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            wordComputer.analyze(word);
-            WordAnalysis analysis = wordComputer.getWord(word);
+            WordAnalysis analysis = wordComputer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -105,8 +102,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            wordComputer.analyze(word);
-            WordAnalysis analysis = wordComputer.getWord(word);
+            WordAnalysis analysis = wordComputer.get(word);
             assertEquals(2, analysis.getNumberOfSyllables());
         }
     }
@@ -114,60 +110,51 @@ public class SyllableTest {
     @Test
     void testMedicationNames() {
         Word lamictalWord = new Word("Lamictal");
-        wordComputer.analyze(lamictalWord);
-        WordAnalysis lamictalAnalysis = wordComputer.getWord(lamictalWord);
+        WordAnalysis lamictalAnalysis = wordComputer.get(lamictalWord);
         assertEquals(3, lamictalAnalysis.getNumberOfSyllables());
 
         Word seroquelWord = new Word("Seroquel");
-        wordComputer.analyze(seroquelWord);
-        WordAnalysis seroquelAnalysis = wordComputer.getWord(seroquelWord);
+        WordAnalysis seroquelAnalysis = wordComputer.get(seroquelWord);
         assertEquals(3, seroquelAnalysis.getNumberOfSyllables());
     }
 
     @Test
     void testMedicalTerms() {
         Word agranulocytosisWord = new Word("agranulocytosis");
-        wordComputer.analyze(agranulocytosisWord);
-        WordAnalysis agranulocytosisAnalysis = wordComputer.getWord(agranulocytosisWord);
+        WordAnalysis agranulocytosisAnalysis = wordComputer.get(agranulocytosisWord);
         assertEquals(7, agranulocytosisAnalysis.getNumberOfSyllables());
     }
 
     @Test
     void testWordsNotInDictionary() {
         Word neologismWord = new Word("agranulocytosis");
-        wordComputer.analyze(neologismWord);
-        WordAnalysis neologismAnalysis = wordComputer.getWord(neologismWord);
+        WordAnalysis neologismAnalysis = wordComputer.get(neologismWord);
         assertEquals(7, neologismAnalysis.getNumberOfSyllables());
     }
 
     @Test
     void testNeologisms() {
         Word supertautologicalWord = new Word("supertautological");
-        wordComputer.analyze(supertautologicalWord);
-        WordAnalysis supertautologicalAnalysis = wordComputer.getWord(supertautologicalWord);
+        WordAnalysis supertautologicalAnalysis = wordComputer.get(supertautologicalWord);
         assertEquals(7, supertautologicalAnalysis.getNumberOfSyllables());
     }
 
     @Test
     void testNonExistingWords() {
         Word endothalmicWord = new Word("endothalmic");
-        wordComputer.analyze(endothalmicWord);
-        WordAnalysis endothalmicAnalysis = wordComputer.getWord(endothalmicWord);
+        WordAnalysis endothalmicAnalysis = wordComputer.get(endothalmicWord);
         assertEquals(4, endothalmicAnalysis.getNumberOfSyllables());
 
         Word adaptanceWord = new Word("adaptance");
-        wordComputer.analyze(adaptanceWord);
-        WordAnalysis adaptanceAnalysis = wordComputer.getWord(adaptanceWord);
+        WordAnalysis adaptanceAnalysis = wordComputer.get(adaptanceWord);
         assertEquals(3, adaptanceAnalysis.getNumberOfSyllables());
 
         Word communitiWord = new Word("communiti");
-        wordComputer.analyze(communitiWord);
-        WordAnalysis communitiAnalysis = wordComputer.getWord(communitiWord);
+        WordAnalysis communitiAnalysis = wordComputer.get(communitiWord);
         assertEquals(4, communitiAnalysis.getNumberOfSyllables());
 
         Word hospictacularWord = new Word("hospictacular");
-        wordComputer.analyze(hospictacularWord);
-        WordAnalysis hospictacularAnalysis = wordComputer.getWord(hospictacularWord);
+        WordAnalysis hospictacularAnalysis = wordComputer.get(hospictacularWord);
         assertEquals(5, hospictacularAnalysis.getNumberOfSyllables());
     }
 }

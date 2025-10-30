@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.cache;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.domain.Word;
@@ -91,6 +92,19 @@ public class AnalysisCache {
         if (analysis == null) {
             analysis = new WordAnalysis(word);
             words.put(word, analysis);
+        }
+
+        return analysis;
+    }
+
+    private Map<Word, PhonemeAnalysis> phonemes = new HashMap<>();
+
+    public PhonemeAnalysis getPhoneme(Word word) {
+        PhonemeAnalysis analysis = phonemes.get(word);
+
+        if (analysis == null) {
+            analysis = new PhonemeAnalysis(word);
+            phonemes.put(word, analysis);
         }
 
         return analysis;

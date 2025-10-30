@@ -19,6 +19,7 @@
 package net.cdahmedeh.poetwrite.computer;
 
 import com.google.common.collect.Lists;
+import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
@@ -27,7 +28,6 @@ import net.cdahmedeh.poetwrite.engine.CmuEngine;
 import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,77 +77,49 @@ import java.util.Objects;
 public class RhymeComputer {
     AnalysisCache analysisCache;
 
-    CmuEngine cmuEngine;
-    MaryEngine maryEngine;
+    PhonemeComputer phonemeComputer;
 
     @Inject
     RhymeComputer(
             AnalysisCache analysisCache,
-            CmuEngine cmuEngine,
-            MaryEngine maryEngine) {
+            PhonemeComputer phonemeComputer) {
         this.analysisCache = analysisCache;
-        this.cmuEngine = cmuEngine;
-        this.maryEngine = maryEngine;
+        this.phonemeComputer = phonemeComputer;
     }
 
-    public void analyze(Word wordA, Word wordB) {
+    public RhymeAnalysis get(Word wordA, Word wordB) {
         RhymeAnalysis analysis = analysisCache.getRhyme(wordA, wordB);
 
-        analyzeRhyme(wordA, wordB, analysis);
-    }
-
-    public RhymeAnalysis getRhyme(Word wordA, Word wordB) {
-        RhymeAnalysis analysis = analysisCache.getRhyme(wordA, wordB);
+        if (analysis.analyzed() == false) {
+            analyze(wordA, wordB, analysis);
+        }
         return analysis;
     }
 
-    private void analyzeRhyme(Word wordA, Word wordB, RhymeAnalysis analysis) {
-        if (analysis.isRhymeAnalyzed() == false) {
-            if (analysis.arePhonemesAnalyzed() == false) {
-                analyzePhonemes(wordA, wordB, analysis);
+    private void analyze(Word wordA, Word wordB, RhymeAnalysis analysis) {
+        PhonemeAnalysis phonemeAnalysisA = phonemeComputer.get(wordA);
+        PhonemeAnalysis phonemeAnalysisB = phonemeComputer.get(wordB);
+
+        List<Phoneme> phonemesA = Lists.reverse(phonemeAnalysisA.getPhonemes());
+        List<Phoneme> phonemesB = Lists.reverse(phonemeAnalysisB.getPhonemes());
+
+        int loopSize = Math.min(phonemesA.size(), phonemesB.size());
+
+        int syllableCount = 0;
+
+        for (int i = 0; i < loopSize;  i++) {
+            String phone1 = phonemesA.get(i).getPhone();
+            String phone2 = phonemesB.get(i).getPhone();
+
+            if (Objects.equals(phone1, phone2) == false) {
+                break;
             }
 
-            List<Phoneme> phonemesA = Lists.reverse(analysis.getPhonemesA());
-            List<Phoneme> phonemesB = Lists.reverse(analysis.getPhonemesB());
-
-            int loopSize = Math.min(phonemesA.size(), phonemesB.size());
-
-            int syllableCount = 0;
-
-            for (int i = 0; i < loopSize;  i++) {
-                String phone1 = phonemesA.get(i).getPhone();
-                String phone2 = phonemesB.get(i).getPhone();
-
-                if (Objects.equals(phone1, phone2) == false) {
-                    break;
-                }
-
-                if (phonemesA.get(i).isVowel() && phonemesB.get(i).isVowel()) {
-                    syllableCount++;
-                }
+            if (phonemesA.get(i).isVowel() && phonemesB.get(i).isVowel()) {
+                syllableCount++;
             }
-
-            analysis.setNumberOfRhymeSyllables(syllableCount);
         }
-    }
 
-    private void analyzePhonemes(Word wordA, Word wordB, RhymeAnalysis analysis) {
-        if (analysis.arePhonemesAnalyzed() == false) {
-            List<Phoneme> phonemesA = new ArrayList<>();
-            phonemesA.addAll(getPhonemes(wordA));
-            analysis.setPhonemesA(phonemesA);
-
-            List<Phoneme> phonemesB = new ArrayList<>();
-            phonemesB.addAll(getPhonemes(wordB));
-            analysis.setPhonemesB(phonemesB);
-        }
-    }
-
-    private List<Phoneme> getPhonemes(Word word) {
-        if (cmuEngine.hasWord(word)) {
-            return cmuEngine.getPhonemes(word);
-        } else {
-            return maryEngine.getPhonemes(word);
-        }
+        analysis.setNumberOfRhymeSyllables(syllableCount);
     }
 }

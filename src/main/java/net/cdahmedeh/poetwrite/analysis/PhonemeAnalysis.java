@@ -26,41 +26,15 @@ import net.cdahmedeh.poetwrite.domain.Word;
 
 import java.util.List;
 
-/**
- * A result of the computation for analyzing the rhyme of two words.
- *
- * This is computed in RhymeComputer. See class comments for how the analysis is
- * actually done.
- *
- * Right now, the focus is just on basic rhyming with just counting how many
- * syllables are rhymed with in the provided word pair.
- *
- * The convention of the *Analysis files is uncomputed parts are 'null' and get
- * filled if after the computation.
- *
- * TODO: Consider using computation from WordAnalysis for phoneme detection.
- * TODO: Consider having a dedicated PhonemeAnalysis to simplify re-use.
- * TODO: Consider using a pair object for word pairs.
- * TODO: Find a way to make word pairs reversed to be equal.
- * TODO: Partial Rhymes, Slant Rhymes
- * TODO: Have the specific phonemes that rhyme.
- * TODO: Have the syllables in text that rhyme.
- *
- * @author Ahmed El-Hajjar
- *
- */
 @RequiredArgsConstructor
-public class RhymeAnalysis {
+public class PhonemeAnalysis {
     @Getter
-    private final Word wordA;
-
-    @Getter
-    private final Word wordB;
+    private final Word word;
 
     @Getter @Setter
-    private Integer numberOfRhymeSyllables = null;
+    private List<Phoneme> phonemes = null;
 
     public boolean analyzed() {
-        return numberOfRhymeSyllables != null;
+        return phonemes != null;
     }
 }

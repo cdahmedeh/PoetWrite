@@ -18,13 +18,11 @@
 
 package net.cdahmedeh.poetwrite.computer;
 
-import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
+import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
-import net.cdahmedeh.poetwrite.engine.CmuEngine;
-import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -33,49 +31,35 @@ import java.util.List;
 public class WordComputer {
     AnalysisCache analysisCache;
 
-    CmuEngine cmuEngine;
-    MaryEngine maryEngine;
+    PhonemeComputer phonemeComputer;
 
     @Inject
     WordComputer(
             AnalysisCache analysisCache,
-            CmuEngine cmuEngine,
-            MaryEngine maryEngine) {
+            PhonemeComputer phonemeComputer) {
         this.analysisCache = analysisCache;
-        this.cmuEngine = cmuEngine;
-        this.maryEngine = maryEngine;
+        this.phonemeComputer = phonemeComputer;
     }
 
-    public void analyze(Word word) {
+    public WordAnalysis get(Word word) {
         WordAnalysis analysis = analysisCache.getWord(word);
 
-        analyzePhonemes(word, analysis);
-    }
+        if (analysis.analyzed() == false) {
+            analyze(word, analysis);
+        }
 
-    public WordAnalysis getWord(Word word) {
-        WordAnalysis analysis = analysisCache.getWord(word);
         return analysis;
     }
 
-    private void analyzePhonemes(Word word, WordAnalysis analysis) {
-        if (analysis.arePhonemesAnalyzed() == false) {
-            List<Phoneme> phonemes = new ArrayList<>();
-            phonemes.addAll(getPhonemes(word));
-            analysis.setPhonemes(phonemes);
+    private void analyze(Word word, WordAnalysis analysis) {
+        PhonemeAnalysis phonemeAnalysis = phonemeComputer.get(word);
 
-            int syllables = (int) phonemes.stream()
-                    .filter(Phoneme::isVowel)
-                    .count();
+        List<Phoneme> phonemes = phonemeAnalysis.getPhonemes();
 
-            analysis.setNumberOfSyllables(syllables);
-        }
-    }
+        int syllables = (int) phonemes.stream()
+                .filter(Phoneme::isVowel)
+                .count();
 
-    private List<Phoneme> getPhonemes(Word word) {
-        if (cmuEngine.hasWord(word)) {
-            return cmuEngine.getPhonemes(word);
-        } else {
-            return maryEngine.getPhonemes(word);
-        }
+        analysis.setNumberOfSyllables(syllables);
     }
 }

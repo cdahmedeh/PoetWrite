@@ -21,10 +21,7 @@ package net.cdahmedeh.poetwrite.analysis;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
-
-import java.util.List;
 
 /**
  * A result of the computation for analyzing the phonemes of a word.
@@ -48,12 +45,9 @@ public class WordAnalysis {
     private final Word word;
 
     @Getter @Setter
-    private List<Phoneme> phonemes = null;
-
-    @Getter @Setter
     private Integer numberOfSyllables = null;
 
-    public boolean arePhonemesAnalyzed() {
-        return phonemes != null && numberOfSyllables != null;
+    public boolean analyzed() {
+        return numberOfSyllables != null;
     }
 }
