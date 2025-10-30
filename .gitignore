@@ -8,6 +8,8 @@ build/
 ### IDEA Generated Classes ###
 .apt_generated/
 .apt_generated_tests/
+/.apt_generated/
+/.apt_generated_tests/
 
 ### Generated ANTLR parser ####
 /src/main/antlr/.antlr/
