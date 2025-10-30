@@ -85,7 +85,6 @@ public class CmuEngine {
      * { "calculation" , "K AE2 L K Y AH0 L EY1 SH AH0 N" }
      * { "speculation" , "S P EH2 K Y AH0 L EY1 SH AH0 N" }
      */
-    // The lower case is in WordContrustor
     private final Map<String, List<Phoneme>> cmuMap = Maps.newHashMap();
 
     @Inject
@@ -103,6 +102,10 @@ public class CmuEngine {
         }
     }
 
+    /**
+     * Parses a CMU entry which is a line in the CMU dictionary file and builds
+     * a cache mapping a word to a set of phonemes in ARPAbet format.
+     */
     public List<Phoneme> fromCmuEntry(String entry) {
         Matcher matcher = CMU_ENTRY_PATTERN.matcher(entry);
         matcher.find();
@@ -117,6 +120,9 @@ public class CmuEngine {
         return phonemes;
     }
 
+    /**
+     * Pulls in the phonemes for a word from the cached dictionary.
+     */
     public List<Phoneme> getPhonemes(Word word) {
         return cmuMap.get(word.getWord());
     }

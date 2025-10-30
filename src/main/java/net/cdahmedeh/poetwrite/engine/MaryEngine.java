@@ -22,7 +22,6 @@ import lombok.SneakyThrows;
 import marytts.LocalMaryInterface;
 import marytts.MaryInterface;
 import marytts.datatypes.MaryDataType;
-import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.constructor.PhonemeConstructor;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
@@ -160,6 +159,13 @@ public class MaryEngine {
         return phonemes;
     }
 
+    /**
+     * All it does is just pulling in the ph property in the syllable nodes.
+     *
+     * I was originally using Jackson to turn the XML into objects, but it seems
+     * that MaryTTS outputs can change slightly in terms of schema. Jsoup has
+     * really saved me here.
+     */
     public static List<Phoneme> fromMaryDoc(String input, org.w3c.dom.Document document) {
         String xmlText = XmlTools.parseXmlDocToString(document);
         Document xmlDoc = XmlTools.parseXmlTextToDocument(xmlText);
@@ -173,13 +179,17 @@ public class MaryEngine {
         for (String element : elements) {
             Phoneme phoneme = PhonemeConstructor.fromSampa(element);
 
+            // Every so often, I discover some SAMPA phoneme that has no ARPAbet
+            // equivalent. So this is the point where I catch them. And then
+            // it goes into the PhonemeConstants map.
+            //
+            // TODO: Make it a log output.
             if (phoneme.getPhone() == null) {
-                System.out.println("Phoneme is null for " + element);
+                System.out.printf("Phoneme is null for %s.", element);
             }
 
             phonemes.add(phoneme);
         }
-
 
         return phonemes;
     }

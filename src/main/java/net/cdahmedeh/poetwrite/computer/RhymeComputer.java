@@ -20,7 +20,6 @@ package net.cdahmedeh.poetwrite.computer;
 
 import com.google.common.collect.Lists;
 import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
-import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
@@ -33,22 +32,29 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This just pulls in the words from the engines and uses the magic
- * compareWords(..) method does to compare them. See the comments above that
- * method for the algorithm.
+ * @author Ahmed El-Hajjar
  *
- * There's a hidden assumption that textA and textB are clean single word
- * with only lowercase characters, and no numbers or symbols.
+ * This analyzer does some rhyming analysis and outputs a result as
+ * a RhymeAnalysis object. The output is stored in the AnalysisCache which can
+ * be retrieved later.
  *
- * Compares two words and returns how many syllables rhyme.
+ * DESIGN: As I mentioned in AnalysisCache, only these *Computer classes can
+ *         access the AnalysisCache. Anything that needs to read from the cache
+ *         has to do it through here.
+ *
+ * SOURCE: The phonemes are calculated by a lookup in the CMU dictionary, and if
+ *         the word doesn't exist, it will the MaryTTS engine using a heuristic
+ *         method.
+ *
+ * ALGORITHM:
+ * Right now, all we are trying to calculate is the amount of common syllables
+ * in a rhyme for a given pair of two words.
+ *
  * calculation speculation
  *    11223344    11223344
  * The above has 4 syllables that rhyme.
  *
- * Check RhymeTest for additional examples.
- *
- * This is really dirty right now. It's neither readable nor optmized.
- *
+
  * Let's take this example with comparing calculation and speculation. We
  *                     Matching phonemes = Rhyming
  *                      | | ||| | ||| || ||| |
@@ -60,6 +66,13 @@ import java.util.Objects;
  * checking they match until you find the first phonemes that don't match.
  * The number of rhyming syllables basically is the number of vowels
  * through that traversal. This is roughly what the algorithm below does.
+ *
+ * Check RhymeTest for additional examples.
+ *
+ * TODO: This is really dirty right now. It's neither readable nor optmized.
+ * TODO: Partial Rhymes, Slant Rhymes
+ * TODO: Have the specific phonemes that rhyme.
+ * TODO: Have the syllables in text that rhyme.
  */
 public class RhymeComputer {
     AnalysisCache analysisCache;
