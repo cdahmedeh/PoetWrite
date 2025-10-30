@@ -26,6 +26,17 @@ import net.cdahmedeh.poetwrite.domain.Word;
 
 import java.util.List;
 
+/**
+ * A result of the computation for analyzing the phonemes of a word.
+ *
+ * This is computed in PhonemeComputer. See CmuEngine and MaryEngine for details
+ * on how phonemes are calculated. The phonemes are in ARPAbet format.
+ *
+ * The convention of the *Analysis files is uncomputed parts are 'null' and get
+ * filled if after the computation.
+ *
+ * @author Ahmed El-Hajjar
+ */
 @RequiredArgsConstructor
 public class PhonemeAnalysis {
     @Getter

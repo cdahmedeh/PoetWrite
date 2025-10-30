@@ -25,9 +25,18 @@ import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * This analyzer does some phoneme analysis and outputs a result as a
+ * PhonemeAnalysis object. The output is stored in the AnalysisCache which can
+ * retrieved later.
+ *
+ * All this does for now is count the number of syllables in a word. Which is
+ * taken from PhonemeComputer.
+ */
 public class WordComputer {
     AnalysisCache analysisCache;
 

@@ -24,17 +24,16 @@ import lombok.Setter;
 import net.cdahmedeh.poetwrite.domain.Word;
 
 /**
- * A result of the computation for analyzing the phonemes of a word.
+ * A result of the computation for related to the phonemes of a word such as
+ * syllables in the word.
  *
  * This is computed in WordComputer. See class comments for how the analysis is
  * actually done.
  *
- * Right now, all this does is calculate the amount of syllables in the word.
+ * Right now, the phonemes themselves are part of the PhonemeAnalysis.
  *
  * The convention of the *Analysis files is uncomputed parts are 'null' and get
  * filled if after the computation.
- *
- * TODO: Consider having a dedicated PhonemeAnalysis to simplify re-use.
  *
  * @author Ahmed El-Hajjar
  *

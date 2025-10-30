@@ -24,8 +24,6 @@ import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
-import net.cdahmedeh.poetwrite.engine.CmuEngine;
-import net.cdahmedeh.poetwrite.engine.MaryEngine;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -42,9 +40,8 @@ import java.util.Objects;
  *         access the AnalysisCache. Anything that needs to read from the cache
  *         has to do it through here.
  *
- * SOURCE: The phonemes are calculated by a lookup in the CMU dictionary, and if
- *         the word doesn't exist, it will the MaryTTS engine using a heuristic
- *         method.
+ * SOURCES: The phonemes are calculated as part of the PhonemeComputer which
+ *          uses CMU or MaryTTS engines stored in ARPAbet format.
  *
  * ALGORITHM:
  * Right now, all we are trying to calculate is the amount of common syllables
