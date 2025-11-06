@@ -39,13 +39,14 @@ import net.cdahmedeh.poetwrite.domain.Word;
  *
  */
 @RequiredArgsConstructor
-public class WordAnalysis {
+public class WordAnalysis extends EntityAnalysis {
     @Getter
     private final Word word;
 
     @Getter @Setter
     private Integer numberOfSyllables = null;
 
+    @Override
     public boolean analyzed() {
         return numberOfSyllables != null;
     }

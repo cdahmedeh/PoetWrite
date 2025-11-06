@@ -37,30 +37,23 @@ import java.util.List;
  * All this does for now is count the number of syllables in a word. Which is
  * taken from PhonemeComputer.
  */
-public class WordComputer {
-    AnalysisCache analysisCache;
-
+public class WordComputer extends EntityComputer<Word, WordAnalysis> {
     PhonemeComputer phonemeComputer;
 
     @Inject
     WordComputer(
             AnalysisCache analysisCache,
             PhonemeComputer phonemeComputer) {
-        this.analysisCache = analysisCache;
+        super(analysisCache);
         this.phonemeComputer = phonemeComputer;
     }
 
     public WordAnalysis get(Word word) {
-        WordAnalysis analysis = analysisCache.getWord(word);
-
-        if (analysis.analyzed() == false) {
-            analyze(word, analysis);
-        }
-
-        return analysis;
+        return get(word, WordAnalysis.class);
     }
 
-    private void analyze(Word word, WordAnalysis analysis) {
+    @Override
+    /* package */ void analyze(Word word, WordAnalysis analysis) {
         PhonemeAnalysis phonemeAnalysis = phonemeComputer.get(word);
 
         List<Phoneme> phonemes = phonemeAnalysis.getPhonemes();

@@ -20,10 +20,14 @@ package net.cdahmedeh.poetwrite.cache;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import lombok.SneakyThrows;
+import net.cdahmedeh.poetwrite.analysis.EntityAnalysis;
 import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
+import net.cdahmedeh.poetwrite.domain.Entity;
 import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.domain.WordPair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
@@ -85,46 +89,19 @@ public class AnalysisCache {
     @Inject
     public AnalysisCache() {}
 
-    private Map<Word, WordAnalysis> words = new HashMap<>();
+    private Map<Entity, EntityAnalysis> cache = new HashMap<>();
 
-    public WordAnalysis getWord(Word word) {
-        WordAnalysis analysis = words.get(word);
-
-        if (analysis == null) {
-            analysis = new WordAnalysis(word);
-            words.put(word, analysis);
-        }
-
-        return analysis;
-    }
-
-    private Map<Word, PhonemeAnalysis> phonemes = new HashMap<>();
-
-    public PhonemeAnalysis getPhoneme(Word word) {
-        PhonemeAnalysis analysis = phonemes.get(word);
+    @SneakyThrows
+    public <E extends Entity, A extends EntityAnalysis> A get(E entity, Class<A> analysisClass) {
+        EntityAnalysis analysis = cache.get(entity);
 
         if (analysis == null) {
-            analysis = new PhonemeAnalysis(word);
-            phonemes.put(word, analysis);
+            analysis = analysisClass
+                    .getConstructor(entity.getClass())
+                    .newInstance(entity);
         }
 
-        return analysis;
-    }
-
-    private Map<Pair<Word, Word>, RhymeAnalysis> rhymes = new HashMap<>();
-
-    public RhymeAnalysis getRhyme(Pair<Word, Word> pair) {
-        Word wordA = pair.getLeft();
-        Word wordB = pair.getRight();
-
-        RhymeAnalysis rhyme = rhymes.get(pair);
-
-        if (rhyme == null) {
-            rhyme = new RhymeAnalysis(wordA, wordB);
-            rhymes.put(pair, rhyme);
-        }
-
-        return rhyme;
+        return analysisClass.cast(analysis);
     }
 
 }

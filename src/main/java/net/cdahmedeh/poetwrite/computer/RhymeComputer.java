@@ -24,6 +24,7 @@ import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.domain.WordPair;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -73,38 +74,23 @@ import java.util.Objects;
  * TODO: Have the specific phonemes that rhyme.
  * TODO: Have the syllables in text that rhyme.
  */
-public class RhymeComputer {
-    AnalysisCache analysisCache;
-
+public class RhymeComputer extends EntityComputer<WordPair, RhymeAnalysis> {
     PhonemeComputer phonemeComputer;
 
     @Inject
     RhymeComputer(
             AnalysisCache analysisCache,
             PhonemeComputer phonemeComputer) {
-        this.analysisCache = analysisCache;
+        super(analysisCache);
         this.phonemeComputer = phonemeComputer;
     }
 
     public RhymeAnalysis get(Word wordA, Word wordB) {
-        return get(new ImmutablePair<>(wordA, wordB));
+        return get(new WordPair(wordA, wordB), RhymeAnalysis.class);
     }
 
-    public RhymeAnalysis get(Pair<Word, Word> wordPair) {
-        Word wordA = wordPair.getLeft();
-        Word wordB = wordPair.getRight();
-
-        Pair<Word, Word> pair = new ImmutablePair<>(wordA, wordB);
-        RhymeAnalysis analysis = analysisCache.getRhyme(pair);
-
-        if (analysis.analyzed() == false) {
-            analyze(pair, analysis);
-        }
-        return analysis;
-    }
-
-
-    private void analyze(Pair<Word, Word> wordPair, RhymeAnalysis analysis) {
+    @Override
+    /* package */ void analyze(WordPair wordPair, RhymeAnalysis analysis) {
         Word wordA = wordPair.getLeft();
         Word wordB = wordPair.getRight();
 

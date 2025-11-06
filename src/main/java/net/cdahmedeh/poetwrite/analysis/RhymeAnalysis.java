@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.domain.WordPair;
 
 import java.util.List;
 
@@ -48,16 +49,17 @@ import java.util.List;
  *
  */
 @RequiredArgsConstructor
-public class RhymeAnalysis {
-    @Getter
-    private final Word wordA;
+public class RhymeAnalysis extends EntityAnalysis {
+    private final WordPair wordPair;
 
-    @Getter
-    private final Word wordB;
+    public RhymeAnalysis(Word word1, Word word2) {
+        this(new WordPair(word1, word2));
+    }
 
     @Getter @Setter
     private Integer numberOfRhymeSyllables = null;
 
+    @Override
     public boolean analyzed() {
         return numberOfRhymeSyllables != null;
     }

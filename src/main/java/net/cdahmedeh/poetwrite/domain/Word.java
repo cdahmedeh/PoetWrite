@@ -38,7 +38,7 @@ import java.util.List;
  * some parsing and represent the poem as an object structure.
  */
 @ToString
-public class Word {
+public class Word implements Entity {
     @Getter
     private final String word;
 

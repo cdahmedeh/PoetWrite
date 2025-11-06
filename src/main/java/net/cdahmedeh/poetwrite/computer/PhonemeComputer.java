@@ -40,9 +40,7 @@ import java.util.List;
  *         the word doesn't exist, it will the MaryTTS engine using a heuristic
  *         method.
  */
-public class PhonemeComputer {
-    AnalysisCache analysisCache;
-
+public class PhonemeComputer extends EntityComputer<Word, PhonemeAnalysis> {
     CmuEngine cmuEngine;
     MaryEngine maryEngine;
 
@@ -51,22 +49,17 @@ public class PhonemeComputer {
             AnalysisCache analysisCache,
             CmuEngine cmuEngine,
             MaryEngine maryEngine) {
-        this.analysisCache = analysisCache;
+        super(analysisCache);
         this.cmuEngine = cmuEngine;
         this.maryEngine = maryEngine;
     }
 
     public PhonemeAnalysis get(Word word) {
-        PhonemeAnalysis analysis = analysisCache.getPhoneme(word);
-
-        if (analysis.analyzed() == false) {
-            analyze(word, analysis);
-        }
-
-        return analysis;
+        return get(word, PhonemeAnalysis.class);
     }
 
-    private void analyze(Word word, PhonemeAnalysis analysis) {
+    @Override
+    /* package */ void analyze(Word word, PhonemeAnalysis analysis) {
         List<Phoneme> phonemes = new ArrayList<>();
 
         if (cmuEngine.hasWord(word)) {

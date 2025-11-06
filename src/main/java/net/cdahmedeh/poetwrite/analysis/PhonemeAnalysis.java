@@ -38,13 +38,14 @@ import java.util.List;
  * @author Ahmed El-Hajjar
  */
 @RequiredArgsConstructor
-public class PhonemeAnalysis {
+public class PhonemeAnalysis extends EntityAnalysis {
     @Getter
     private final Word word;
 
     @Getter @Setter
     private List<Phoneme> phonemes = null;
 
+    @Override
     public boolean analyzed() {
         return phonemes != null;
     }
