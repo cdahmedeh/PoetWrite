@@ -1,6 +1,6 @@
 # Backstory
 
-Last year, I discovered [Suno](https://suno.com), generative-AI for music. I found it a bit of fun writing lyrics and having it do the rest. So the syntax for it is immediately a source of inspiration for me. It allows you to put comments within the lyrics to specify how the stanza will be read — such as adlib or female voice. And the other features are having asides that could be lyrics that are read in the background or another voice instead.
+Last year, I discovered [Suno](https://suno.com), generative-AI for music. I found it a bit of fun writing lyrics and having it do the rest. So the syntax for was immediately a source of inspiration for me. It allows you to put comments within the lyrics to specify how the stanza will be read — such as adlib or female voice. And the other features are having asides that could be lyrics that are read in the background or another voice instead.
 
 # Syntax
 
@@ -31,15 +31,13 @@ The scheme above is translated into a set of entities that will be mostly used f
 These are the preliminary entities.
 ![Basic Domain Objects](../assets/basic-domain.png)
 
-Each line starts with a **Line** which has a set of **Nodes**. Those can be either a **Note** or **Aside** or **Words**. These neatly map to the syntax features mentioned earlier.
+A **Poem** represents the entire corpus of the text seperate by lines of text. Each line starts with a **Line** which has a set of **Nodes**. Those can be either a **Note** or **Aside** or **Words**. These neatly map to the syntax features mentioned earlier.
 
 **Words** include the entire text in the part that it represents, and go down further with a list of **Word** entities.
 
 ⁉️ The **Words** entites contains a list of **Word** which hold an individual word and the phonemes calculated from the various methods described elsewhere. It is not relevant to the discussion here. 
 
-❓ This is very much a work-in-progress and obviously subject to change. I really hate the concept of having to design your domain objects first. There still some brainwashing left when I was introduced to OOP. These won't be used for persistence so there's no considerations for ORMs.
-
-⛅ My plan is to eventually put the results of the analyses into this structure as some kind of optimization. 
+⛅ My plan was to initially put the results of the analyses into this structure which would be powerful for optimization, but a nightmare to manage as text changes. I went for a cached analysis paradigm which are cached outside of this structure.
 
 Using the example above, this is the outcome.
 
@@ -47,7 +45,7 @@ Using the example above, this is the outcome.
 
 # Parsing
 
-I'm currently just using [_ANTLR_](https://www.antlr.org/) to do the parsing with a simple grammar in the [PoemLine.g4](/src/main/antlr/net/cdahmedeh/poetwrite/parser/PoemLine.g4) markup.
+I'm currently just using [_ANTLR_](https://www.antlr.org/) to do the parsing with a simple grammar in the [Poem.g4](/src/main/antlr/net/cdahmedeh/poetwrite/parser/Poem.g4) markup.
 
 📩 [RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea) is what I'm planning to use for syntax-highlighting. It has its own token system that I will have to write specifically for.
 

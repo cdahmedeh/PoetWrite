@@ -16,9 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-grammar PoemLine;
+grammar Poem;
 
-line : ( words | aside | note )+ ;
+poem : line+ EOF ;
+line : ( words | aside | note )+  NEWLINE? | NEWLINE ;
 
 words : (token)+ ;
 token : WORD | PUNCTUATION | SPACE ;
@@ -28,7 +29,7 @@ note : BRACKET_OPEN (token)+ BRACKET_CLOSE ;
 WORD : [A-Za-z0-9'-]+ ;
 PUNCTUATION : [.,!?] ;
 SPACE : [ ]+ ;
-NEWLINE : [ ]* [\n] ;
+NEWLINE : [\n] ;
 BRACKET_OPEN : '[' ;
 BRACKET_CLOSE : ']' ;
 PARANTHESES_OPEN : '(' ;

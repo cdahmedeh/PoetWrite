@@ -18,24 +18,24 @@
 
 package net.cdahmedeh.poetwrite.constructor;
 
-import net.cdahmedeh.poetwrite.parser.PoemLineLexer;
-import net.cdahmedeh.poetwrite.parser.PoemLineParser;
-import net.cdahmedeh.poetwrite.domain.Line;
-import net.cdahmedeh.poetwrite.parser.PoemLineVisitor;
-import net.cdahmedeh.poetwrite.parser.PoemLineExtendedVisitor;
+import net.cdahmedeh.poetwrite.domain.Poem;
+import net.cdahmedeh.poetwrite.parser.PoemLexer;
+import net.cdahmedeh.poetwrite.parser.PoemParser;
+import net.cdahmedeh.poetwrite.parser.PoemVisitor;
+import net.cdahmedeh.poetwrite.parser.PoemExtendedVisitor;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-public class LineConstructor {
-    public static Line fromText(String text) {
-        PoemLineLexer lexer = new PoemLineLexer(CharStreams.fromString(text));
+public class PoemConstructor {
+    public static Poem fromText(String text) {
+        PoemLexer lexer = new PoemLexer(CharStreams.fromString(text));
         CommonTokenStream stream = new CommonTokenStream(lexer);
-        PoemLineParser parser = new PoemLineParser(stream);
+        PoemParser parser = new PoemParser(stream);
 
-        PoemLineParser.LineContext context = parser.line();
+        PoemParser.PoemContext context = parser.poem();
 
-        PoemLineVisitor visitor = new PoemLineExtendedVisitor();
+        PoemVisitor visitor = new PoemExtendedVisitor();
 
-        return (Line) visitor.visit(context);
+        return (Poem) visitor.visit(context);
     }
 }

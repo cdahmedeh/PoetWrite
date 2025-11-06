@@ -18,23 +18,15 @@
 
 package net.cdahmedeh.poetwrite.test;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.constructor.LineConstructor;
-import net.cdahmedeh.poetwrite.domain.Line;
+import net.cdahmedeh.poetwrite.constructor.PoemConstructor;
+import net.cdahmedeh.poetwrite.domain.Poem;
 import net.cdahmedeh.poetwrite.tools.FileTools;
 import net.cdahmedeh.poetwrite.tools.JsonTools;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
@@ -77,8 +69,8 @@ public class ParserTest {
             String input = FileTools.readFile(inputFile);
             String expected = FileTools.readFile(expectedFile);
 
-            Line line = LineConstructor.fromText(input);
-            String actual = JsonTools.toJson(line);
+            Poem poem = PoemConstructor.fromText(input);
+            String actual = JsonTools.toJson(poem);
 
             assertJsonEquals(expected, actual);
         }

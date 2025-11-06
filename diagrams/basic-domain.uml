@@ -3,54 +3,55 @@
   <ID>JAVA</ID>
   <OriginalElement>net.cdahmedeh.poetwrite.domain.Note</OriginalElement>
   <nodes>
-    <node x="104.66666666666666" y="-10.666666666666686">net.cdahmedeh.poetwrite.domain.Node</node>
-    <node x="-17.333333333333343" y="123.16666666666669">net.cdahmedeh.poetwrite.domain.Aside</node>
-    <node x="79.16666666666666" y="-178.33333333333331">net.cdahmedeh.poetwrite.domain.Line</node>
-    <node x="-146.50000000000003" y="123.16666666666669">net.cdahmedeh.poetwrite.domain.Note</node>
-    <node x="231.49999999999994" y="246.66666666666669">net.cdahmedeh.poetwrite.domain.Word</node>
-    <node x="247.33333333333331" y="123.16666666666669">net.cdahmedeh.poetwrite.domain.Words</node>
+    <node x="86.5" y="-144.16666666666666">net.cdahmedeh.poetwrite.domain.Poem</node>
+    <node x="179.108" y="246.58666666666664">net.cdahmedeh.poetwrite.domain.Words</node>
+    <node x="73.63600000000002" y="246.58666666666664">net.cdahmedeh.poetwrite.domain.Aside</node>
+    <node x="77.5" y="-50.16666666666666">net.cdahmedeh.poetwrite.domain.Line</node>
+    <node x="200.608" y="357.32666666666665">net.cdahmedeh.poetwrite.domain.Word</node>
+    <node x="-25.835999999999956" y="246.58666666666664">net.cdahmedeh.poetwrite.domain.Note</node>
+    <node x="103.0" y="77.51533333333333">net.cdahmedeh.poetwrite.domain.Node</node>
   </nodes>
   <notes />
   <edges>
+    <edge source="net.cdahmedeh.poetwrite.domain.Poem" target="net.cdahmedeh.poetwrite.domain.Line" relationship="TO_MANY">
+      <point x="0.0" y="-31.5" />
+      <point x="0.0" y="-43.5" />
+    </edge>
     <edge source="net.cdahmedeh.poetwrite.domain.Note" target="net.cdahmedeh.poetwrite.domain.Node" relationship="GENERALIZATION">
-      <point x="0.0" y="0.0" />
-      <point x="-103.00000000000003" y="94.41666666666671" />
-      <point x="161.66666666666666" y="94.41666666666671" />
-      <point x="161.66666666666666" y="52.16666666666663" />
-      <point x="161.66666666666663" y="52.16666666666663" />
-      <point x="161.66666666666663" y="20.833333333333314" />
-      <point x="-52.0" y="0.0" />
+      <point x="0.0" y="-14.0" />
+      <point x="17.664000000000044" y="173.24166666666667" />
+      <point x="160.0" y="173.24166666666667" />
+      <point x="160.0" y="140.51533333333333" />
+      <point x="28.5" y="31.5" />
     </edge>
     <edge source="net.cdahmedeh.poetwrite.domain.Words" target="net.cdahmedeh.poetwrite.domain.Node" relationship="GENERALIZATION">
-      <point x="0.0" y="0.0" />
-      <point x="329.3333333333333" y="94.83333333333334" />
-      <point x="161.5" y="94.83333333333334" />
-      <point x="161.5" y="78.99999999999997" />
-      <point x="161.66666666666666" y="78.99999999999997" />
-      <point x="161.66666666666666" y="47.58333333333333" />
-      <point x="109.66666666666666" y="47.58333333333333" />
-      <point x="-52.0" y="0.0" />
+      <point x="3.0633962666665298" y="-31.225333333333253" />
+      <point x="264.17139626666653" y="172.79166666666669" />
+      <point x="161.47806293333394" y="172.79166666666669" />
+      <point x="1.4780629333339448" y="9.525999999999954" />
     </edge>
     <edge source="net.cdahmedeh.poetwrite.domain.Words" target="net.cdahmedeh.poetwrite.domain.Word" relationship="TO_MANY">
-      <point x="-77.0" y="0.0" />
-      <point x="339.99999999999994" y="154.66666666666669" />
-      <point x="0.0" y="0.0" />
+      <point x="41.0" y="-31.5" />
+      <point x="302.108" y="293.9166666666669" />
+      <point x="261.108" y="293.9166666666669" />
+      <point x="0.0" y="31.5" />
     </edge>
     <edge source="net.cdahmedeh.poetwrite.domain.Aside" target="net.cdahmedeh.poetwrite.domain.Node" relationship="GENERALIZATION">
-      <point x="0.0" y="0.0" />
-      <point x="29.166666666666657" y="94.33333333333337" />
-      <point x="161.66666666666666" y="94.33333333333337" />
-      <point x="161.66666666666666" y="20.833333333333314" />
-      <point x="-52.0" y="0.0" />
+      <point x="0.0" y="-14.0" />
+      <point x="120.13600000000002" y="174.0" />
+      <point x="160.0" y="174.0" />
+      <point x="160.0" y="168.596" />
+      <point x="160.5767295999995" y="168.596" />
+      <point x="0.5767295999995099" y="27.50999999999999" />
     </edge>
     <edge source="net.cdahmedeh.poetwrite.domain.Line" target="net.cdahmedeh.poetwrite.domain.Node" relationship="TO_MANY">
-      <point x="0.0" y="0.0" />
-      <point x="161.66666666666666" y="44.91666666666666" />
-      <point x="109.66666666666666" y="44.91666666666666" />
-      <point x="-52.0" y="0.0" />
+      <point x="0.0" y="-43.5" />
+      <point x="160.0" y="58.95833333333334" />
+      <point x="160.25192106666623" y="58.95833333333334" />
+      <point x="0.2519210666662275" y="-19.905505066666223" />
     </edge>
   </edges>
-  <settings layout="Compact" zoom="1.5" showDependencies="true" x="196.0" y="171.5" />
+  <settings layout="Hierarchic Compact" zoom="1.5000000000000002" showDependencies="true" x="210.14472960000057" y="135.8746666666666" />
   <SelectedNodes />
   <Categories>
     <Category>Fields</Category>

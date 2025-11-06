@@ -1,0 +1,787 @@
+{
+  "@class" : "net.cdahmedeh.poetwrite.domain.Poem",
+  "lines" : [ "java.util.ArrayList", [ {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Title - Fixated]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Title - Fixated"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[This is a song that I wrote on my 'time of the month' days.]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "This is a song that I wrote on my 'time of the month' days."
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Verse 1 - Male and Female Duet]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Verse 1 - Male and Female Duet"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "Petrified, by my mind's reflections. \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "Petrified, by my mind's reflections. ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "Petrified",
+        "word" : "petrified"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "by",
+        "word" : "by"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "mind's",
+        "word" : "mind's"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "reflections",
+        "word" : "reflections"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "Horrified, by my spirit's ruminations. \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "Horrified, by my spirit's ruminations. ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "Horrified",
+        "word" : "horrified"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "by",
+        "word" : "by"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "spirit's",
+        "word" : "spirit's"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "ruminations",
+        "word" : "ruminations"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "Bewitched, by my psyche's obsessions. \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "Bewitched, by my psyche's obsessions. ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "Bewitched",
+        "word" : "bewitched"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "by",
+        "word" : "by"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "psyche's",
+        "word" : "psyche's"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "obsessions",
+        "word" : "obsessions"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "Locked, in my head with no refuge.\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "Locked, in my head with no refuge.",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "Locked",
+        "word" : "locked"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "in",
+        "word" : "in"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "head",
+        "word" : "head"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "with",
+        "word" : "with"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "no",
+        "word" : "no"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "refuge",
+        "word" : "refuge"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Verse 2 - Female Voice]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Verse 2 - Female Voice"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "How can I live? \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "How can I live? ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "How",
+        "word" : "how"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "can",
+        "word" : "can"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "I",
+        "word" : "i"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "live",
+        "word" : "live"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "When eventual is unpredictable? \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "When eventual is unpredictable? ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "When",
+        "word" : "when"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "eventual",
+        "word" : "eventual"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "is",
+        "word" : "is"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "unpredictable",
+        "word" : "unpredictable"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "When bygone is unforgettable? \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "When bygone is unforgettable? ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "When",
+        "word" : "when"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "bygone",
+        "word" : "bygone"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "is",
+        "word" : "is"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "unforgettable",
+        "word" : "unforgettable"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "When present is depletable?\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "When present is depletable?",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "When",
+        "word" : "when"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "present",
+        "word" : "present"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "is",
+        "word" : "is"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "depletable",
+        "word" : "depletable"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Verse 3 - Rap]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Verse 3 - Rap"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "The sky is painted with (really) vivid darkness. \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "The sky is painted with ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "The",
+        "word" : "the"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "sky",
+        "word" : "sky"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "is",
+        "word" : "is"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "painted",
+        "word" : "painted"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "with",
+        "word" : "with"
+      } ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Aside",
+      "text" : "really"
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : " vivid darkness. ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "vivid",
+        "word" : "vivid"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "darkness",
+        "word" : "darkness"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "The sounds are aery with (many) insipid harshness. \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "The sounds are aery with ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "The",
+        "word" : "the"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "sounds",
+        "word" : "sounds"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "are",
+        "word" : "are"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "aery",
+        "word" : "aery"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "with",
+        "word" : "with"
+      } ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Aside",
+      "text" : "many"
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : " insipid harshness. ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "insipid",
+        "word" : "insipid"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "harshness",
+        "word" : "harshness"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "I cannot rest while my consciousness  (oh-oh)\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "I cannot rest while my consciousness  ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "I",
+        "word" : "i"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "cannot",
+        "word" : "cannot"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "rest",
+        "word" : "rest"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "while",
+        "word" : "while"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "consciousness",
+        "word" : "consciousness"
+      } ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Aside",
+      "text" : "oh-oh"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "vies to dim the dimmest of blackness.\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "vies to dim the dimmest of blackness.",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "vies",
+        "word" : "vies"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "to",
+        "word" : "to"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "dim",
+        "word" : "dim"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "the",
+        "word" : "the"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "dimmest",
+        "word" : "dimmest"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "of",
+        "word" : "of"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "blackness",
+        "word" : "blackness"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Pre-Chorus - Adlib]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Pre-Chorus - Adlib"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "How am I to become? \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "How am I to become? ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "How",
+        "word" : "how"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "am",
+        "word" : "am"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "I",
+        "word" : "i"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "to",
+        "word" : "to"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "become",
+        "word" : "become"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "When my own will not fight to outlive my nightmares, \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "When my own will not fight to outlive my nightmares, ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "When",
+        "word" : "when"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "own",
+        "word" : "own"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "will",
+        "word" : "will"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "not",
+        "word" : "not"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "fight",
+        "word" : "fight"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "to",
+        "word" : "to"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "outlive",
+        "word" : "outlive"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "nightmares",
+        "word" : "nightmares"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "to attain my ambitions?\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "to attain my ambitions?",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "to",
+        "word" : "to"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "attain",
+        "word" : "attain"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "ambitions",
+        "word" : "ambitions"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Synth Solo]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Synth Solo"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Chorus - Repeat Twice]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Chorus - Repeat Twice"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "Fixated, I am, \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "Fixated, I am, ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "Fixated",
+        "word" : "fixated"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "I",
+        "word" : "i"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "am",
+        "word" : "am"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "in the likeness of a glacier moved only by the ocean's currents\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "in the likeness of a glacier moved only by the ocean's currents",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "in",
+        "word" : "in"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "the",
+        "word" : "the"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "likeness",
+        "word" : "likeness"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "of",
+        "word" : "of"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "a",
+        "word" : "a"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "glacier",
+        "word" : "glacier"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "moved",
+        "word" : "moved"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "only",
+        "word" : "only"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "by",
+        "word" : "by"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "the",
+        "word" : "the"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "ocean's",
+        "word" : "ocean's"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "currents",
+        "word" : "currents"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "melting away day by day\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "melting away day by day",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "melting",
+        "word" : "melting"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "away",
+        "word" : "away"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "day",
+        "word" : "day"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "by",
+        "word" : "by"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "day",
+        "word" : "day"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "destined to no longer exist. (I won't)\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "destined to no longer exist. ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "destined",
+        "word" : "destined"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "to",
+        "word" : "to"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "no",
+        "word" : "no"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "longer",
+        "word" : "longer"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "exist",
+        "word" : "exist"
+      } ] ]
+    }, {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Aside",
+      "text" : "I won't"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "\n",
+    "nodes" : [ "java.util.ArrayList", [ ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "[Bridge - Fading Male Voice]\n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Note",
+      "text" : "Bridge - Fading Male Voice"
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "The past is gone by, when will I forget? \n",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "The past is gone by, when will I forget? ",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "The",
+        "word" : "the"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "past",
+        "word" : "past"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "is",
+        "word" : "is"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "gone",
+        "word" : "gone"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "by",
+        "word" : "by"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "when",
+        "word" : "when"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "will",
+        "word" : "will"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "I",
+        "word" : "i"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "forget",
+        "word" : "forget"
+      } ] ]
+    } ] ]
+  }, {
+    "@class" : "net.cdahmedeh.poetwrite.domain.Line",
+    "text" : "Only when my anima no longer is!",
+    "nodes" : [ "java.util.ArrayList", [ {
+      "@class" : "net.cdahmedeh.poetwrite.domain.Words",
+      "text" : "Only when my anima no longer is!",
+      "words" : [ "java.util.ArrayList", [ {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "Only",
+        "word" : "only"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "when",
+        "word" : "when"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "my",
+        "word" : "my"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "anima",
+        "word" : "anima"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "no",
+        "word" : "no"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "longer",
+        "word" : "longer"
+      }, {
+        "@class" : "net.cdahmedeh.poetwrite.domain.Word",
+        "text" : "is",
+        "word" : "is"
+      } ] ]
+    } ] ]
+  } ] ]
+}

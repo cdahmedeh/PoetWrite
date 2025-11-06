@@ -24,7 +24,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 /**
  * @author Ahmed El-Hajjar
  *
- * Maps the ANTLR syntax that I've defined in PoemLine.g4 into the domain object
+ * Maps the ANTLR syntax that I've defined in Poem.g4 into the domain object
  * structure that we have so far. Note that it's for a single line rather than
  * an entire poem. A bit of a premature optmization because in mind right now,
  * some of the oft-done operations like phoneme transcription can be more easily
@@ -41,9 +41,23 @@ import org.antlr.v4.runtime.tree.ErrorNode;
  * every single visit output that. But it gets kind of messy. So I'm just
  * cheating with the parameter Object.
  */
-public class PoemLineExtendedVisitor extends PoemLineBaseVisitor<Object> {
+public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
     @Override
-    public Object visitLine(PoemLineParser.LineContext ctx) {
+    public Object visitPoem(PoemParser.PoemContext ctx) {
+        Poem poem = new Poem();
+
+        for (var child : ctx.children) {
+            Object result = child.accept(this);
+            if (result instanceof Line line) {
+                poem.getLines().add(line);
+            }
+        }
+
+        return poem;
+    }
+
+    @Override
+    public Object visitLine(PoemParser.LineContext ctx) {
         Line line = new Line(ctx.getText());
 
         for (var child : ctx.children) {
@@ -57,11 +71,11 @@ public class PoemLineExtendedVisitor extends PoemLineBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitWords(PoemLineParser.WordsContext ctx) {
-        Words wordsNode = new Words(ctx.getText()); // Replace 0 with any relevant metadata if needed
+    public Object visitWords(PoemParser.WordsContext ctx) {
+        Words wordsNode = new Words(ctx.getText());
 
-        for (PoemLineParser.TokenContext tokenCtx : ctx.token()) {
-            if (tokenCtx.getStart().getType() == PoemLineLexer.WORD) {
+        for (PoemParser.TokenContext tokenCtx : ctx.token()) {
+            if (tokenCtx.getStart().getType() == PoemLexer.WORD) {
                 String text = tokenCtx.getText();
                 wordsNode.getWords().add(new Word(text));
             }
@@ -71,7 +85,7 @@ public class PoemLineExtendedVisitor extends PoemLineBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitAside(PoemLineParser.AsideContext ctx) {
+    public Object visitAside(PoemParser.AsideContext ctx) {
         StringBuilder innerText = new StringBuilder();
 
         for (var tokenCtx : ctx.token()) {
@@ -82,7 +96,7 @@ public class PoemLineExtendedVisitor extends PoemLineBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitNote(PoemLineParser.NoteContext ctx) {
+    public Object visitNote(PoemParser.NoteContext ctx) {
         StringBuilder innerText = new StringBuilder();
 
         for (var tokenCtx : ctx.token()) {
