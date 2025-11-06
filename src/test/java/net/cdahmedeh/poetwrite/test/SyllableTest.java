@@ -113,6 +113,7 @@ public class SyllableTest {
         WordAnalysis lamictalAnalysis = wordComputer.get(lamictalWord);
         assertEquals(3, lamictalAnalysis.getNumberOfSyllables());
 
+        // Fails
         Word seroquelWord = new Word("Seroquel");
         WordAnalysis seroquelAnalysis = wordComputer.get(seroquelWord);
         assertEquals(3, seroquelAnalysis.getNumberOfSyllables());
@@ -120,6 +121,7 @@ public class SyllableTest {
 
     @Test
     void testMedicalTerms() {
+        // Fails
         Word agranulocytosisWord = new Word("agranulocytosis");
         WordAnalysis agranulocytosisAnalysis = wordComputer.get(agranulocytosisWord);
         assertEquals(7, agranulocytosisAnalysis.getNumberOfSyllables());
@@ -127,7 +129,8 @@ public class SyllableTest {
 
     @Test
     void testWordsNotInDictionary() {
-        Word neologismWord = new Word("agranulocytosis");
+        // Fails
+        Word neologismWord = new Word("neologism");
         WordAnalysis neologismAnalysis = wordComputer.get(neologismWord);
         assertEquals(7, neologismAnalysis.getNumberOfSyllables());
     }
