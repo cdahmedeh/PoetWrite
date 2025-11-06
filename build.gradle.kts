@@ -38,6 +38,7 @@ dependencies {
 
     // Utilities for Common Stuff
     implementation("commons-io:commons-io:2.20.0")
+    implementation("org.apache.commons:commons-lang3:3.19.0")
     implementation("com.google.guava:guava:33.4.8-jre")
 
     // Dependency Injection

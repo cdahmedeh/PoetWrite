@@ -24,6 +24,8 @@ import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -85,15 +87,27 @@ public class RhymeComputer {
     }
 
     public RhymeAnalysis get(Word wordA, Word wordB) {
-        RhymeAnalysis analysis = analysisCache.getRhyme(wordA, wordB);
+        return get(new ImmutablePair<>(wordA, wordB));
+    }
+
+    public RhymeAnalysis get(Pair<Word, Word> wordPair) {
+        Word wordA = wordPair.getLeft();
+        Word wordB = wordPair.getRight();
+
+        Pair<Word, Word> pair = new ImmutablePair<>(wordA, wordB);
+        RhymeAnalysis analysis = analysisCache.getRhyme(pair);
 
         if (analysis.analyzed() == false) {
-            analyze(wordA, wordB, analysis);
+            analyze(pair, analysis);
         }
         return analysis;
     }
 
-    private void analyze(Word wordA, Word wordB, RhymeAnalysis analysis) {
+
+    private void analyze(Pair<Word, Word> wordPair, RhymeAnalysis analysis) {
+        Word wordA = wordPair.getLeft();
+        Word wordB = wordPair.getRight();
+
         PhonemeAnalysis phonemeAnalysisA = phonemeComputer.get(wordA);
         PhonemeAnalysis phonemeAnalysisB = phonemeComputer.get(wordB);
 

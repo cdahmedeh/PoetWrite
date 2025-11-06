@@ -24,6 +24,7 @@ import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.domain.Word;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -110,14 +111,17 @@ public class AnalysisCache {
         return analysis;
     }
 
-    private Table<Word, Word, RhymeAnalysis> rhymes = HashBasedTable.create();
+    private Map<Pair<Word, Word>, RhymeAnalysis> rhymes = new HashMap<>();
 
-    public RhymeAnalysis getRhyme(Word wordA, Word wordB) {
-        RhymeAnalysis rhyme = rhymes.get(wordA, wordB);
+    public RhymeAnalysis getRhyme(Pair<Word, Word> pair) {
+        Word wordA = pair.getLeft();
+        Word wordB = pair.getRight();
+
+        RhymeAnalysis rhyme = rhymes.get(pair);
 
         if (rhyme == null) {
             rhyme = new RhymeAnalysis(wordA, wordB);
-            rhymes.put(wordA, wordB, rhyme);
+            rhymes.put(pair, rhyme);
         }
 
         return rhyme;
