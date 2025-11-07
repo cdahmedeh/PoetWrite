@@ -29,7 +29,7 @@ We are going to (really) sing this song. [A Comment Here]
 The scheme above is translated into a set of entities that will be mostly used for PoetWrite's computations. 
 
 These are the preliminary entities.
-<p align="center"><img src="../assets/basic-domain.png" width="400"></p>
+<p align="left"><img src="../assets/basic-domain.png" width="400"></p>
 
 A **Poem** represents the entire corpus of the text seperate by lines of text. Each line starts with a **Line** which has a set of **Nodes**. Those can be either a **Note** or **Aside** or **Words**. These neatly map to the syntax features mentioned earlier.
 
