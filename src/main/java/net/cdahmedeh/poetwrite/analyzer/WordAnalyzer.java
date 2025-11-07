@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.computer;
+package net.cdahmedeh.poetwrite.analyzer;
 
 import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
@@ -37,13 +37,13 @@ import java.util.List;
  * All this does for now is count the number of syllables in a word. Which is
  * taken from PhonemeComputer.
  */
-public class WordComputer extends EntityComputer<Word, WordAnalysis> {
-    PhonemeComputer phonemeComputer;
+public class WordAnalyzer extends EntityAnalyzer<Word, WordAnalysis> {
+    PhonemeAnalyzer phonemeComputer;
 
     @Inject
-    WordComputer(
+    WordAnalyzer(
             AnalysisCache analysisCache,
-            PhonemeComputer phonemeComputer) {
+            PhonemeAnalyzer phonemeComputer) {
         super(analysisCache);
         this.phonemeComputer = phonemeComputer;
     }

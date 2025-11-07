@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.computer;
+package net.cdahmedeh.poetwrite.analyzer;
 
 import com.google.common.collect.Lists;
 import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
@@ -25,8 +25,6 @@ import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import net.cdahmedeh.poetwrite.domain.WordPair;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -74,15 +72,15 @@ import java.util.Objects;
  * TODO: Have the specific phonemes that rhyme.
  * TODO: Have the syllables in text that rhyme.
  */
-public class RhymeComputer extends EntityComputer<WordPair, RhymeAnalysis> {
-    PhonemeComputer phonemeComputer;
+public class RhymeAnalyzer extends EntityAnalyzer<WordPair, RhymeAnalysis> {
+    PhonemeAnalyzer phonemeAnalyzer;
 
     @Inject
-    RhymeComputer(
+    RhymeAnalyzer(
             AnalysisCache analysisCache,
-            PhonemeComputer phonemeComputer) {
+            PhonemeAnalyzer phonemeAnalyzer) {
         super(analysisCache);
-        this.phonemeComputer = phonemeComputer;
+        this.phonemeAnalyzer = phonemeAnalyzer;
     }
 
     public RhymeAnalysis get(Word wordA, Word wordB) {
@@ -94,8 +92,8 @@ public class RhymeComputer extends EntityComputer<WordPair, RhymeAnalysis> {
         Word wordA = wordPair.getLeft();
         Word wordB = wordPair.getRight();
 
-        PhonemeAnalysis phonemeAnalysisA = phonemeComputer.get(wordA);
-        PhonemeAnalysis phonemeAnalysisB = phonemeComputer.get(wordB);
+        PhonemeAnalysis phonemeAnalysisA = phonemeAnalyzer.get(wordA);
+        PhonemeAnalysis phonemeAnalysisB = phonemeAnalyzer.get(wordB);
 
         List<Phoneme> phonemesA = Lists.reverse(phonemeAnalysisA.getPhonemes());
         List<Phoneme> phonemesB = Lists.reverse(phonemeAnalysisB.getPhonemes());

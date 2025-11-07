@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
-import net.cdahmedeh.poetwrite.computer.WordComputer;
+import net.cdahmedeh.poetwrite.analyzer.WordAnalyzer;
 import net.cdahmedeh.poetwrite.domain.Word;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -52,13 +52,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SyllableTest {
     @Inject
-    WordComputer wordComputer;
+    WordAnalyzer wordAnalyzer;
 
     @BeforeAll
     void setup() {
         TestComponent component = DaggerTestComponent.create();
 
-        wordComputer = component.getWordComputer();
+        wordAnalyzer = component.getWordAnalyzer();
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordComputer.get(word);
+            WordAnalysis analysis = wordAnalyzer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -78,7 +78,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordComputer.get(word);
+            WordAnalysis analysis = wordAnalyzer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -91,7 +91,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordComputer.get(word);
+            WordAnalysis analysis = wordAnalyzer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -103,7 +103,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordComputer.get(word);
+            WordAnalysis analysis = wordAnalyzer.get(word);
             assertEquals(2, analysis.getNumberOfSyllables());
         }
     }
@@ -112,12 +112,12 @@ public class SyllableTest {
     @Test
     void testMedicationNames() {
         Word lamictalWord = new Word("Lamictal");
-        WordAnalysis lamictalAnalysis = wordComputer.get(lamictalWord);
+        WordAnalysis lamictalAnalysis = wordAnalyzer.get(lamictalWord);
         assertEquals(3, lamictalAnalysis.getNumberOfSyllables());
 
         // Fails
         Word seroquelWord = new Word("Seroquel");
-        WordAnalysis seroquelAnalysis = wordComputer.get(seroquelWord);
+        WordAnalysis seroquelAnalysis = wordAnalyzer.get(seroquelWord);
         assertEquals(3, seroquelAnalysis.getNumberOfSyllables());
     }
 
@@ -126,7 +126,7 @@ public class SyllableTest {
     void testMedicalTerms() {
         // Fails
         Word agranulocytosisWord = new Word("agranulocytosis");
-        WordAnalysis agranulocytosisAnalysis = wordComputer.get(agranulocytosisWord);
+        WordAnalysis agranulocytosisAnalysis = wordAnalyzer.get(agranulocytosisWord);
         assertEquals(7, agranulocytosisAnalysis.getNumberOfSyllables());
     }
 
@@ -135,7 +135,7 @@ public class SyllableTest {
     void testWordsNotInDictionary() {
         // Fails
         Word neologismWord = new Word("neologism");
-        WordAnalysis neologismAnalysis = wordComputer.get(neologismWord);
+        WordAnalysis neologismAnalysis = wordAnalyzer.get(neologismWord);
         assertEquals(7, neologismAnalysis.getNumberOfSyllables());
     }
 
@@ -143,26 +143,26 @@ public class SyllableTest {
     @Test
     void testNeologisms() {
         Word supertautologicalWord = new Word("supertautological");
-        WordAnalysis supertautologicalAnalysis = wordComputer.get(supertautologicalWord);
+        WordAnalysis supertautologicalAnalysis = wordAnalyzer.get(supertautologicalWord);
         assertEquals(7, supertautologicalAnalysis.getNumberOfSyllables());
     }
 
     @Test
     void testNonExistingWords() {
         Word endothalmicWord = new Word("endothalmic");
-        WordAnalysis endothalmicAnalysis = wordComputer.get(endothalmicWord);
+        WordAnalysis endothalmicAnalysis = wordAnalyzer.get(endothalmicWord);
         assertEquals(4, endothalmicAnalysis.getNumberOfSyllables());
 
         Word adaptanceWord = new Word("adaptance");
-        WordAnalysis adaptanceAnalysis = wordComputer.get(adaptanceWord);
+        WordAnalysis adaptanceAnalysis = wordAnalyzer.get(adaptanceWord);
         assertEquals(3, adaptanceAnalysis.getNumberOfSyllables());
 
         Word communitiWord = new Word("communiti");
-        WordAnalysis communitiAnalysis = wordComputer.get(communitiWord);
+        WordAnalysis communitiAnalysis = wordAnalyzer.get(communitiWord);
         assertEquals(4, communitiAnalysis.getNumberOfSyllables());
 
         Word hospictacularWord = new Word("hospictacular");
-        WordAnalysis hospictacularAnalysis = wordComputer.get(hospictacularWord);
+        WordAnalysis hospictacularAnalysis = wordAnalyzer.get(hospictacularWord);
         assertEquals(5, hospictacularAnalysis.getNumberOfSyllables());
     }
 }

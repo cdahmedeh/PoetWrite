@@ -1,15 +1,13 @@
-package net.cdahmedeh.poetwrite.computer;
+package net.cdahmedeh.poetwrite.analyzer;
 
 import net.cdahmedeh.poetwrite.analysis.EntityAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Entity;
 
-import javax.inject.Inject;
-
-public abstract class EntityComputer<E extends Entity, A extends EntityAnalysis> {
+public abstract class EntityAnalyzer<E extends Entity, A extends EntityAnalysis> {
     AnalysisCache analysisCache;
 
-    EntityComputer(AnalysisCache analysisCache) {
+    EntityAnalyzer(AnalysisCache analysisCache) {
         this.analysisCache = analysisCache;
     }
 

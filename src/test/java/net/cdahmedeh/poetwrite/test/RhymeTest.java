@@ -21,7 +21,7 @@ package net.cdahmedeh.poetwrite.test;
 import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
-import net.cdahmedeh.poetwrite.computer.RhymeComputer;
+import net.cdahmedeh.poetwrite.analyzer.RhymeAnalyzer;
 import net.cdahmedeh.poetwrite.domain.Word;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -43,19 +43,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RhymeTest {
     @Inject
-    RhymeComputer rhymeComputer;
+    RhymeAnalyzer rhymeAnalyzer;
 
     @BeforeAll
     void setup() {
         TestComponent component = DaggerTestComponent.create();
-        rhymeComputer = component.getRhymeComputer();
+        rhymeAnalyzer = component.getRhymeAnalyzer();
     }
 
     void assertRhymes(int syllables, String inputA, String inputB) {
         Word wordA = new Word(inputA);
         Word wordB = new Word(inputB);
 
-        RhymeAnalysis analysis = rhymeComputer.get(wordA, wordB);
+        RhymeAnalysis analysis = rhymeAnalyzer.get(wordA, wordB);
         assertEquals(syllables, analysis.getNumberOfRhymeSyllables());
     }
 

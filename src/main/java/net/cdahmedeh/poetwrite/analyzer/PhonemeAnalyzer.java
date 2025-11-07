@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.computer;
+package net.cdahmedeh.poetwrite.analyzer;
 
 import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
@@ -40,12 +40,12 @@ import java.util.List;
  *         the word doesn't exist, it will the MaryTTS engine using a heuristic
  *         method.
  */
-public class PhonemeComputer extends EntityComputer<Word, PhonemeAnalysis> {
+public class PhonemeAnalyzer extends EntityAnalyzer<Word, PhonemeAnalysis> {
     CmuEngine cmuEngine;
     MaryEngine maryEngine;
 
     @Inject
-    PhonemeComputer(
+    PhonemeAnalyzer(
             AnalysisCache analysisCache,
             CmuEngine cmuEngine,
             MaryEngine maryEngine) {
