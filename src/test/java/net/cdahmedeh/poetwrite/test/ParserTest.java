@@ -72,9 +72,7 @@ public class ParserTest {
             Poem poem = PoemConstructor.fromText(input);
             String actual = JsonTools.toJson(poem);
 
-            System.out.println(actual);
-
-//            assertJsonEquals(expected, actual);
+            assertJsonEquals(expected, actual);
         }
     }
 }
