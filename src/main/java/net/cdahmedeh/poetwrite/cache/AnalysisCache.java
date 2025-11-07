@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Holds a copy of all the computations for poetry-related analysis.
@@ -89,16 +90,17 @@ public class AnalysisCache {
     @Inject
     public AnalysisCache() {}
 
-    private Map<Entity, EntityAnalysis> cache = new HashMap<>();
+    private Map<AnalysisKey, EntityAnalysis> cache = new ConcurrentHashMap<>();
 
     @SneakyThrows
     public <E extends Entity, A extends EntityAnalysis> A get(E entity, Class<A> analysisClass) {
-        EntityAnalysis analysis = cache.get(entity);
+        EntityAnalysis analysis = cache.get(new AnalysisKey(entity, analysisClass));
 
         if (analysis == null) {
             analysis = analysisClass
                     .getConstructor(entity.getClass())
                     .newInstance(entity);
+            cache.put(new AnalysisKey(entity, analysisClass), analysis);
         }
 
         return analysisClass.cast(analysis);
