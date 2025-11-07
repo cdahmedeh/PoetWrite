@@ -29,7 +29,8 @@ We are going to (really) sing this song. [A Comment Here]
 The scheme above is translated into a set of entities that will be mostly used for PoetWrite's computations. 
 
 These are the preliminary entities.
-![Basic Domain Objects](../assets/basic-domain.png)
+![Basic Domain Objects]<img src="../assets/basic-domain.png" width="400">
+
 
 A **Poem** represents the entire corpus of the text seperate by lines of text. Each line starts with a **Line** which has a set of **Nodes**. Those can be either a **Note** or **Aside** or **Words**. These neatly map to the syntax features mentioned earlier.
 
