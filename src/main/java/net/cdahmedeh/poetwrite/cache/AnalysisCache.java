@@ -88,6 +88,25 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * TODO: Switch to Caffeine once we have the performance profiled.
  *
+ * SUBTLETIES:
+ * Java does generic-type erasure since it's a compile-time-only
+ * feature. So at runtime, we have no generic type information, so
+ * some clever reflecttion is done here.
+ *
+ * So
+ * analysis = analysisClass
+ *     .getConstructor(entity.getClass())
+ *     .newInstance(entity);
+ * return analysisClass.cast(analysis);
+ *
+ * Is basically like
+ * FeatureAnalysis analysis = new A(entity);
+ * return analysis;
+ *
+ * This assumes that the constructor of the implementation of the
+ * FeatureAnalysis class has a constructor with a single parameter
+ * of type Entity.
+ *
  * @author Ahmed El-Hajjar
  */
 @Singleton
@@ -107,6 +126,7 @@ public class AnalysisCache {
             analysis = analysisClass
                     .getConstructor(entity.getClass())
                     .newInstance(entity);
+
             cache.put(key, analysis);
         }
 
