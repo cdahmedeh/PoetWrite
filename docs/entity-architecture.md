@@ -354,7 +354,7 @@ So there are a few things I haven't tackled yet, but they are going to be very r
 
 ⛅ I have not taken into account what a typical poem writing flow is like. This means, I don't really have a cache behaviour strategy. Normally, writing is incremental, and there ends up being a lot of repeated analysis because many words stay the same.
 
-⛅ It is not multi-thread-friendly. In something like a text editor, just like IDEs, calculations and code checking are done outside of the UI, in another thread. And with a clever debounding system that only does it after a certian time has elapse from the previous check, or when the user has stopped typing for a few seconds.
+⛅ It is not multi-thread-friendly. In something like a text editor, just like IDEs, calculations and code checking are done outside of the UI, in another thread. And with a clever debouncing system that only does it after a certian time has elapsed from the previous check, or when the user has stopped typing for a few seconds.
 
 ⛅ There's no hierarchy of importance for analyses. Something like syllable counting is pretty cheap, and can done repeatedly over and over again. But what about pattern detection or dictionary searches? Those are heavy to infer, we want to do those less often.
 
