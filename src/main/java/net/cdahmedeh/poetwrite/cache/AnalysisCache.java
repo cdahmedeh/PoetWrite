@@ -91,7 +91,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * SUBTLETIES:
  * Java does generic-type erasure since it's a compile-time-only
  * feature. So at runtime, we have no generic type information, so
- * some clever reflecttion is done here.
+ * some clever reflection is done here.
  *
  * So
  * analysis = analysisClass
