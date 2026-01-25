@@ -78,7 +78,7 @@ So what ends up happening is a ton of work anyways with some major drawbacks.
 |Only need to parse through the text once.|Requires parsing old and new text anyways. Two passes.
 |Having the structure of the object structure modified piecemeal.|Requires the design of a 'diff' system for graph changes. 
 |Analyses already saved for unchanged pieces|Still need to do a recursive analysis and do the invalidation based on the 'diff' system.
-|Having analyses precomputed and cached can be complicated to determine when and what to invalidate.
+|Editing the text would determine exactly what to invalidate.|Having analyses precomputed and cached can be complicated to determine when and what to invalidate.|
 
 As a result, the imagined benefits results in an implementation that is at best over-engineered and at worst overly complicated and fragile.
 
