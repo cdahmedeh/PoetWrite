@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import net.cdahmedeh.poetwrite.domain.Word;
  * A result of the computation for related to the phonemes of a word such as
  * syllables in the word.
  *
- * This is computed in WordComputer. See class comments for how the analysis is
+ * This is computed in WordAnalyzer. See class comments for how the analysis is
  * actually done.
  *
  * Right now, the phonemes themselves are part of the PhonemeAnalysis.
@@ -35,11 +35,14 @@ import net.cdahmedeh.poetwrite.domain.Word;
  * The convention of the *Analysis files is uncomputed parts are 'null' and get
  * filled if after the computation.
  *
+ * See the documentation for details on the cache implementation.
+ * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
+ *
  * @author Ahmed El-Hajjar
  *
  */
 @RequiredArgsConstructor
-public class WordAnalysis extends EntityAnalysis {
+public class SyllableAnalysis extends FeatureAnalysis {
     @Getter
     private final Word word;
 

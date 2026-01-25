@@ -26,6 +26,25 @@ import net.cdahmedeh.poetwrite.parser.PoemExtendedVisitor;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * Pretty simple, just takes in the poem as text and spits out in a domain
+ * graph that starts with a Poem object.
+ *
+ * The parsing is done through the ANTLR parser-generation. See Poem.g4 for the
+ * grammar.
+ *
+ * TODO: Keep in mind, there is no error handling of any kind. One tiny mistake
+ * and this fails disastrously.
+ *
+ * NOTE: In the future, once we get a text-component up, the syntax highlighting
+ * can't depend on this. We'll have to do another lexer native to the
+ * syntax-highlighter. (Probably RTextSyntaxArea)
+ *
+ * You can find how this is all designed in the following documentation.
+ * Poem Syntax and Domain Structure - /docs/poem-syntax-and-domain-structure.md
+ */
 public class PoemConstructor {
     public static Poem fromText(String text) {
         PoemLexer lexer = new PoemLexer(CharStreams.fromString(text));

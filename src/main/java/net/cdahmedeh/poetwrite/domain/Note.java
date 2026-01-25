@@ -31,6 +31,18 @@
  */
 package net.cdahmedeh.poetwrite.domain;
 
+/**
+ * A note is basically a comment in the Poem, which is fully ignored by
+ * PoetWrite. They are enclosed with brackets [ and ].
+ *
+ * This will help annotate the poem is needed.
+ *
+ * My secret reason is that Suno uses these notes to determine how lyrics are
+ * read.
+ *
+ * You can find how this is all designed in the following documentation.
+ * Poem Syntax and Domain Structure - /docs/poem-syntax-and-domain-structure.md
+ */
 public class Note extends Node{
     public Note(String text) {
         super(text);

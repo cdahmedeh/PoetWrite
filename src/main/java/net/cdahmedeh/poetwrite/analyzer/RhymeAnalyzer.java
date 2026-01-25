@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ import java.util.Objects;
  * TODO: Have the specific phonemes that rhyme.
  * TODO: Have the syllables in text that rhyme.
  */
-public class RhymeAnalyzer extends EntityAnalyzer<WordPair, RhymeAnalysis> {
+public class RhymeAnalyzer extends FeatureAnalyzer<WordPair, RhymeAnalysis> {
     PhonemeAnalyzer phonemeAnalyzer;
 
     @Inject

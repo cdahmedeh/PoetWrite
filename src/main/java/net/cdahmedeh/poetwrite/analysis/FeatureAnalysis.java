@@ -16,31 +16,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.cache;
-
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import net.cdahmedeh.poetwrite.analysis.FeatureAnalysis;
-import net.cdahmedeh.poetwrite.domain.Entity;
+package net.cdahmedeh.poetwrite.analysis;
 
 /**
- * @author Ahmed El-Hajjar
- *
- * The key used in the cache for specifying an entity and the feature analysis
- * we want.
- *
  * See the documentation for details on the cache implementation.
  * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
  *
- * TODO: There's no fancy implementation here yet, I don't know what the
- * performance is like yet. So we're just letting Lombok do the job for us.
+ * This stores the result of a rhetorical analysis computation.
+ *
+ * TODO: Add invalidation method.
  */
-@RequiredArgsConstructor(staticName = "of")
-@EqualsAndHashCode
-@ToString
-public class AnalysisKey<E extends Entity, A extends FeatureAnalysis> {
-    private final E entity;
-
-    private final Class<A> type;
+public abstract class FeatureAnalysis {
+    /**
+     * Use this to check if the analysis has been computed yet. The simplest
+     * way for now, is just to check if the values of the fields are null.
+     *
+     * @return
+     */
+    public abstract boolean analyzed();
 }

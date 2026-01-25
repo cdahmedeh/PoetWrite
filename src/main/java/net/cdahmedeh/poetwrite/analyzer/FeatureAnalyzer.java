@@ -16,31 +16,41 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.cache;
+package net.cdahmedeh.poetwrite.analyzer;
 
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import net.cdahmedeh.poetwrite.analysis.FeatureAnalysis;
+import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Entity;
 
 /**
  * @author Ahmed El-Hajjar
  *
- * The key used in the cache for specifying an entity and the feature analysis
- * we want.
+ * This is where the actual logic for the computation is supposed to be done. It
+ * handles interaction with the cache and this is the ONLY place where the cache
+ * should be manipulated.
+ *
+ * All the heavy lifting of dealing with the cache is done here. All you need to
+ * do is extend this class and implement the analyze method.
  *
  * See the documentation for details on the cache implementation.
  * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
- *
- * TODO: There's no fancy implementation here yet, I don't know what the
- * performance is like yet. So we're just letting Lombok do the job for us.
  */
-@RequiredArgsConstructor(staticName = "of")
-@EqualsAndHashCode
-@ToString
-public class AnalysisKey<E extends Entity, A extends FeatureAnalysis> {
-    private final E entity;
+public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysis> {
+    AnalysisCache analysisCache;
 
-    private final Class<A> type;
+    FeatureAnalyzer(AnalysisCache analysisCache) {
+        this.analysisCache = analysisCache;
+    }
+
+    public A get(E entity, Class<A> analysisClass) {
+        A analysis = analysisCache.get(entity, analysisClass);
+
+        if (analysis.analyzed() == false) {
+            analyze(entity, analysis);
+        }
+
+        return analysis;
+    }
+
+    /* package */ abstract void analyze(E entity, A analysis);
 }

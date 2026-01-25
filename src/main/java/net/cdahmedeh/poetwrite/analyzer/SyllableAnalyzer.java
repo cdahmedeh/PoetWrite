@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 package net.cdahmedeh.poetwrite.analyzer;
 
 import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
-import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
+import net.cdahmedeh.poetwrite.analysis.SyllableAnalysis;
 import net.cdahmedeh.poetwrite.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
@@ -35,25 +35,25 @@ import java.util.List;
  * retrieved later.
  *
  * All this does for now is count the number of syllables in a word. Which is
- * taken from PhonemeComputer.
+ * taken from PhonemeAnalyzer.
  */
-public class WordAnalyzer extends EntityAnalyzer<Word, WordAnalysis> {
+public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
     PhonemeAnalyzer phonemeComputer;
 
     @Inject
-    WordAnalyzer(
+    SyllableAnalyzer(
             AnalysisCache analysisCache,
             PhonemeAnalyzer phonemeComputer) {
         super(analysisCache);
         this.phonemeComputer = phonemeComputer;
     }
 
-    public WordAnalysis get(Word word) {
-        return get(word, WordAnalysis.class);
+    public SyllableAnalysis get(Word word) {
+        return get(word, SyllableAnalysis.class);
     }
 
     @Override
-    /* package */ void analyze(Word word, WordAnalysis analysis) {
+    /* package */ void analyze(Word word, SyllableAnalysis analysis) {
         PhonemeAnalysis phonemeAnalysis = phonemeComputer.get(word);
 
         List<Phoneme> phonemes = phonemeAnalysis.getPhonemes();

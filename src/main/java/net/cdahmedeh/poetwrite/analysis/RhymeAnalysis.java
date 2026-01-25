@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,13 @@ package net.cdahmedeh.poetwrite.analysis;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.domain.Phoneme;
 import net.cdahmedeh.poetwrite.domain.Word;
 import net.cdahmedeh.poetwrite.domain.WordPair;
-
-import java.util.List;
 
 /**
  * A result of the computation for analyzing the rhyme of two words.
  *
- * This is computed in RhymeComputer. See class comments for how the analysis is
+ * This is computed in RhymeAnalyzer. See class comments for how the analysis is
  * actually done.
  *
  * Right now, the focus is just on basic rhyming with just counting how many
@@ -39,8 +36,9 @@ import java.util.List;
  * The convention of the *Analysis files is uncomputed parts are 'null' and get
  * filled if after the computation.
  *
- * TODO: Consider using a pair object for word pairs.
- * TODO: Find a way to make word pairs reversed to be equal.
+ * See the documentation for details on the cache implementation.
+ * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
+ *
  * TODO: Partial Rhymes, Slant Rhymes
  * TODO: Have the specific phonemes that rhyme.
  * TODO: Have the syllables in text that rhyme.
@@ -49,7 +47,7 @@ import java.util.List;
  *
  */
 @RequiredArgsConstructor
-public class RhymeAnalysis extends EntityAnalysis {
+public class RhymeAnalysis extends FeatureAnalysis {
     private final WordPair wordPair;
 
     public RhymeAnalysis(Word word1, Word word2) {

@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
+// Uncomment this if you want your build files to go somewhere else.
+// In my case, my source lies in a OneDrive folder, and it hates having
+// lots of files being deleted at once. So this is just to go around this.
+//
+//allprojects {
+//    layout.buildDirectory.set(file("${System.getProperty("user.home")}/build/${rootProject.name}/${project.name}"))
+//}
 
 plugins {
     id("java")
@@ -43,6 +51,8 @@ dependencies {
 
     // Dependency Injection
     implementation("com.google.dagger:dagger:2.57")
+    annotationProcessor("com.google.dagger:dagger:2.57")
+    testAnnotationProcessor("com.google.dagger:dagger:2.57")
     annotationProcessor("com.google.dagger:dagger-compiler:2.57")
     testAnnotationProcessor("com.google.dagger:dagger-compiler:2.57")
 

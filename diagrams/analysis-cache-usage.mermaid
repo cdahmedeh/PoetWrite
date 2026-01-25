@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+
+    participant Program
+    participant FeatureAnalyzer
+    participant AnalysisCache
+
+    Program->>FeatureAnalyzer:.get(entity:Entity):FeatureAnalysis
+    FeatureAnalyzer->>AnalysisCache:.get(entity:Entity, analysisClass:FeatureAnalysis.class):FeatureAnalysis
+    AnalysisCache->>AnalysisCache:cache.get(entity:Entity, analysisCache:FeatureAnalysis.class):FeatureAnalysis
+    AnalysisCache->>AnalysisCache:if .get(entity:Entity, analysisCache:FeatureAnalysis.class) == null ?
+    AnalysisCache->>AnalysisCache:.get(entity:Entity, analysisCache:FeatureAnalysis.class) is null = true
+    AnalysisCache->>AnalysisCache:.cache.put(entity:Entity, analysisCache:FeatureAnalysis.class, new FeatureAnalysis())
+    AnalysisCache->>AnalysisCache:.cache.get(entity:Entity, analysisCache:FeatureAnalysis.class)
+    AnalysisCache->>FeatureAnalyzer: featureAnalysis:FeatureAnalysis
+    FeatureAnalyzer->>FeatureAnalyzer: featureAnalysis is analyzed ?
+    FeatureAnalyzer->>FeatureAnalyzer: featureAnalysis is not analyzed
+    FeatureAnalyzer->>FeatureAnalyzer: .analyze(entity:Entity)
+    FeatureAnalyzer->>Program: entityAnalysis:FeatureAnalysis

@@ -1,0 +1,78 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.9 Chrome/134.0.6998.205 Electron/35.4.0 Safari/537.36" version="27.0.9">
+  <diagram name="Page-1" id="2aAzRVR-nwg_PfeNfv1d">
+    <mxGraphModel dx="861" dy="625" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sHmN89Z9giXP1f4iBXHE-1" value="Analysis Cache" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;gradientColor=none;swimlaneFillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="300" y="410" width="420" height="380" as="geometry">
+            <mxRectangle x="330" y="380" width="120" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-17" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;opacity=25;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="10" y="270" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-16" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=none;opacity=25;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="10" y="130" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-15" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=none;opacity=25;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="10" y="50" width="400" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sHmN89Z9giXP1f4iBXHE-3" value="&lt;b&gt;Word&lt;/b&gt;&lt;div&gt;&quot;Who&quot;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="35" y="60" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sHmN89Z9giXP1f4iBXHE-6" value="&lt;b&gt;PhonemeAnalysis&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;font-family: &amp;quot;Lucida Console&amp;quot;; font-size: 11px;&quot;&gt;HH UW&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="260" y="60" width="115" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sHmN89Z9giXP1f4iBXHE-7" value="&lt;b&gt;PhonemeAnalysis&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;font-family: &amp;quot;Lucida Console&amp;quot;; font-size: 11px;&quot;&gt;W AA Z&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="260" y="140" width="115" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sHmN89Z9giXP1f4iBXHE-10" value="&lt;b&gt;SyllableAnalysis&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;font-family: &amp;quot;Lucida Console&amp;quot;; font-size: 11px;&quot;&gt;1&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="260" y="200" width="115" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MEYpYo8PpCexwFw6kkbH-1" value="&lt;div&gt;&lt;b&gt;Word&lt;/b&gt;&lt;/div&gt;&quot;today&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="15" y="300" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MEYpYo8PpCexwFw6kkbH-2" value="&lt;div&gt;&lt;b&gt;Word&lt;/b&gt;&lt;/div&gt;&quot;say&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="55" y="300" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MEYpYo8PpCexwFw6kkbH-4" value="&lt;b&gt;RhymeAnalysis&lt;/b&gt;&lt;div&gt;&lt;font face=&quot;Lucida Console&quot;&gt;1&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="sHmN89Z9giXP1f4iBXHE-1" vertex="1">
+          <mxGeometry x="260" y="290" width="115" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="sHmN89Z9giXP1f4iBXHE-1" source="SYM-IzLUZSngqn3XWMXS-1" target="sHmN89Z9giXP1f4iBXHE-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-1" value="&lt;b&gt;PhonemeAnalysis.class&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="75" y="60" width="155" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-2" value="&lt;b&gt;Word&lt;/b&gt;&lt;div&gt;&quot;was&quot;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#bac8d3;strokeColor=#23445d;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="35" y="140" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="sHmN89Z9giXP1f4iBXHE-1" source="SYM-IzLUZSngqn3XWMXS-3" target="sHmN89Z9giXP1f4iBXHE-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-3" value="&lt;b&gt;PhonemeAnalysis.class&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="75" y="140" width="155" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-4" value="&lt;b&gt;Word&lt;/b&gt;&lt;div&gt;&quot;was&quot;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#bac8d3;strokeColor=#23445d;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="35" y="200" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="sHmN89Z9giXP1f4iBXHE-1" source="SYM-IzLUZSngqn3XWMXS-5" target="sHmN89Z9giXP1f4iBXHE-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-5" value="&lt;b&gt;SyllableAnalysis.class&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="75" y="200" width="155" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-6" value="&lt;b&gt;WordPair&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="15" y="280" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="sHmN89Z9giXP1f4iBXHE-1" source="SYM-IzLUZSngqn3XWMXS-8" target="MEYpYo8PpCexwFw6kkbH-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SYM-IzLUZSngqn3XWMXS-8" value="&lt;b&gt;RhymeAnalysis.class&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sHmN89Z9giXP1f4iBXHE-1">
+          <mxGeometry x="95" y="290" width="135" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

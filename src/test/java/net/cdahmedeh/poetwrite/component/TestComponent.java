@@ -20,7 +20,7 @@ package net.cdahmedeh.poetwrite.component;
 
 import dagger.Component;
 import net.cdahmedeh.poetwrite.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.analyzer.WordAnalyzer;
+import net.cdahmedeh.poetwrite.analyzer.SyllableAnalyzer;
 
 import javax.inject.Singleton;
 
@@ -28,5 +28,5 @@ import javax.inject.Singleton;
 @Singleton
 public interface TestComponent {
     RhymeAnalyzer getRhymeAnalyzer();
-    WordAnalyzer getWordAnalyzer();
+    SyllableAnalyzer getWordAnalyzer();
 }

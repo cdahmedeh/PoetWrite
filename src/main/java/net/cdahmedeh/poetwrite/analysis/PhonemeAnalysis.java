@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,16 +29,21 @@ import java.util.List;
 /**
  * A result of the computation for analyzing the phonemes of a word.
  *
- * This is computed in PhonemeComputer. See CmuEngine and MaryEngine for details
+ * It contains the phonemes themselves in ARPAbet format.
+ *
+ * This is computed in PhonemeAnalyzer. See CmuEngine and MaryEngine for details
  * on how phonemes are calculated. The phonemes are in ARPAbet format.
  *
  * The convention of the *Analysis files is uncomputed parts are 'null' and get
  * filled if after the computation.
  *
+ * See the documentation for details on the cache implementation.
+ * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
+ *
  * @author Ahmed El-Hajjar
  */
 @RequiredArgsConstructor
-public class PhonemeAnalysis extends EntityAnalysis {
+public class PhonemeAnalysis extends FeatureAnalysis {
     @Getter
     private final Word word;
 

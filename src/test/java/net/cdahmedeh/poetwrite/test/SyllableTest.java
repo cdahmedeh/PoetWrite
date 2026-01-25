@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 package net.cdahmedeh.poetwrite.test;
 
 import com.google.common.collect.ImmutableList;
-import net.cdahmedeh.poetwrite.analysis.WordAnalysis;
+import net.cdahmedeh.poetwrite.analysis.SyllableAnalysis;
+import net.cdahmedeh.poetwrite.analyzer.SyllableAnalyzer;
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
-import net.cdahmedeh.poetwrite.analyzer.WordAnalyzer;
 import net.cdahmedeh.poetwrite.domain.Word;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -52,13 +52,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SyllableTest {
     @Inject
-    WordAnalyzer wordAnalyzer;
+    SyllableAnalyzer syllableAnalyzer;
 
     @BeforeAll
     void setup() {
         TestComponent component = DaggerTestComponent.create();
 
-        wordAnalyzer = component.getWordAnalyzer();
+        syllableAnalyzer = component.getWordAnalyzer();
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordAnalyzer.get(word);
+            SyllableAnalysis analysis = syllableAnalyzer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -78,7 +78,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordAnalyzer.get(word);
+            SyllableAnalysis analysis = syllableAnalyzer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -91,7 +91,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordAnalyzer.get(word);
+            SyllableAnalysis analysis = syllableAnalyzer.get(word);
             assertEquals(1, analysis.getNumberOfSyllables());
         }
     }
@@ -103,7 +103,7 @@ public class SyllableTest {
 
         for (String input : inputs) {
             Word word = new Word(input);
-            WordAnalysis analysis = wordAnalyzer.get(word);
+            SyllableAnalysis analysis = syllableAnalyzer.get(word);
             assertEquals(2, analysis.getNumberOfSyllables());
         }
     }
@@ -112,12 +112,12 @@ public class SyllableTest {
     @Test
     void testMedicationNames() {
         Word lamictalWord = new Word("Lamictal");
-        WordAnalysis lamictalAnalysis = wordAnalyzer.get(lamictalWord);
+        SyllableAnalysis lamictalAnalysis = syllableAnalyzer.get(lamictalWord);
         assertEquals(3, lamictalAnalysis.getNumberOfSyllables());
 
         // Fails
         Word seroquelWord = new Word("Seroquel");
-        WordAnalysis seroquelAnalysis = wordAnalyzer.get(seroquelWord);
+        SyllableAnalysis seroquelAnalysis = syllableAnalyzer.get(seroquelWord);
         assertEquals(3, seroquelAnalysis.getNumberOfSyllables());
     }
 
@@ -126,7 +126,7 @@ public class SyllableTest {
     void testMedicalTerms() {
         // Fails
         Word agranulocytosisWord = new Word("agranulocytosis");
-        WordAnalysis agranulocytosisAnalysis = wordAnalyzer.get(agranulocytosisWord);
+        SyllableAnalysis agranulocytosisAnalysis = syllableAnalyzer.get(agranulocytosisWord);
         assertEquals(7, agranulocytosisAnalysis.getNumberOfSyllables());
     }
 
@@ -135,7 +135,7 @@ public class SyllableTest {
     void testWordsNotInDictionary() {
         // Fails
         Word neologismWord = new Word("neologism");
-        WordAnalysis neologismAnalysis = wordAnalyzer.get(neologismWord);
+        SyllableAnalysis neologismAnalysis = syllableAnalyzer.get(neologismWord);
         assertEquals(7, neologismAnalysis.getNumberOfSyllables());
     }
 
@@ -143,26 +143,26 @@ public class SyllableTest {
     @Test
     void testNeologisms() {
         Word supertautologicalWord = new Word("supertautological");
-        WordAnalysis supertautologicalAnalysis = wordAnalyzer.get(supertautologicalWord);
+        SyllableAnalysis supertautologicalAnalysis = syllableAnalyzer.get(supertautologicalWord);
         assertEquals(7, supertautologicalAnalysis.getNumberOfSyllables());
     }
 
     @Test
     void testNonExistingWords() {
         Word endothalmicWord = new Word("endothalmic");
-        WordAnalysis endothalmicAnalysis = wordAnalyzer.get(endothalmicWord);
+        SyllableAnalysis endothalmicAnalysis = syllableAnalyzer.get(endothalmicWord);
         assertEquals(4, endothalmicAnalysis.getNumberOfSyllables());
 
         Word adaptanceWord = new Word("adaptance");
-        WordAnalysis adaptanceAnalysis = wordAnalyzer.get(adaptanceWord);
+        SyllableAnalysis adaptanceAnalysis = syllableAnalyzer.get(adaptanceWord);
         assertEquals(3, adaptanceAnalysis.getNumberOfSyllables());
 
         Word communitiWord = new Word("communiti");
-        WordAnalysis communitiAnalysis = wordAnalyzer.get(communitiWord);
+        SyllableAnalysis communitiAnalysis = syllableAnalyzer.get(communitiWord);
         assertEquals(4, communitiAnalysis.getNumberOfSyllables());
 
         Word hospictacularWord = new Word("hospictacular");
-        WordAnalysis hospictacularAnalysis = wordAnalyzer.get(hospictacularWord);
+        SyllableAnalysis hospictacularAnalysis = syllableAnalyzer.get(hospictacularWord);
         assertEquals(5, hospictacularAnalysis.getNumberOfSyllables());
     }
 }

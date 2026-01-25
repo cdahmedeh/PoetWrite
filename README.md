@@ -2,7 +2,7 @@
 
 PoetWrite is an in-progress desktop application to bring an IDE-like experience for English poetry writers. 
 
-At the heart of PoetWrite, is an advanced rhetorical and lexical analysis engine. Whether it's detecting rhyming patterns, measuring meters or calculating sentiment. While poets are known for posessing huge vocabularies, sometimes, you still need some help to find the right word for the next stanza. So PoetWrite will come with various lexicographic dictionaries that can find synonyms matching your pattern, word relationships, various conjugations and more.
+At the heart of PoetWrite, is an advanced rhetorical and lexical analysis engine. Whether it's detecting rhyming patterns, measuring meter or calculating sentiment. While poets are known for possessing huge vocabularies, sometimes, you still need some help to find the right word for the next stanza. So PoetWrite will come with various lexicographic dictionaries that can find synonyms matching your pattern, word relationships, various conjugations and more.
 
 I know artificial intelligence is the hot new trend, but, all the power of PoetWrite will be AI-free. That means that all the analyses and assistance are blistering fast and completely offline. The majority of the algorithms are written from scratch with the help of some publicly available dictionaries and databases.
 
@@ -14,6 +14,8 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 [Poem Syntax and Domain Structure](/docs/poem-syntax-and-domain-structure.md) - PoetWrite's domain objects structure. And the poem syntax with annotation and commenting features.
 
 [Rhetorical Analysis Basics](/docs/rhetoric-analysis-basics.md) - Introductory topics for basic rhetorical analysis features such as syllable counting and rhyme detection.
+
+[Poem Analysis Implementation and Cache Design](/docs/entity-architecture.md) - An extensive deep-dive into how PoetWrite handles, stores and caches rhetorical analyses and other features. With detailed overview of the actual 'fool-proof' architecture and implementation through code examples and diagrams.
 
 ## Development
 

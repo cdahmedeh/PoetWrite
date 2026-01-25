@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import java.util.List;
  *         the word doesn't exist, it will the MaryTTS engine using a heuristic
  *         method.
  */
-public class PhonemeAnalyzer extends EntityAnalyzer<Word, PhonemeAnalysis> {
+public class PhonemeAnalyzer extends FeatureAnalyzer<Word, PhonemeAnalysis> {
     CmuEngine cmuEngine;
     MaryEngine maryEngine;
 

@@ -52,8 +52,12 @@ bin/
 ### VS Code ###
 .vscode/
 
+### draw.io Backup Files ###
+/diagrams/*.bkp
+
 ### Logs ###
 log/
 
 ### Mac OS ###
 .DS_Store
+
