@@ -328,11 +328,11 @@ public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysi
 ```
 
 ```java
-public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
+public class FeatureAnalyzer extends FeatureAnalyzer<Word, FeatureAnalysis> {
     // ---
 
     @Override
-    /* package */ void analyze(Word word, PhonemeAnalysis analysis) {
+    /* package */ void analyze(Word word, FeatureAnalysis analysis) {
         // TODO 1 : Do your analysis magic here.
         Feature feature = computer.getFeatures();
 
