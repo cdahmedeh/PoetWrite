@@ -331,10 +331,12 @@ public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysi
 public class FeatureAnalyzer extends FeatureAnalyzer<Word, FeatureAnalysis> {
     // ---
 
+    FreatureAnalyzer featureAnalyzer;
+
     @Override
     /* package */ void analyze(Word word, FeatureAnalysis analysis) {
         // TODO 1 : Do your analysis magic here.
-        Feature feature = computer.getFeatures();
+        Feature feature = featureAnalyzer.getFeatures();
 
         // TODO 2 : Fill in the analysis.
         analysis.setFeature(feature);
