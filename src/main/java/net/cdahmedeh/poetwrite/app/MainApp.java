@@ -18,6 +18,10 @@
 
 package net.cdahmedeh.poetwrite.app;
 
+import net.cdahmedeh.poetwrite.ui.PrototypeView;
+import net.cdahmedeh.poetwrite.ui.PrototypeViewController;
+import net.cdahmedeh.poetwrite.ui.PrototypeViewModel;
+
 /**
  * Once we get all the business logic stuff working, this will be the starter of
  * all the magic. I promise I won't make this complicated like starting a Spring
@@ -28,5 +32,11 @@ package net.cdahmedeh.poetwrite.app;
 public class MainApp {
     public static void main(String[] args) {
         System.out.println("Welcome to the world of PoetWrite");
+
+        PrototypeViewModel viewModel = new PrototypeViewModel();
+        PrototypeViewController viewController = new PrototypeViewController(viewModel);
+        PrototypeView view = new PrototypeView(viewModel, viewController);
+
+        view.show();
     }
 }
