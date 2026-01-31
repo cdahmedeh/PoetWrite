@@ -18,34 +18,16 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-public class PrototypeViewModel extends ViewModel {
-    private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
-    private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
+public abstract class View<VM extends ViewModel, VC extends ViewController> {
+    protected final VM viewModel;
+    protected final VC viewController;
 
-    public PrototypeViewModel() {
-        super();
-    }
+    protected CompositeDisposable disposable = new CompositeDisposable();
 
-    public void setText(String text) {
-        this.text.onNext(text);
-    }
-
-    public void setBusy(boolean busy) {
-        this.busy.onNext(busy);
-    }
-
-    public boolean isBusy() {
-        return busy.getValue();
-    }
-
-    public Observable<String> streamText() {
-        return this.text.hide();
-    }
-
-    public Observable<Boolean> streamBusy() {
-        return this.busy.hide();
+    protected View(VM viewModel, VC viewController) {
+        this.viewModel = viewModel;
+        this.viewController = viewController;
     }
 }

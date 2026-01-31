@@ -70,6 +70,9 @@ dependencies {
         exclude(group = "gov.nist.math", module = "Jampack")
     }
 
+    // User Interface
+    implementation("io.reactivex.rxjava3:rxjava:3.1.12")
+
     // Testing Frameworks
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

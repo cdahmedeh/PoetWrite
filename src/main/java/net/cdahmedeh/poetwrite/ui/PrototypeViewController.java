@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,9 @@ package net.cdahmedeh.poetwrite.ui;
 
 import lombok.SneakyThrows;
 
-public class PrototypeViewController {
-    private final PrototypeViewModel viewModel;
-
+public class PrototypeViewController extends ViewController<PrototypeViewModel> {
     public PrototypeViewController(PrototypeViewModel viewModel) {
-        this.viewModel = viewModel;
+        super(viewModel);
     }
 
     public void generateRandomText() {

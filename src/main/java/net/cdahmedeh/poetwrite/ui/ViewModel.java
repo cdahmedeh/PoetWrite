@@ -18,34 +18,5 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-
-public class PrototypeViewModel extends ViewModel {
-    private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
-    private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
-
-    public PrototypeViewModel() {
-        super();
-    }
-
-    public void setText(String text) {
-        this.text.onNext(text);
-    }
-
-    public void setBusy(boolean busy) {
-        this.busy.onNext(busy);
-    }
-
-    public boolean isBusy() {
-        return busy.getValue();
-    }
-
-    public Observable<String> streamText() {
-        return this.text.hide();
-    }
-
-    public Observable<Boolean> streamBusy() {
-        return this.busy.hide();
-    }
+public abstract class ViewModel {
 }

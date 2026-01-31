@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,21 +23,13 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import javax.swing.*;
 import java.awt.*;
 
-public class PrototypeView {
-
-    private final PrototypeViewModel viewModel;
-    private final PrototypeViewController viewController;
-
-    private Disposable textSubscriber;
-    private Disposable busySubscriber;
-
+public class PrototypeView extends View<PrototypeViewModel, PrototypeViewController> {
     private final JFrame frame;
     private final JTextField textAreaField;
     private final JButton generateRandomTextButton;
 
     public PrototypeView(PrototypeViewModel viewModel, PrototypeViewController viewController) {
-        this.viewModel = viewModel;
-        this.viewController = viewController;
+        super(viewModel, viewController);
 
         frame = new JFrame("PoetWrite");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -53,20 +45,23 @@ public class PrototypeView {
 
         generateRandomTextButton.addActionListener(e -> viewController.generateRandomText());
 
-        textSubscriber = viewModel.streamText()
+        Disposable textSubscriber = viewModel.streamText()
                 .distinctUntilChanged()
                 .subscribe(newText -> {
                     SwingUtilities.invokeLater(() -> textAreaField.setText(newText));
                 });
 
-        busySubscriber = viewModel.streamBusy()
+        Disposable busySubscriber = viewModel.streamBusy()
                 .distinctUntilChanged()
                 .subscribe(isBusy -> {
-                    SwingUtilities.invokeLater(() -> {
-                        generateRandomTextButton.setText(isBusy ? "Generating..." : "Generate Random Text");
-                    });
-                }
+                            SwingUtilities.invokeLater(() -> {
+                                generateRandomTextButton.setText(isBusy ? "Generating..." : "Generate Random Text");
+                            });
+                        }
                 );
+
+        disposable.add(textSubscriber);
+        disposable.add(busySubscriber);
     }
 
     public void show() {
