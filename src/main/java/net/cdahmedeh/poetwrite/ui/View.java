@@ -24,10 +24,17 @@ public abstract class View<VM extends ViewModel, VC extends ViewController> {
     protected final VM viewModel;
     protected final VC viewController;
 
-    protected CompositeDisposable disposable = new CompositeDisposable();
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     protected View(VM viewModel, VC viewController) {
         this.viewModel = viewModel;
         this.viewController = viewController;
+
+        setup();
+        subscribe(disposable);
     }
+
+    protected abstract void setup();
+
+    protected abstract void subscribe(CompositeDisposable disposable);
 }

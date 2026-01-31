@@ -18,19 +18,23 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PrototypeView extends View<PrototypeViewModel, PrototypeViewController> {
-    private final JFrame frame;
-    private final JTextField textAreaField;
-    private final JButton generateRandomTextButton;
+    private JFrame frame;
+    private JTextField textAreaField;
+    private JButton generateRandomTextButton;
 
     public PrototypeView(PrototypeViewModel viewModel, PrototypeViewController viewController) {
         super(viewModel, viewController);
+    }
 
+    @Override
+    protected void setup() {
         frame = new JFrame("PoetWrite");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
@@ -44,7 +48,10 @@ public class PrototypeView extends View<PrototypeViewModel, PrototypeViewControl
         frame.add(generateRandomTextButton, BorderLayout.SOUTH);
 
         generateRandomTextButton.addActionListener(e -> viewController.generateRandomText());
+    }
 
+    @Override
+    protected void subscribe(CompositeDisposable disposable) {
         Disposable textSubscriber = viewModel.streamText()
                 .distinctUntilChanged()
                 .subscribe(newText -> {
