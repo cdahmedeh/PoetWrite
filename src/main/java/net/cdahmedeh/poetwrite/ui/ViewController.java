@@ -18,6 +18,8 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public abstract class ViewController<VM extends ViewModel> {
     protected final VM viewModel;
     protected final PrototypeTaskHandler taskHandler;
@@ -25,5 +27,9 @@ public abstract class ViewController<VM extends ViewModel> {
     protected ViewController(VM viewModel, PrototypeTaskHandler taskHandler) {
         this.viewModel = viewModel;
         this.taskHandler = taskHandler;
+    }
+
+    public Observable<Boolean> status() {
+        return taskHandler.stream();
     }
 }

@@ -41,16 +41,24 @@ public class PrototypeTaskHandler {
     }
 
     public void submit(Runnable task) {
-        this.count.incrementAndGet();
+        increase();
 
         this.pool.submit(() -> {
             try {
                 task.run();
             } finally {
-                count.decrementAndGet();
+                decrease();
             }
         });
+    }
 
+    private void increase() {
+        this.count.incrementAndGet();
+        busy.onNext(count.get() > 0);
+    }
+
+    public void decrease() {
+        count.decrementAndGet();
         busy.onNext(count.get() > 0);
     }
 
