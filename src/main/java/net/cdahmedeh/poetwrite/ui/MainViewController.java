@@ -26,7 +26,7 @@ import lombok.SneakyThrows;
 
 public class MainViewController extends ViewController<MainViewModel> {
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, PrototypeTaskHandler taskHandler) {
+    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler) {
         super(viewModel, taskHandler);
     }
 
@@ -36,7 +36,7 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void generateRandomText() {
-        taskHandler.submit(new Runnable() {
+        taskHandler.submit("Generating Random Text", new Runnable() {
             @SneakyThrows
             @Override
             public void run() {

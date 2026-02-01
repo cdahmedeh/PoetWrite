@@ -45,12 +45,17 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JTab
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable busySubscriber = viewController.status()
-                .distinctUntilChanged()
+        AsynchronousTaskHandler handler = viewController.handler();
+
+        Disposable busySubscriber = handler.stream()
                 .subscribe(
                         busy -> {
-                            System.out.println(busy);
-                            statusButton.setText(busy ? "Generating..." : "Ready");
+                            boolean status = busy;
+                            if (status == true) {
+                                statusButton.setText(handler.current().getName() + " " + handler.count());
+                            } else {
+                                statusButton.setText("Ready");
+                            }
                         }
                 );
 

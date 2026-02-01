@@ -24,7 +24,7 @@ import dagger.assisted.AssistedInject;
 
 public class StatusViewController extends ViewController<StatusViewModel> {
     @AssistedInject
-    protected StatusViewController(@Assisted StatusViewModel viewModel, PrototypeTaskHandler taskHandler) {
+    protected StatusViewController(@Assisted StatusViewModel viewModel, AsynchronousTaskHandler taskHandler) {
         super(viewModel, taskHandler);
     }
 

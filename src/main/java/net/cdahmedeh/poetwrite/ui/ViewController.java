@@ -22,14 +22,14 @@ import io.reactivex.rxjava3.core.Observable;
 
 public abstract class ViewController<VM extends ViewModel> {
     protected final VM viewModel;
-    protected final PrototypeTaskHandler taskHandler;
+    protected final AsynchronousTaskHandler taskHandler;
 
-    protected ViewController(VM viewModel, PrototypeTaskHandler taskHandler) {
+    protected ViewController(VM viewModel, AsynchronousTaskHandler taskHandler) {
         this.viewModel = viewModel;
         this.taskHandler = taskHandler;
     }
 
-    public Observable<Boolean> status() {
-        return taskHandler.stream();
+    public AsynchronousTaskHandler handler() {
+        return taskHandler;
     }
 }
