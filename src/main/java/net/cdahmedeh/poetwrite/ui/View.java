@@ -20,7 +20,10 @@ package net.cdahmedeh.poetwrite.ui;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-public abstract class View<VM extends ViewModel, VC extends ViewController> {
+import javax.swing.*;
+import java.awt.*;
+
+public abstract class View<VM extends ViewModel, VC extends ViewController, RC extends Component> {
     protected final VM viewModel;
     protected final VC viewController;
 
@@ -35,6 +38,8 @@ public abstract class View<VM extends ViewModel, VC extends ViewController> {
     }
 
     protected abstract void setup();
+
+    public abstract RC root();
 
     protected abstract void subscribe(CompositeDisposable disposable);
 }

@@ -18,14 +18,9 @@
 
 package net.cdahmedeh.poetwrite.app;
 
-import net.cdahmedeh.poetwrite.ui.AppComponent;
-import net.cdahmedeh.poetwrite.ui.PrototypeView;
-import net.cdahmedeh.poetwrite.ui.PrototypeViewController;
-import net.cdahmedeh.poetwrite.ui.PrototypeViewModel;
-
-import net.cdahmedeh.poetwrite.ui.DaggerAppComponent;
-
-import javax.inject.Inject;
+import com.formdev.flatlaf.FlatLightLaf;
+import net.cdahmedeh.poetwrite.ui.*;
+import net.cdahmedeh.poetwrite.ui.MainViewController;
 
 /**
  * Once we get all the business logic stuff working, this will be the starter of
@@ -37,12 +32,19 @@ import javax.inject.Inject;
 
 public class MainApp {
     public void build() {
-        AppComponent appComponent = DaggerAppComponent.create();
-        PrototypeViewModel viewModel = new PrototypeViewModel();
-        PrototypeViewController viewController = appComponent.prototypeViewControllerFactory().create(viewModel);
-        PrototypeView view = new PrototypeView(viewModel, viewController);
+        FlatLightLaf.setup();
 
-        view.show();
+        AppComponent appComponent = DaggerAppComponent.create();
+        MainViewModel mainViewModel = new MainViewModel();
+        MainViewController mainViewController = appComponent.mainViewControllerFactory().create(mainViewModel);
+        MainView mainView = new MainView(mainViewModel, mainViewController);
+
+        StatusViewModel statusViewModel = new StatusViewModel();
+        StatusViewController statusViewController = appComponent.statusViewControllerFactory().create(statusViewModel);
+        StatusView statusView = new StatusView(statusViewModel, statusViewController);
+        mainView.attach(statusView.root());
+
+        mainView.show();
     }
 
     public static void main(String[] args) {

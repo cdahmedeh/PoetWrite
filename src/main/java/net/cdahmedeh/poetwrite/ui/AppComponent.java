@@ -24,5 +24,6 @@ import javax.inject.Singleton;
 @Singleton
 @Component
 public interface AppComponent {
-    PrototypeViewController.PrototypeViewControllerFactory prototypeViewControllerFactory();
+    MainViewController.MainViewControllerFactory mainViewControllerFactory();
+    StatusViewController.StatusViewControllerFactory statusViewControllerFactory();
 }

@@ -24,15 +24,15 @@ import dagger.assisted.AssistedInject;
 import lombok.SneakyThrows;
 
 
-public class PrototypeViewController extends ViewController<PrototypeViewModel> {
+public class MainViewController extends ViewController<MainViewModel> {
     @AssistedInject
-    public PrototypeViewController(@Assisted PrototypeViewModel viewModel, PrototypeTaskHandler taskHandler) {
+    public MainViewController(@Assisted MainViewModel viewModel, PrototypeTaskHandler taskHandler) {
         super(viewModel, taskHandler);
     }
 
     @AssistedFactory
-    public interface PrototypeViewControllerFactory {
-        PrototypeViewController create(PrototypeViewModel prototypeViewModel);
+    public interface MainViewControllerFactory {
+        MainViewController create(MainViewModel mainViewModel);
     }
 
     public void generateRandomText() {

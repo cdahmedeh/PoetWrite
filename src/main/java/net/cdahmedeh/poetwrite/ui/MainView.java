@@ -24,12 +24,12 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import javax.swing.*;
 import java.awt.*;
 
-public class PrototypeView extends View<PrototypeViewModel, PrototypeViewController> {
+public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private JFrame frame;
     private JTextField textAreaField;
     private JButton generateRandomTextButton;
 
-    public PrototypeView(PrototypeViewModel viewModel, PrototypeViewController viewController) {
+    public MainView(MainViewModel viewModel, MainViewController viewController) {
         super(viewModel, viewController);
     }
 
@@ -45,21 +45,23 @@ public class PrototypeView extends View<PrototypeViewModel, PrototypeViewControl
         frame.add(textAreaField, BorderLayout.CENTER);
 
         generateRandomTextButton = new JButton("Generate Random Text");
-        frame.add(generateRandomTextButton, BorderLayout.SOUTH);
+        frame.add(generateRandomTextButton, BorderLayout.NORTH);
 
         generateRandomTextButton.addActionListener(e -> viewController.generateRandomText());
     }
 
+    public void attach(JTabbedPane pane) {
+        frame.add(pane, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public JFrame root() {
+        return frame;
+    }
+
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable busySubscriber = viewController.status()
-                .distinctUntilChanged()
-                .subscribe(
-                        busy -> {
-                                System.out.println(busy);
-                                generateRandomTextButton.setText(busy ? "Generating..." : "Generate Random Text");
-                            }
-                );
+
 
         Disposable textSubscriber = viewModel.streamText()
                 .distinctUntilChanged()
@@ -77,7 +79,6 @@ public class PrototypeView extends View<PrototypeViewModel, PrototypeViewControl
 //                );
 
         disposable.add(textSubscriber);
-        disposable.add(busySubscriber);
     }
 
     public void show() {

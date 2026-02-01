@@ -20,9 +20,9 @@
 // In my case, my source lies in a OneDrive folder, and it hates having
 // lots of files being deleted at once. So this is just to go around this.
 //
-allprojects {
-    layout.buildDirectory.set(file("${System.getProperty("user.home")}/build/${rootProject.name}/${project.name}"))
-}
+//allprojects {
+//    layout.buildDirectory.set(file("${System.getProperty("user.home")}/build/${rootProject.name}/${project.name}"))
+//}
 
 plugins {
     id("java")
@@ -72,6 +72,7 @@ dependencies {
 
     // User Interface
     implementation("io.reactivex.rxjava3:rxjava:3.1.12")
+    implementation("com.formdev:flatlaf:3.7")
 
     // Testing Frameworks
     testImplementation(platform("org.junit:junit-bom:5.10.0"))

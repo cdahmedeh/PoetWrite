@@ -21,11 +21,11 @@ package net.cdahmedeh.poetwrite.ui;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public class PrototypeViewModel extends ViewModel {
+public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
     private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
 
-    public PrototypeViewModel() {
+    public MainViewModel() {
         super();
     }
 
