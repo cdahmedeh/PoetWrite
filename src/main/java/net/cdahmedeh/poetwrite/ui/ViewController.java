@@ -20,8 +20,10 @@ package net.cdahmedeh.poetwrite.ui;
 
 public abstract class ViewController<VM extends ViewModel> {
     protected final VM viewModel;
+    protected final PrototypeTaskHandler taskHandler;
 
-    protected ViewController(VM viewModel) {
+    protected ViewController(VM viewModel, PrototypeTaskHandler taskHandler) {
         this.viewModel = viewModel;
+        this.taskHandler = taskHandler;
     }
 }

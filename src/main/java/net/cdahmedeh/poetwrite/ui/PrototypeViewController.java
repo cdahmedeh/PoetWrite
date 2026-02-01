@@ -25,12 +25,9 @@ import lombok.SneakyThrows;
 
 
 public class PrototypeViewController extends ViewController<PrototypeViewModel> {
-    private final PrototypeTaskHandler taskHandler;
-
     @AssistedInject
     public PrototypeViewController(@Assisted PrototypeViewModel viewModel, PrototypeTaskHandler taskHandler) {
-        super(viewModel);
-        this.taskHandler = taskHandler;
+        super(viewModel, taskHandler);
     }
 
     @AssistedFactory
