@@ -52,23 +52,32 @@ public class PrototypeView extends View<PrototypeViewModel, PrototypeViewControl
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
+//        Disposable busySubscriber = PrototypeTaskHandler.stream()
+//                .distinctUntilChanged()
+//                .subscribe(
+//                        busy -> {
+//                                System.out.println(busy);
+//                                generateRandomTextButton.setText(busy ? "Generating..." : "Generate Random Text");
+//                            }
+//                );
+
         Disposable textSubscriber = viewModel.streamText()
                 .distinctUntilChanged()
                 .subscribe(newText -> {
                     SwingUtilities.invokeLater(() -> textAreaField.setText(newText));
                 });
 
-        Disposable busySubscriber = viewModel.streamBusy()
-                .distinctUntilChanged()
-                .subscribe(isBusy -> {
-                            SwingUtilities.invokeLater(() -> {
-                                generateRandomTextButton.setText(isBusy ? "Generating..." : "Generate Random Text");
-                            });
-                        }
-                );
+//        Disposable busySubscriber = viewModel.streamBusy()
+//                .distinctUntilChanged()
+//                .subscribe(isBusy -> {
+//                            SwingUtilities.invokeLater(() -> {
+//                                generateRandomTextButton.setText(isBusy ? "Generating..." : "Generate Random Text");
+//                            });
+//                        }
+//                );
 
         disposable.add(textSubscriber);
-        disposable.add(busySubscriber);
+//        disposable.add(busySubscriber);
     }
 
     public void show() {

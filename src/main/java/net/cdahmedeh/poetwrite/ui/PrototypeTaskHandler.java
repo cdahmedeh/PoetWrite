@@ -1,31 +1,60 @@
+/**
+ * PoetWrite - A Poetry Writing Application
+ * Copyright (C) 2026 Ahmed El-Hajjar
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.cdahmedeh.poetwrite.ui;
 
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Singleton
 public class PrototypeTaskHandler {
-    private BehaviorSubject<AtomicInteger> count = BehaviorSubject.createDefault(new AtomicInteger(0));
-
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
-    private final AtomicInteger taskCount = new AtomicInteger(0);
+    private final AtomicInteger count = new AtomicInteger(0);
 
-    public void runTask(Runnable task) {
-        taskCount.incrementAndGet();
+    private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
 
-        pool.submit(() -> {
+    @Inject
+    public PrototypeTaskHandler() {
+
+    }
+
+    public void submit(Runnable task) {
+        this.count.incrementAndGet();
+
+        this.pool.submit(() -> {
             try {
                 task.run();
             } finally {
-                taskCount.decrementAndGet();
+                count.decrementAndGet();
             }
         });
+
+        busy.onNext(count.get() > 0);
     }
 
-    public boolean isBusy() {
-        return taskCount.get() > 0;
+    public Observable<Boolean> stream() {
+        return this.busy.hide();
     }
 }

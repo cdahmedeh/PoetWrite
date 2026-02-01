@@ -18,9 +18,14 @@
 
 package net.cdahmedeh.poetwrite.app;
 
+import net.cdahmedeh.poetwrite.ui.AppComponent;
 import net.cdahmedeh.poetwrite.ui.PrototypeView;
 import net.cdahmedeh.poetwrite.ui.PrototypeViewController;
 import net.cdahmedeh.poetwrite.ui.PrototypeViewModel;
+
+import net.cdahmedeh.poetwrite.ui.DaggerAppComponent;
+
+import javax.inject.Inject;
 
 /**
  * Once we get all the business logic stuff working, this will be the starter of
@@ -29,14 +34,20 @@ import net.cdahmedeh.poetwrite.ui.PrototypeViewModel;
  *
  * TODO: Take a deep breath Ahmed, and take it easy.
  */
-public class MainApp {
-    public static void main(String[] args) {
-        System.out.println("Welcome to the world of PoetWrite");
 
+public class MainApp {
+    public void build() {
+        AppComponent appComponent = DaggerAppComponent.create();
         PrototypeViewModel viewModel = new PrototypeViewModel();
-        PrototypeViewController viewController = new PrototypeViewController(viewModel);
+        PrototypeViewController viewController = appComponent.prototypeViewControllerFactory().create(viewModel);
         PrototypeView view = new PrototypeView(viewModel, viewController);
 
         view.show();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to the world of PoetWrite");
+
+        new MainApp().build();
     }
 }

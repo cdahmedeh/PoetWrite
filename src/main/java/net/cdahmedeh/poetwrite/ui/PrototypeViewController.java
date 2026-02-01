@@ -18,30 +18,36 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
 import lombok.SneakyThrows;
 
+
 public class PrototypeViewController extends ViewController<PrototypeViewModel> {
-    public PrototypeViewController(PrototypeViewModel viewModel) {
+    private final PrototypeTaskHandler taskHandler;
+
+    @AssistedInject
+    public PrototypeViewController(@Assisted PrototypeViewModel viewModel, PrototypeTaskHandler taskHandler) {
         super(viewModel);
+        this.taskHandler = taskHandler;
+    }
+
+    @AssistedFactory
+    public interface PrototypeViewControllerFactory {
+        PrototypeViewController create(PrototypeViewModel prototypeViewModel);
     }
 
     public void generateRandomText() {
-        new Thread(new Runnable() {
-            @Override
+        taskHandler.submit(new Runnable() {
             @SneakyThrows
+            @Override
             public void run() {
-                viewModel.setBusy(true);
-
-                Thread.sleep(5000);
+                Thread.sleep(3000);
 
                 String randomText = "This is not really a random string, but we'll pretend that it is.";
-
-                System.out.println(randomText);
-
                 viewModel.setText(randomText);
-
-                viewModel.setBusy(false);
             }
-        }).start();
+        });
     }
 }
