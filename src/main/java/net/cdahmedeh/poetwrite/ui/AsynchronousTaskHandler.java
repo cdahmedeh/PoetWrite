@@ -42,6 +42,7 @@ public class AsynchronousTaskHandler {
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
     private final AtomicInteger count = new AtomicInteger(0);
+    private final AtomicInteger left = new AtomicInteger(0);
 
     private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
 
@@ -68,6 +69,7 @@ public class AsynchronousTaskHandler {
         System.out.println("Adding task: " + task.getName());
         System.out.println("Tasks: " + tasks.toString());
         this.count.incrementAndGet();
+        this.left.incrementAndGet();
         tasks.add(task);
         busy.onNext(count.get() > 0);
     }
@@ -77,6 +79,7 @@ public class AsynchronousTaskHandler {
         System.out.println("Tasks: " + tasks.toString());
         count.decrementAndGet();
         tasks.remove(task);
+        if (count.get() == 0) left.set(0);
         busy.onNext(count.get() > 0);
     }
 
@@ -90,5 +93,9 @@ public class AsynchronousTaskHandler {
 
     public Observable<Boolean> stream() {
         return this.busy.hide();
+    }
+
+    public int left() {
+        return this.left.get();
     }
 }

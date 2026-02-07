@@ -18,5 +18,48 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import lombok.Setter;
+
 public class StatusViewModel extends ViewModel {
+    private BehaviorSubject<String> currentTaskName = BehaviorSubject.createDefault("No Current Task");
+
+    private BehaviorSubject<Integer> runningTasksCount = BehaviorSubject.createDefault(0);
+
+    private BehaviorSubject<Integer> leftTasksCount = BehaviorSubject.createDefault(0);
+
+    private BehaviorSubject<Boolean> tasksHandlerBusy = BehaviorSubject.createDefault(false);
+
+    public Observable<String> streamCurrentTaskName() {
+        return this.currentTaskName.hide();
+    }
+
+    public Observable<Integer> streamRunningTasksCount() {
+        return this.runningTasksCount.hide();
+    }
+
+    public Observable<Boolean> streamTasksHandlerBusy() {
+        return this.tasksHandlerBusy.hide();
+    }
+
+    public Observable<Integer> streamLeftTasksCount() {
+        return this.leftTasksCount.hide();
+    }
+
+    public void setTasksHandlerBusy(boolean busy) {
+        this.tasksHandlerBusy.onNext(busy);
+    }
+
+    public void setCurrentTaskName(String currentTaskName) {
+        this.currentTaskName.onNext(currentTaskName);
+    }
+
+    public void setRunningTasksCount(Integer runningTasksCount) {
+        this.runningTasksCount.onNext(runningTasksCount);
+    }
+
+    public void setLeftTasksCount(Integer leftTasksCount) {
+        this.leftTasksCount.onNext(leftTasksCount);
+    }
 }

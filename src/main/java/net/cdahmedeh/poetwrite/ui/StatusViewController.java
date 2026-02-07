@@ -26,6 +26,8 @@ public class StatusViewController extends ViewController<StatusViewModel> {
     @AssistedInject
     protected StatusViewController(@Assisted StatusViewModel viewModel, AsynchronousTaskHandler taskHandler) {
         super(viewModel, taskHandler);
+
+        listen();
     }
 
     @AssistedFactory
@@ -33,5 +35,17 @@ public class StatusViewController extends ViewController<StatusViewModel> {
         StatusViewController create(StatusViewModel statusViewModel);
     }
 
-
+    public void listen() {
+        taskHandler.stream()
+                .subscribe(busy -> {
+                    viewModel.setRunningTasksCount(taskHandler.count());
+                    try {
+                        viewModel.setCurrentTaskName(taskHandler.current().getName());
+                    } catch (Exception e) {
+//                        e.printStackTrace();
+                    }
+                    viewModel.setTasksHandlerBusy(busy);
+                    viewModel.setLeftTasksCount(taskHandler.left());
+                });
+    }
 }

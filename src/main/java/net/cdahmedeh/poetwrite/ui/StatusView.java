@@ -22,10 +22,14 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 
-public class StatusView extends View<StatusViewModel, StatusViewController, JTabbedPane> {
-    private JTabbedPane pane;
-    private JButton statusButton;
+public class StatusView extends View<StatusViewModel, StatusViewController, JPanel> {
+    private JPanel pane;
+    private JButton nameButton;
+    private JButton numberButton;
+    private JButton leftButton;
 
     public StatusView(StatusViewModel viewModel, StatusViewController viewController) {
         super(viewModel, viewController);
@@ -33,32 +37,48 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JTab
 
     @Override
     protected void setup() {
-        pane = new JTabbedPane();
-        statusButton = new JButton("Ready");
-        pane.add(statusButton);
+        pane = new JPanel(new BorderLayout());
+        nameButton = new JButton("Ready");
+        pane.add(nameButton, BorderLayout.WEST);
+
+        numberButton = new JButton("0");
+        pane.add(numberButton, BorderLayout.CENTER);
+
+        leftButton = new JButton("0");
+        pane.add(leftButton, BorderLayout.EAST);
     }
 
     @Override
-    public JTabbedPane root() {
+    public JPanel root() {
         return pane;
     }
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        AsynchronousTaskHandler handler = viewController.handler();
-
-        Disposable busySubscriber = handler.stream()
-                .subscribe(
-                        busy -> {
-                            boolean status = busy;
-                            if (status == true) {
-                                statusButton.setText(handler.current().getName() + " " + handler.count());
-                            } else {
-                                statusButton.setText("Ready");
-                            }
-                        }
-                );
+        Disposable busySubscriber = viewModel.streamTasksHandlerBusy()
+                .subscribe(busy -> {
+                    System.out.println("Status View: Busy: " + busy);
+                });
 
         disposable.add(busySubscriber);
+
+        Disposable taskNameSubscriber = viewModel.streamCurrentTaskName()
+                .subscribe(name -> {
+                    nameButton.setText(name);
+                });
+
+        disposable.add(taskNameSubscriber);
+
+        Disposable taskCountSubscriber = viewModel.streamRunningTasksCount()
+                .subscribe(count -> {
+                    numberButton.setText(String.valueOf(count));
+                });
+
+        disposable.add(taskCountSubscriber);
+
+        Disposable leftCountSubscriber = viewModel.streamLeftTasksCount()
+                .subscribe(count -> {
+                    leftButton.setText(String.valueOf(count));
+                });
     }
 }

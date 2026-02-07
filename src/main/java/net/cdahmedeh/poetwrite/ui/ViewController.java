@@ -28,8 +28,4 @@ public abstract class ViewController<VM extends ViewModel> {
         this.viewModel = viewModel;
         this.taskHandler = taskHandler;
     }
-
-    public AsynchronousTaskHandler handler() {
-        return taskHandler;
-    }
 }

@@ -50,7 +50,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         generateRandomTextButton.addActionListener(e -> viewController.generateRandomText());
     }
 
-    public void attach(JTabbedPane pane) {
+    public void attach(JPanel pane) {
         frame.add(pane, BorderLayout.SOUTH);
     }
 
