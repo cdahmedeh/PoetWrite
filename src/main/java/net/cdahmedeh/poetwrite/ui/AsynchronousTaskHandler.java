@@ -84,7 +84,7 @@ public class AsynchronousTaskHandler {
     }
 
     public AsynchronousTask current() {
-        return tasks.getLast();
+        return tasks.getFirst();
     }
 
     public int count() {

@@ -20,16 +20,34 @@ package net.cdahmedeh.poetwrite.ui;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import lombok.Setter;
+
+import static java.lang.String.format;
 
 public class StatusViewModel extends ViewModel {
-    private BehaviorSubject<String> currentTaskName = BehaviorSubject.createDefault("No Current Task");
-
+    private BehaviorSubject<Boolean> tasksHandlerBusy = BehaviorSubject.createDefault(false);
+    private BehaviorSubject<String> currentTaskName = BehaviorSubject.createDefault("Ready...");
     private BehaviorSubject<Integer> runningTasksCount = BehaviorSubject.createDefault(0);
-
     private BehaviorSubject<Integer> leftTasksCount = BehaviorSubject.createDefault(0);
 
-    private BehaviorSubject<Boolean> tasksHandlerBusy = BehaviorSubject.createDefault(false);
+    public void setTasksHandlerBusy(boolean busy) {
+        this.tasksHandlerBusy.onNext(busy);
+    }
+
+    public void setCurrentTaskName(String currentTaskName) {
+        this.currentTaskName.onNext(format("%s...", currentTaskName));
+    }
+
+    public void setRunningTasksCount(Integer runningTasksCount) {
+        this.runningTasksCount.onNext(runningTasksCount);
+    }
+
+    public void setLeftTasksCount(Integer leftTasksCount) {
+        this.leftTasksCount.onNext(leftTasksCount);
+    }
+
+    public Observable<Boolean> streamTasksHandlerBusy() {
+        return this.tasksHandlerBusy.hide();
+    }
 
     public Observable<String> streamCurrentTaskName() {
         return this.currentTaskName.hide();
@@ -39,27 +57,7 @@ public class StatusViewModel extends ViewModel {
         return this.runningTasksCount.hide();
     }
 
-    public Observable<Boolean> streamTasksHandlerBusy() {
-        return this.tasksHandlerBusy.hide();
-    }
-
     public Observable<Integer> streamLeftTasksCount() {
         return this.leftTasksCount.hide();
-    }
-
-    public void setTasksHandlerBusy(boolean busy) {
-        this.tasksHandlerBusy.onNext(busy);
-    }
-
-    public void setCurrentTaskName(String currentTaskName) {
-        this.currentTaskName.onNext(currentTaskName);
-    }
-
-    public void setRunningTasksCount(Integer runningTasksCount) {
-        this.runningTasksCount.onNext(runningTasksCount);
-    }
-
-    public void setLeftTasksCount(Integer leftTasksCount) {
-        this.leftTasksCount.onNext(leftTasksCount);
     }
 }

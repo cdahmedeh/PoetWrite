@@ -23,6 +23,8 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import lombok.SneakyThrows;
 
+import java.util.Random;
+
 
 public class MainViewController extends ViewController<MainViewModel> {
     @AssistedInject
@@ -36,13 +38,14 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void generateRandomText() {
-        taskHandler.submit("Generating Random Text", new Runnable() {
+        taskHandler.submit("Generating Random Text " + new Random().nextDouble(), new Runnable() {
             @SneakyThrows
             @Override
             public void run() {
                 Thread.sleep(3000);
 
-                String randomText = "This is not really a random string, but we'll pretend that it is.";
+                Double randomNumber = new Random().nextDouble();
+                String randomText = randomNumber.toString();
                 viewModel.setText(randomText);
             }
         });
