@@ -6,6 +6,7 @@ import javax.swing.*;
 
 public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> {
     private JMenuItem generateRandomText;
+    private JMenuBar mb;
 
 
     public MenuView(MenuViewModel viewModel, MenuViewController viewController) {
@@ -14,7 +15,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
     @Override
     protected void setup() {
-        JMenuBar mb = new JMenuBar();
+        mb = new JMenuBar();
         JMenu help;
 
         JMenu file = new JMenu("File");
@@ -26,11 +27,13 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         mb.add(file);
         mb.add(help);
+
+        generateRandomText.addActionListener(e -> viewController.generateRandomText());
     }
 
     @Override
     public JMenuBar root() {
-        return null;
+        return mb;
     }
 
     @Override

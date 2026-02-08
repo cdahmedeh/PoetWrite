@@ -28,4 +28,5 @@ public interface AppComponent {
 
     MainViewController.MainViewControllerFactory mainViewControllerFactory();
     StatusViewController.StatusViewControllerFactory statusViewControllerFactory();
+    MenuViewController.MenuViewControllerFactory menuViewControllerFactory();
 }

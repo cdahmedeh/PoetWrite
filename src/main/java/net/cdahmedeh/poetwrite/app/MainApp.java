@@ -56,7 +56,12 @@ public class MainApp {
         StatusViewModel statusViewModel = new StatusViewModel();
         StatusViewController statusViewController = appComponent.statusViewControllerFactory().create(statusViewModel);
         StatusView statusView = new StatusView(statusViewModel, statusViewController);
-        mainView.attach(statusView.root());
+        mainView.attachStatusBar(statusView.root());
+
+        MenuViewModel menuViewModel = new MenuViewModel();
+        MenuViewController menuViewController = appComponent.menuViewControllerFactory().create(menuViewModel);
+        MenuView menuView = new MenuView(menuViewModel, menuViewController);
+        mainView.attachMenu(menuView.root());
 
         mainView.show();
     }

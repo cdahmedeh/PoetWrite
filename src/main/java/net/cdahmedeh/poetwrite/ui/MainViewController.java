@@ -30,12 +30,10 @@ import java.util.Random;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
-    private final TextGenerator textGenerator;
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler, TextGenerator textGenerator) {
+    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler) {
         super(viewModel, taskHandler);
-        this.textGenerator = textGenerator;
     }
 
     @AssistedFactory
@@ -43,12 +41,5 @@ public class MainViewController extends ViewController<MainViewModel> {
         MainViewController create(MainViewModel mainViewModel);
     }
 
-    public void generateRandomText() {
-        for (int i = 0; i < 10; i++) {
-            taskHandler.submit("Generating Random Text " + new Random().nextDouble(), new TextUpdateEvent(), () -> {
-                String text = textGenerator.generate();
-                viewModel.setText(text);
-            });
-        }
-    }
+
 }

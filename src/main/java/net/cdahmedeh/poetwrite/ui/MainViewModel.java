@@ -22,8 +22,17 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 public class MainViewModel extends ViewModel {
+    private BehaviorSubject<AsynchronousTaskHandler.AsynchronousTaskHandlerStatus> taskHandlerStatus = BehaviorSubject.createDefault(AsynchronousTaskHandler.AsynchronousTaskHandlerStatus.empty());
+
+    public void setTasksHandlerStatus(AsynchronousTaskHandler.AsynchronousTaskHandlerStatus status) {
+        taskHandlerStatus.onNext(status);
+    }
+
+    public Observable<AsynchronousTaskHandler.AsynchronousTaskHandlerStatus> streamTasksHandlerStatus() {
+        return taskHandlerStatus.hide();
+    }
+
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
-    private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
 
     public MainViewModel() {
         super();
@@ -33,19 +42,7 @@ public class MainViewModel extends ViewModel {
         this.text.onNext(text);
     }
 
-    public void setBusy(boolean busy) {
-        this.busy.onNext(busy);
-    }
-
-    public boolean isBusy() {
-        return busy.getValue();
-    }
-
     public Observable<String> streamText() {
         return this.text.hide();
-    }
-
-    public Observable<Boolean> streamBusy() {
-        return this.busy.hide();
     }
 }

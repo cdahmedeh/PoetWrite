@@ -86,7 +86,6 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
     protected void subscribe(CompositeDisposable disposable) {
         Disposable taskSubscriber = viewModel.streamTasksHandlerStatus()
                 .subscribe(status -> {
-                    if (status.getCurrent().getEvent() instanceof TextUpdateEvent) {
                         progressBar.setStringPainted(true);
                         progressBar.setString(String.format("%d/%d", status.getProgress(), status.getTotal()));
                         if (status.isBusy() == false) {
@@ -99,12 +98,11 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
                         } else {
                             ImageIcon spinnerIcon = new ImageIcon(getClass().getResource("/icons/spinner.gif"));
                             spinner.setIcon(spinnerIcon);
+                            nameButton.setText(status.getCurrent().getName());
                         }
 
-                        nameButton.setText(status.getCurrent().getName());
                         progressBar.setMaximum(status.getTotal());
                         progressBar.setValue(status.getProgress());
-                    }
                 });
 
         disposable.add(taskSubscriber);
