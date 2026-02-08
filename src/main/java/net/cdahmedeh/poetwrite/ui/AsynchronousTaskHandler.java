@@ -22,6 +22,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -34,25 +35,50 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Singleton
 public class AsynchronousTaskHandler {
     @RequiredArgsConstructor
-    public static class AsynchronousTask {
+    public static class AsynchronousTask<E extends AppEvent> {
         @Getter private final String name;
+        @Getter private final E event;
         @Getter private final Runnable task;
+
+        public static <E extends AppEvent> AsynchronousTask<E> empty() {
+            return new AsynchronousTask<E>(
+                    "Task Handler Starting",
+                    (E) new TaskHandlerStartedEvent(),
+                    () -> {});
+        }
     }
 
-    private final ExecutorService pool = Executors.newSingleThreadExecutor();
+    @RequiredArgsConstructor
+    public static class AsynchronousTaskHandlerStatus {
+        @Getter private final AsynchronousTask current;
+        @Getter private final boolean busy;
+        @Getter private final int progress;
+        @Getter private final int total;
 
-    private final AtomicInteger count = new AtomicInteger(0);
-    private final AtomicInteger left = new AtomicInteger(0);
+        public static AsynchronousTaskHandlerStatus empty() {
+            return new AsynchronousTaskHandlerStatus(AsynchronousTask.empty(), false, 0, 0);
+        }
+    }
 
-    private BehaviorSubject<Boolean> busy = BehaviorSubject.createDefault(false);
+    public static class TaskHandlerStartedEvent extends AppEvent {}
 
     private List<AsynchronousTask> tasks = new ArrayList<>();
 
-    @Inject
-    public AsynchronousTaskHandler() {}
+    private BehaviorSubject<AsynchronousTaskHandlerStatus> status
+            = BehaviorSubject.createDefault(AsynchronousTaskHandlerStatus.empty());
 
-    public void submit(String name, Runnable run) {
-        AsynchronousTask task = new AsynchronousTask(name, run);
+    private final ExecutorService pool = Executors.newSingleThreadExecutor();
+
+    @Inject
+    public AsynchronousTaskHandler() {
+    }
+
+    public Observable<AsynchronousTaskHandlerStatus> status() {
+        return status.hide();
+    }
+
+    public void submit(String name, AppEvent event, Runnable run) {
+        AsynchronousTask task = new AsynchronousTask(name, event, run);
 
         increase(task);
 
@@ -66,36 +92,30 @@ public class AsynchronousTaskHandler {
     }
 
     private void increase(AsynchronousTask task) {
-        System.out.println("Adding task: " + task.getName());
-        System.out.println("Tasks: " + tasks.toString());
-        this.count.incrementAndGet();
-        this.left.incrementAndGet();
         tasks.add(task);
-        busy.onNext(count.get() > 0);
+
+        AsynchronousTaskHandlerStatus status = this.status.getValue();
+        this.status.onNext(
+                new AsynchronousTaskHandlerStatus(
+                        task,
+                        tasks.size() > 0,
+                        status.progress,
+                        Math.max(tasks.size(), status.total)
+                        ));
     }
 
     public void decrease(AsynchronousTask task) {
-        System.out.println("Removing task: " + task.getName());
-        System.out.println("Tasks: " + tasks.toString());
-        count.decrementAndGet();
         tasks.remove(task);
-        if (count.get() == 0) left.set(0);
-        busy.onNext(count.get() > 0);
+
+        AsynchronousTaskHandlerStatus status = this.status.getValue();
+        this.status.onNext(
+                new AsynchronousTaskHandlerStatus(
+                        task,
+                        tasks.size() > 0,
+                        status.progress + 1,
+                        Math.max(tasks.size(), status.total)
+                ));
     }
 
-    public AsynchronousTask current() {
-        return tasks.getFirst();
-    }
 
-    public int count() {
-        return tasks.size();
-    }
-
-    public Observable<Boolean> stream() {
-        return this.busy.hide();
-    }
-
-    public int left() {
-        return this.left.get();
-    }
 }

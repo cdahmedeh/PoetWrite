@@ -70,9 +70,15 @@ dependencies {
         exclude(group = "gov.nist.math", module = "Jampack")
     }
 
+    // Poetry Tools
+    implementation("com.thedeanda:lorem:2.2")
+
     // User Interface
     implementation("io.reactivex.rxjava3:rxjava:3.1.12")
     implementation("com.formdev:flatlaf:3.7")
+    implementation("com.miglayout:miglayout-swing:11.4.2")
+    implementation("com.formdev:flatlaf-extras:3.7")
+    implementation("com.fifesoft:rsyntaxtextarea:3.6.1")
 
     // Testing Frameworks
     testImplementation(platform("org.junit:junit-bom:5.10.0"))

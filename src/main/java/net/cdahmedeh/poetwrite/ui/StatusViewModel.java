@@ -20,44 +20,18 @@ package net.cdahmedeh.poetwrite.ui;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
 
 import static java.lang.String.format;
 
 public class StatusViewModel extends ViewModel {
-    private BehaviorSubject<Boolean> tasksHandlerBusy = BehaviorSubject.createDefault(false);
-    private BehaviorSubject<String> currentTaskName = BehaviorSubject.createDefault("Ready...");
-    private BehaviorSubject<Integer> runningTasksCount = BehaviorSubject.createDefault(0);
-    private BehaviorSubject<Integer> leftTasksCount = BehaviorSubject.createDefault(0);
+    private BehaviorSubject<AsynchronousTaskHandlerStatus> taskHandlerStatus = BehaviorSubject.createDefault(AsynchronousTaskHandlerStatus.empty());
 
-    public void setTasksHandlerBusy(boolean busy) {
-        this.tasksHandlerBusy.onNext(busy);
+    public void setTasksHandlerStatus(AsynchronousTaskHandlerStatus status) {
+        taskHandlerStatus.onNext(status);
     }
 
-    public void setCurrentTaskName(String currentTaskName) {
-        this.currentTaskName.onNext(format("%s...", currentTaskName));
-    }
-
-    public void setRunningTasksCount(Integer runningTasksCount) {
-        this.runningTasksCount.onNext(runningTasksCount);
-    }
-
-    public void setLeftTasksCount(Integer leftTasksCount) {
-        this.leftTasksCount.onNext(leftTasksCount);
-    }
-
-    public Observable<Boolean> streamTasksHandlerBusy() {
-        return this.tasksHandlerBusy.hide();
-    }
-
-    public Observable<String> streamCurrentTaskName() {
-        return this.currentTaskName.hide();
-    }
-
-    public Observable<Integer> streamRunningTasksCount() {
-        return this.runningTasksCount.hide();
-    }
-
-    public Observable<Integer> streamLeftTasksCount() {
-        return this.leftTasksCount.hide();
+    public Observable<AsynchronousTaskHandlerStatus> streamTasksHandlerStatus() {
+        return taskHandlerStatus.hide();
     }
 }

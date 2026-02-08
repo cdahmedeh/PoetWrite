@@ -24,6 +24,8 @@ import javax.inject.Singleton;
 @Singleton
 @Component
 public interface AppComponent {
+    AsynchronousTaskHandler taskHandler();
+
     MainViewController.MainViewControllerFactory mainViewControllerFactory();
     StatusViewController.StatusViewControllerFactory statusViewControllerFactory();
 }

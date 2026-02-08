@@ -20,14 +20,20 @@ package net.cdahmedeh.poetwrite.ui;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainView extends View<MainViewModel, MainViewController, JFrame> {
+    private static JMenu help;
+    private static JMenuItem generateRandomText;
     private JFrame frame;
     private JTextField textAreaField;
     private JButton generateRandomTextButton;
+    private RSyntaxTextArea textArea;
 
     public MainView(MainViewModel viewModel, MainViewController viewController) {
         super(viewModel, viewController);
@@ -39,19 +45,43 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
 
+        frame.setIconImage(new ImageIcon(getClass().getResource("/icons/appicon.png")).getImage());
+
         frame.setLayout(new BorderLayout());
+        frame.setJMenuBar(createMenuBar());
 
-        textAreaField = new JTextField();
-        frame.add(textAreaField, BorderLayout.CENTER);
+//        textAreaField = new JTextField();
+//        frame.add(textAreaField, BorderLayout.CENTER);
+        textArea = new RSyntaxTextArea(20, 60);
+        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+        textArea.setCodeFoldingEnabled(true);
+        textArea.setLineWrap(true);
+        RTextScrollPane sp = new RTextScrollPane(textArea);
+        frame.add(sp, BorderLayout.CENTER);
 
-        generateRandomTextButton = new JButton("Generate Random Text");
-        frame.add(generateRandomTextButton, BorderLayout.NORTH);
+//        generateRandomTextButton = new JButton("Generate Random Text");
+//        frame.add(generateRandomTextButton, BorderLayout.NORTH);
 
-        generateRandomTextButton.addActionListener(e -> viewController.generateRandomText());
+        generateRandomText.addActionListener(e -> viewController.generateRandomText());
     }
 
     public void attach(JPanel pane) {
         frame.add(pane, BorderLayout.SOUTH);
+    }
+
+    private static JMenuBar createMenuBar() {
+        JMenuBar mb = new JMenuBar();
+
+        JMenu file = new JMenu("File");
+        file.add(new JMenuItem("Exit"));
+
+        help = new JMenu("Tools");
+        generateRandomText = new JMenuItem("Generate Random Text");
+        help.add(generateRandomText);
+
+        mb.add(file);
+        mb.add(help);
+        return mb;
     }
 
     @Override
@@ -61,22 +91,11 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-
-
         Disposable textSubscriber = viewModel.streamText()
                 .distinctUntilChanged()
                 .subscribe(newText -> {
-                    SwingUtilities.invokeLater(() -> textAreaField.setText(newText));
+                    SwingUtilities.invokeLater(() -> textArea.setText(newText));
                 });
-
-//        Disposable busySubscriber = viewModel.streamBusy()
-//                .distinctUntilChanged()
-//                .subscribe(isBusy -> {
-//                            SwingUtilities.invokeLater(() -> {
-//                                generateRandomTextButton.setText(isBusy ? "Generating..." : "Generate Random Text");
-//                            });
-//                        }
-//                );
 
         disposable.add(textSubscriber);
     }

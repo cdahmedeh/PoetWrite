@@ -22,6 +22,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 import net.cdahmedeh.poetwrite.ui.*;
 import net.cdahmedeh.poetwrite.ui.MainViewController;
 
+import javax.swing.*;
+
 /**
  * Once we get all the business logic stuff working, this will be the starter of
  * all the magic. I promise I won't make this complicated like starting a Spring
@@ -32,9 +34,21 @@ import net.cdahmedeh.poetwrite.ui.MainViewController;
 
 public class MainApp {
     public void build() {
+        AppComponent appComponent = DaggerAppComponent.create();
+//        AsynchronousTaskHandler asynchronousTaskHandler = appComponent.taskHandler();
+//        asynchronousTaskHandler.submit("Welcome to PoetWrite", () -> {
+//            try {
+//                Thread.sleep(3000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+
         FlatLightLaf.setup();
 
-        AppComponent appComponent = DaggerAppComponent.create();
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JDialog.setDefaultLookAndFeelDecorated(true);
+
         MainViewModel mainViewModel = new MainViewModel();
         MainViewController mainViewController = appComponent.mainViewControllerFactory().create(mainViewModel);
         MainView mainView = new MainView(mainViewModel, mainViewController);

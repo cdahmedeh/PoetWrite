@@ -18,18 +18,24 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import com.thedeanda.lorem.Lorem;
+import com.thedeanda.lorem.LoremIpsum;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import lombok.SneakyThrows;
+import net.cdahmedeh.poetwrite.generator.TextGenerator;
 
 import java.util.Random;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
+    private final TextGenerator textGenerator;
+
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler) {
+    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler, TextGenerator textGenerator) {
         super(viewModel, taskHandler);
+        this.textGenerator = textGenerator;
     }
 
     @AssistedFactory
@@ -38,16 +44,11 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void generateRandomText() {
-        taskHandler.submit("Generating Random Text " + new Random().nextDouble(), new Runnable() {
-            @SneakyThrows
-            @Override
-            public void run() {
-                Thread.sleep(3000);
-
-                Double randomNumber = new Random().nextDouble();
-                String randomText = randomNumber.toString();
-                viewModel.setText(randomText);
-            }
-        });
+        for (int i = 0; i < 10; i++) {
+            taskHandler.submit("Generating Random Text " + new Random().nextDouble(), new TextUpdateEvent(), () -> {
+                String text = textGenerator.generate();
+                viewModel.setText(text);
+            });
+        }
     }
 }

@@ -1,5 +1,7 @@
 # Welcome to PoetWrite!
 
+![PoetWrite Banner](./assets/logo-header.png)
+
 PoetWrite is an in-progress desktop application to bring an IDE-like experience for English poetry writers. 
 
 At the heart of PoetWrite, is an advanced rhetorical and lexical analysis engine. Whether it's detecting rhyming patterns, measuring meter or calculating sentiment. While poets are known for possessing huge vocabularies, sometimes, you still need some help to find the right word for the next stanza. So PoetWrite will come with various lexicographic dictionaries that can find synonyms matching your pattern, word relationships, various conjugations and more.

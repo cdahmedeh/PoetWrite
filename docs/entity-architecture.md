@@ -336,7 +336,7 @@ public class FeatureAnalyzer extends FeatureAnalyzer<Word, FeatureAnalysis> {
     @Override
     /* package */ void analyze(Word word, FeatureAnalysis analysis) {
         // TODO 1 : Do your analysis magic here.
-        Feature feature = featureComputer.getFeatures();
+        Feature feature = featureComputer.getFeatures(word);
 
         // TODO 2 : Fill in the analysis.
         analysis.setFeature(feature);
@@ -362,6 +362,6 @@ So there are a few things I haven't tackled yet, but they are going to be very r
 
 ⛅ Not prepared for features that are on-demand. Something like syllable counting, rhyme detection and pattern detection are being done all the time. But determining something like part-of-speech, or a definition, only shows when you hover a certain word. How can we prevent those on-demand features from being determined until it is time for the user to need it?
 
-⛅ Invalidation is going to be a bit tricky, and we can't rely on any heuristics to do that. There needs to be an explicit system that handles this basic on what the user is doing, what is likely to change and so on. At least for now, I can't think in terms of heuristics, it will be by hand.
+⛅ Invalidation is going to be a bit tricky, and we can't rely on any heuristics to do that. There needs to be an explicit system that handles this based on what the user is doing, what is likely to change and so on. At least for now, I can't think in terms of heuristics, it will be by hand.
 
 ⛅ Taking into account the point above, we need a solid strategy for invalidation. Right now, the ```FeatureAnalysis``` don't hold an actual state. The fields are just cleared and we do some ```null`` checks.

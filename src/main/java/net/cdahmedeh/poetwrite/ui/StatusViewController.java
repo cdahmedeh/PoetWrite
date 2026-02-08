@@ -36,16 +36,9 @@ public class StatusViewController extends ViewController<StatusViewModel> {
     }
 
     public void listen() {
-        taskHandler.stream()
-                .subscribe(busy -> {
-                    viewModel.setLeftTasksCount(taskHandler.left());
-                    viewModel.setRunningTasksCount(taskHandler.count());
-                    try {
-                        viewModel.setCurrentTaskName(taskHandler.current().getName());
-                    } catch (Exception e) {
-//                        e.printStackTrace();
-                    }
-                    viewModel.setTasksHandlerBusy(busy);
+        taskHandler.status()
+                .subscribe(status -> {
+                    viewModel.setTasksHandlerStatus(status);
                 });
     }
 }
