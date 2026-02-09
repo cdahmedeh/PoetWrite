@@ -16,30 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.controller;
 
-import com.thedeanda.lorem.Lorem;
-import com.thedeanda.lorem.LoremIpsum;
-import dagger.assisted.Assisted;
-import dagger.assisted.AssistedFactory;
-import dagger.assisted.AssistedInject;
-import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.generator.TextGenerator;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.model.ViewModel;
 
-import java.util.Random;
+public abstract class ViewController<VM extends ViewModel> {
+    protected final VM viewModel;
+    protected final AsynchronousTaskHandler taskHandler;
 
-
-public class MainViewController extends ViewController<MainViewModel> {
-
-    @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler) {
-        super(viewModel, taskHandler);
+    protected ViewController(VM viewModel, AsynchronousTaskHandler taskHandler) {
+        this.viewModel = viewModel;
+        this.taskHandler = taskHandler;
     }
-
-    @AssistedFactory
-    public interface MainViewControllerFactory {
-        MainViewController create(MainViewModel mainViewModel);
-    }
-
-
 }

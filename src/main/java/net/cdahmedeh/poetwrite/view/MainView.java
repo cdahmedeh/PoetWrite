@@ -16,10 +16,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.controller.MainViewController;
+import net.cdahmedeh.poetwrite.model.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -78,7 +80,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     protected void subscribe(CompositeDisposable disposable) {
         Disposable textSubscriber = viewModel.streamText()
                 .subscribe(text -> {
-                    textArea.setText(text);
+                    SwingUtilities.invokeLater(() -> textArea.setText(text));
                 });
 
         disposable.add(textSubscriber);

@@ -1,7 +1,7 @@
 package net.cdahmedeh.poetwrite.generator;
 
-import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler;
-import net.cdahmedeh.poetwrite.ui.ServiceStartingEvent;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.event.ServiceStartingEvent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

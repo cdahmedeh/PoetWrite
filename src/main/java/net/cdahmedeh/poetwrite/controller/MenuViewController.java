@@ -1,9 +1,12 @@
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.controller;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
+import net.cdahmedeh.poetwrite.event.TextUpdateEvent;
 import net.cdahmedeh.poetwrite.generator.TextGenerator;
+import net.cdahmedeh.poetwrite.model.MenuViewModel;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
 
 import java.util.Random;
 

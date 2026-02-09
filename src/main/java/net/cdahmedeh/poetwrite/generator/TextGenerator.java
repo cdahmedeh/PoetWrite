@@ -3,10 +3,9 @@ package net.cdahmedeh.poetwrite.generator;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Random;
 
 public class TextGenerator extends LazyService {
@@ -29,7 +28,7 @@ public class TextGenerator extends LazyService {
     @SneakyThrows
     public void init() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
         }
         lorem = LoremIpsum.getInstance();

@@ -16,16 +16,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.model;
 
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTask;
-import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
-
-import javax.inject.Singleton;
+import net.cdahmedeh.poetwrite.engine.AppEvent;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler.AsynchronousTask;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
 
 import static java.lang.String.format;
 

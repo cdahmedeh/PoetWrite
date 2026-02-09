@@ -1,6 +1,8 @@
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import net.cdahmedeh.poetwrite.controller.MenuViewController;
+import net.cdahmedeh.poetwrite.model.MenuViewModel;
 
 import javax.swing.*;
 

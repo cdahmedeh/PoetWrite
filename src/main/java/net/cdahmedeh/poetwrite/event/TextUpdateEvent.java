@@ -1,4 +1,6 @@
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.event;
+
+import net.cdahmedeh.poetwrite.engine.AppEvent;
 
 public class TextUpdateEvent extends AppEvent {
     private String text = "";

@@ -16,11 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.model;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.engine.AppEvent;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
 
 public abstract class ViewModel {
     private AsynchronousTaskHandler taskHandler;

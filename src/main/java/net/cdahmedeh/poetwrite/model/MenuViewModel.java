@@ -1,11 +1,9 @@
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.model;
 
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-
-import javax.inject.Singleton;
+import net.cdahmedeh.poetwrite.engine.AppEvent;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
 
 public class MenuViewModel extends ViewModel {
     @AssistedInject

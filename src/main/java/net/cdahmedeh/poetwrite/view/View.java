@@ -16,11 +16,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import net.cdahmedeh.poetwrite.controller.ViewController;
+import net.cdahmedeh.poetwrite.model.ViewModel;
 
-import javax.swing.*;
 import java.awt.*;
 
 public abstract class View<VM extends ViewModel, VC extends ViewController, RC extends Component> {

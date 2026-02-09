@@ -16,15 +16,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.view;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.controller.StatusViewController;
+import net.cdahmedeh.poetwrite.model.StatusViewModel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class StatusView extends View<StatusViewModel, StatusViewController, JPanel> {
@@ -90,18 +90,17 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
                         if (status.isBusy() == false) {
                             progressBar.setString("done");
                             nameButton.setText("Ready...");
-                            progressBar.setMaximum(1);
-                            progressBar.setValue(1);
+                            progressBar.setMaximum(10);
+                            progressBar.setValue(10);
                             ImageIcon stoppedIcon = new ImageIcon(getClass().getResource("/icons/stopped.png"));
                             spinner.setIcon(stoppedIcon);
                         } else {
                             ImageIcon spinnerIcon = new ImageIcon(getClass().getResource("/icons/spinner.gif"));
                             spinner.setIcon(spinnerIcon);
                             nameButton.setText(status.getCurrent().getName());
+                            progressBar.setMaximum(status.getTotal());
+                            progressBar.setValue(status.getProgress());
                         }
-
-                        progressBar.setMaximum(status.getTotal());
-                        progressBar.setValue(status.getProgress());
                 });
 
         disposable.add(taskSubscriber);

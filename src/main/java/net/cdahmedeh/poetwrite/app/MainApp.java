@@ -19,8 +19,18 @@
 package net.cdahmedeh.poetwrite.app;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.controller.MenuViewController;
+import net.cdahmedeh.poetwrite.controller.StatusViewController;
+import net.cdahmedeh.poetwrite.event.ServiceStartingEvent;
+import net.cdahmedeh.poetwrite.model.MainViewModel;
+import net.cdahmedeh.poetwrite.model.MenuViewModel;
+import net.cdahmedeh.poetwrite.model.StatusViewModel;
 import net.cdahmedeh.poetwrite.ui.*;
-import net.cdahmedeh.poetwrite.ui.MainViewController;
+import net.cdahmedeh.poetwrite.controller.MainViewController;
+import net.cdahmedeh.poetwrite.view.MainView;
+import net.cdahmedeh.poetwrite.view.MenuView;
+import net.cdahmedeh.poetwrite.view.StatusView;
 
 import javax.swing.*;
 
@@ -43,6 +53,15 @@ public class MainApp {
 //                throw new RuntimeException(e);
 //            }
 //        });
+
+        AsynchronousTaskHandler asynchronousTaskHandler = appComponent.taskHandler();
+        asynchronousTaskHandler.submit("Welcome to PoetWrite!", new ServiceStartingEvent(), () -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         FlatLightLaf.setup();
 

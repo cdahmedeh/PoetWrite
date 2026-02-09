@@ -16,16 +16,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.controller;
 
-import io.reactivex.rxjava3.core.Observable;
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
+import net.cdahmedeh.poetwrite.model.MainViewModel;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
 
-public abstract class ViewController<VM extends ViewModel> {
-    protected final VM viewModel;
-    protected final AsynchronousTaskHandler taskHandler;
 
-    protected ViewController(VM viewModel, AsynchronousTaskHandler taskHandler) {
-        this.viewModel = viewModel;
-        this.taskHandler = taskHandler;
+public class MainViewController extends ViewController<MainViewModel> {
+
+    @AssistedInject
+    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler) {
+        super(viewModel, taskHandler);
     }
+
+    @AssistedFactory
+    public interface MainViewControllerFactory {
+        MainViewController create(MainViewModel mainViewModel);
+    }
+
+
 }

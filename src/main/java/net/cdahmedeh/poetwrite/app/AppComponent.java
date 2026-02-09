@@ -16,9 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui;
+package net.cdahmedeh.poetwrite.app;
 
 import dagger.Component;
+import net.cdahmedeh.poetwrite.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.controller.MainViewController;
+import net.cdahmedeh.poetwrite.controller.MenuViewController;
+import net.cdahmedeh.poetwrite.controller.StatusViewController;
+import net.cdahmedeh.poetwrite.model.MainViewModel;
+import net.cdahmedeh.poetwrite.model.MenuViewModel;
+import net.cdahmedeh.poetwrite.model.StatusViewModel;
+
 import javax.inject.Singleton;
 
 @Singleton
