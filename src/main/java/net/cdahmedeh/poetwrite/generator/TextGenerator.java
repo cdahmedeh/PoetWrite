@@ -29,7 +29,7 @@ public class TextGenerator extends LazyService {
     @SneakyThrows
     public void init() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
         }
         lorem = LoremIpsum.getInstance();

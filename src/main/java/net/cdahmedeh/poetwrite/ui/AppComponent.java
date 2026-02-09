@@ -26,7 +26,12 @@ import javax.inject.Singleton;
 public interface AppComponent {
     AsynchronousTaskHandler taskHandler();
 
+    MainViewModel.MainViewModelFactory mainViewModelFactory();
     MainViewController.MainViewControllerFactory mainViewControllerFactory();
+
+    StatusViewModel.StatusViewModelFactory statusViewModelFactory();
     StatusViewController.StatusViewControllerFactory statusViewControllerFactory();
+
+    MenuViewModel.MenuViewModelFactory menuViewModelFactory();
     MenuViewController.MenuViewControllerFactory menuViewControllerFactory();
 }

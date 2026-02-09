@@ -18,5 +18,22 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
+
 public abstract class ViewModel {
+    private AsynchronousTaskHandler taskHandler;
+    private BehaviorSubject<AsynchronousTaskHandlerStatus> taskCurrent = BehaviorSubject.createDefault(AsynchronousTaskHandlerStatus.empty());
+    protected Observable<AsynchronousTaskHandlerStatus> taskStatus = taskCurrent.hide();
+
+    public ViewModel(AsynchronousTaskHandler taskHandler) {
+        this.taskHandler = new AsynchronousTaskHandler();
+
+        taskHandler.stream().subscribe(task -> {
+            listen(task, task.getEvent());
+        });
+    }
+
+    protected abstract void listen(AsynchronousTaskHandler.AsynchronousTask task, AppEvent event);
 }

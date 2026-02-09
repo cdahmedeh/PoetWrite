@@ -49,16 +49,16 @@ public class MainApp {
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
-        MainViewModel mainViewModel = new MainViewModel();
+        MainViewModel mainViewModel = appComponent.mainViewModelFactory().create();
         MainViewController mainViewController = appComponent.mainViewControllerFactory().create(mainViewModel);
         MainView mainView = new MainView(mainViewModel, mainViewController);
 
-        StatusViewModel statusViewModel = new StatusViewModel();
+        StatusViewModel statusViewModel = appComponent.statusViewModelFactory().create();
         StatusViewController statusViewController = appComponent.statusViewControllerFactory().create(statusViewModel);
         StatusView statusView = new StatusView(statusViewModel, statusViewController);
         mainView.attachStatusBar(statusView.root());
 
-        MenuViewModel menuViewModel = new MenuViewModel();
+        MenuViewModel menuViewModel = appComponent.menuViewModelFactory().create();
         MenuViewController menuViewController = appComponent.menuViewControllerFactory().create(menuViewModel);
         MenuView menuView = new MenuView(menuViewModel, menuViewController);
         mainView.attachMenu(menuView.root());

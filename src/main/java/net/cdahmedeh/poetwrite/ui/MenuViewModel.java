@@ -1,16 +1,24 @@
 package net.cdahmedeh.poetwrite.ui;
 
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public class MenuViewModel extends ViewModel {
-    private BehaviorSubject<AsynchronousTaskHandler.AsynchronousTaskHandlerStatus> taskHandlerStatus = BehaviorSubject.createDefault(AsynchronousTaskHandler.AsynchronousTaskHandlerStatus.empty());
+import javax.inject.Singleton;
 
-    public void setTasksHandlerStatus(AsynchronousTaskHandler.AsynchronousTaskHandlerStatus status) {
-        taskHandlerStatus.onNext(status);
+public class MenuViewModel extends ViewModel {
+    @AssistedInject
+    public MenuViewModel(AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
     }
 
-    public Observable<AsynchronousTaskHandler.AsynchronousTaskHandlerStatus> streamTasksHandlerStatus() {
-        return taskHandlerStatus.hide();
+    @AssistedFactory
+    public interface MenuViewModelFactory {
+        MenuViewModel create();
+    }
+
+    @Override
+    protected void listen(AsynchronousTaskHandler.AsynchronousTask task, AppEvent event) {
     }
 }

@@ -1,9 +1,8 @@
 package net.cdahmedeh.poetwrite.generator;
 
 import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler;
-import net.cdahmedeh.poetwrite.ui.TextUpdateEvent;
+import net.cdahmedeh.poetwrite.ui.ServiceStartingEvent;
 
-import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class LazyService {
@@ -23,7 +22,7 @@ public abstract class LazyService {
         if (initialized) return;
         if (!queued.compareAndSet(false, true)) return;
 
-        taskHandler.submit(String.format("Starting %s ",name()), new TextUpdateEvent(), () -> {
+        taskHandler.submit(String.format("Starting %s ",name()), new ServiceStartingEvent(), () -> {
             init();
             initialized = true;
         });

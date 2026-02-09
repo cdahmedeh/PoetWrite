@@ -18,28 +18,33 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTask;
+import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
 
 public class MainViewModel extends ViewModel {
-    private BehaviorSubject<AsynchronousTaskHandler.AsynchronousTaskHandlerStatus> taskHandlerStatus = BehaviorSubject.createDefault(AsynchronousTaskHandler.AsynchronousTaskHandlerStatus.empty());
-
-    public void setTasksHandlerStatus(AsynchronousTaskHandler.AsynchronousTaskHandlerStatus status) {
-        taskHandlerStatus.onNext(status);
-    }
-
-    public Observable<AsynchronousTaskHandler.AsynchronousTaskHandlerStatus> streamTasksHandlerStatus() {
-        return taskHandlerStatus.hide();
-    }
-
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
 
-    public MainViewModel() {
-        super();
+    @AssistedInject
+    public MainViewModel(AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
     }
 
-    public void setText(String text) {
-        this.text.onNext(text);
+    @AssistedFactory
+    public interface MainViewModelFactory {
+        MainViewModel create();
+    }
+
+    @Override
+    protected void listen(AsynchronousTask task, AppEvent event) {
+        if (event instanceof TextUpdateEvent textUpdateEvent) {
+            String text = textUpdateEvent.getText();
+            System.out.println("Text: " + text + " | Blank: " + text.isBlank());
+            this.text.onNext(text);
+        }
     }
 
     public Observable<String> streamText() {

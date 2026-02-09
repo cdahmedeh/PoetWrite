@@ -76,16 +76,12 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable textSubscriber = viewModel.streamTasksHandlerStatus()
-                .subscribe(status -> {
-                    if (status.getCurrent().getEvent() instanceof TextUpdateEvent event) {
-                        SwingUtilities.invokeLater(() -> textArea.setText(event.getText()));
-                    }
+        Disposable textSubscriber = viewModel.streamText()
+                .subscribe(text -> {
+                    textArea.setText(text);
                 });
 
         disposable.add(textSubscriber);
-
-
     }
 
     public void show() {

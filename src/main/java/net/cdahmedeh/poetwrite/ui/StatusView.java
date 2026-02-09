@@ -84,8 +84,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable taskSubscriber = viewModel.streamTasksHandlerStatus()
-                .subscribe(status -> {
+        Disposable taskSubscriber = viewModel.stream().subscribe(status -> {
                         progressBar.setStringPainted(true);
                         progressBar.setString(String.format("%d/%d", status.getProgress(), status.getTotal()));
                         if (status.isBusy() == false) {

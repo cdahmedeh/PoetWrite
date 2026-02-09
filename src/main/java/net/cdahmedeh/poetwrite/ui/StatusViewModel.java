@@ -18,20 +18,39 @@
 
 package net.cdahmedeh.poetwrite.ui;
 
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTask;
 import net.cdahmedeh.poetwrite.ui.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
+
+import javax.inject.Singleton;
 
 import static java.lang.String.format;
 
 public class StatusViewModel extends ViewModel {
     private BehaviorSubject<AsynchronousTaskHandlerStatus> taskHandlerStatus = BehaviorSubject.createDefault(AsynchronousTaskHandlerStatus.empty());
 
-    public void setTasksHandlerStatus(AsynchronousTaskHandlerStatus status) {
-        taskHandlerStatus.onNext(status);
+    @AssistedInject
+    public StatusViewModel(AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
     }
 
-    public Observable<AsynchronousTaskHandlerStatus> streamTasksHandlerStatus() {
+    @AssistedFactory
+    public interface StatusViewModelFactory {
+        StatusViewModel create();
+    }
+
+    @Override
+    protected void listen(AsynchronousTask task, AppEvent event) {
+    }
+
+    public void setTaskHandlerStatus(AsynchronousTaskHandlerStatus taskHandlerStatus) {
+        this.taskHandlerStatus.onNext(taskHandlerStatus);
+    }
+
+    public Observable<AsynchronousTaskHandlerStatus> stream() {
         return taskHandlerStatus.hide();
     }
 }

@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.ui;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -48,12 +49,13 @@ public class AsynchronousTaskHandler {
         }
     }
 
+    @AllArgsConstructor
     @RequiredArgsConstructor
     public static class AsynchronousTaskHandlerStatus {
-        @Getter private final AsynchronousTask current;
-        @Getter private final boolean busy;
-        @Getter private final int progress;
-        @Getter private final int total;
+        @Getter private AsynchronousTask current;
+        @Getter private boolean busy;
+        @Getter private int progress;
+        @Getter private int total;
 
         public static AsynchronousTaskHandlerStatus empty() {
             return new AsynchronousTaskHandlerStatus(AsynchronousTask.empty(), false, 0, 0);
@@ -69,12 +71,18 @@ public class AsynchronousTaskHandler {
 
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
+    private BehaviorSubject<AsynchronousTask> publish = BehaviorSubject.createDefault(AsynchronousTask.empty());
+
     @Inject
     public AsynchronousTaskHandler() {
     }
 
     public Observable<AsynchronousTaskHandlerStatus> status() {
         return status.hide();
+    }
+
+    public Observable<AsynchronousTask> stream() {
+        return publish.hide();
     }
 
     public void submit(String name, AppEvent event, Runnable run) {
@@ -84,38 +92,43 @@ public class AsynchronousTaskHandler {
 
         this.pool.submit(() -> {
             try {
+                System.out.println("Running task: " + task.name);
+                set(task);
                 task.task.run();
             } finally {
+                System.out.println("Finished task: " + task.name);
+                this.publish.onNext(task);
                 decrease(task);
             }
         });
+    }
+
+    private void set(AsynchronousTask task) {
+        AsynchronousTaskHandlerStatus status = this.status.getValue();
+        status.current = task;
+
+        this.status.onNext(status);
     }
 
     private void increase(AsynchronousTask task) {
         tasks.add(task);
 
         AsynchronousTaskHandlerStatus status = this.status.getValue();
-        this.status.onNext(
-                new AsynchronousTaskHandlerStatus(
-                        task,
-                        tasks.size() > 0,
-                        status.progress,
-                        Math.max(tasks.size(), status.total)
-                        ));
+        status.busy = tasks.size() > 0 ? true : false;
+        status.total = status.busy ? status.total + 1 : 0;
+
+        this.status.onNext(status);
     }
 
     public void decrease(AsynchronousTask task) {
         tasks.remove(task);
 
         AsynchronousTaskHandlerStatus status = this.status.getValue();
-        this.status.onNext(
-                new AsynchronousTaskHandlerStatus(
-                        task,
-                        tasks.size() > 0,
-                        status.progress + 1,
-                        Math.max(tasks.size(), status.total)
-                ));
+        status.busy = tasks.size() > 0 ? true : false;
+        status.progress = status.progress + 1;
+        status.total = status.progress != status.total ? status.total : 0;
+        status.progress = status.progress < status.total ? status.progress : 0;
+
+        this.status.onNext(status);
     }
-
-
 }

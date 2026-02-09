@@ -38,7 +38,7 @@ public class StatusViewController extends ViewController<StatusViewModel> {
     public void listen() {
         taskHandler.status()
                 .subscribe(status -> {
-                    viewModel.setTasksHandlerStatus(status);
+                    viewModel.setTaskHandlerStatus(status);
                 });
     }
 }
