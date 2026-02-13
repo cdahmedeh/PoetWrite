@@ -40,3 +40,5 @@ You can note some planned functionality that will be present in PoetWrite. As fe
 
 ![PoetWrite Main Screen Prototype](./assets/main-screen-prototype.png)
 
+## Transparency
+The PoetWrite logo was AI-generated.
