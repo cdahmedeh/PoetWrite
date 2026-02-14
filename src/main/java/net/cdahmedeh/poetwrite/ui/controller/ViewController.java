@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.ui.controller;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.model.ViewModel;
 
-import javax.inject.Singleton;
+public abstract class ViewController<VM extends ViewModel> {
+    protected final VM viewModel;
+    protected final AsynchronousTaskHandler taskHandler;
 
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+    protected ViewController(VM viewModel, AsynchronousTaskHandler taskHandler) {
+        this.viewModel = viewModel;
+        this.taskHandler = taskHandler;
+    }
 }

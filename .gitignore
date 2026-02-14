@@ -13,7 +13,7 @@ build/
 
 ### Generated ANTLR parser ####
 /src/main/antlr/.antlr/
-/src/main/antlr/net/cdahmedeh/poetwrite/parser/.antlr/
+/src/main/antlr/net/cdahmedeh/poetwrite/lib/parser/.antlr/
 ### Allow the launch file in the Antlr source ###
 !src/main/antlr/.vscode/
 !src/main/antlr/.vscode/launch.json

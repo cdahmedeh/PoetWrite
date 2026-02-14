@@ -16,17 +16,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.lib.domain;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
-
-import javax.inject.Singleton;
-
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * An aside is essentially a word or set of words that will be ignored by the
+ * rhetorical analysis. I was inspired by Suno that uses this to have the
+ * words sung with a different voice or as backing.
+ *
+ * We have a poem [with an aisde) here.
+ *
+ * This is still an early design. See the comments in Line.
+ *
+ *  See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
+ */
+public class Aside extends Node {
+    public Aside(String text) {
+        super(text);
+    }
 }

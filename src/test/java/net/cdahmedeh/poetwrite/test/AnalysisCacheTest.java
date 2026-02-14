@@ -18,11 +18,11 @@
 
 package net.cdahmedeh.poetwrite.test;
 
-import net.cdahmedeh.poetwrite.analysis.FeatureAnalysis;
-import net.cdahmedeh.poetwrite.analysis.PhonemeAnalysis;
-import net.cdahmedeh.poetwrite.analysis.SyllableAnalysis;
-import net.cdahmedeh.poetwrite.cache.AnalysisCache;
-import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.PhonemeAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.SyllableAnalysis;
+import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 

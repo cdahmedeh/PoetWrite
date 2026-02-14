@@ -16,17 +16,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.lib.domain;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
+import com.google.common.collect.Lists;
+import lombok.Getter;
 
-import javax.inject.Singleton;
+import java.util.List;
 
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * Lazy way to make an array of words. I just did this so I keep the Word object
+ * as is until I have a better idea of all of this will be tied together.
+ *
+ * We can see as the 'default' node type for a line.
+ *
+ * This is still an early design. See the comments in Line.
+ *
+ * See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
+ */
+public class Words extends Node {
+    @Getter
+    private final List<Word> words = Lists.newArrayList();
+
+    public Words(String text) {
+        super(text);
+    }
 }

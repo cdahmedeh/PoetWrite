@@ -19,11 +19,11 @@
 package net.cdahmedeh.poetwrite.test;
 
 import com.google.common.collect.ImmutableList;
-import net.cdahmedeh.poetwrite.analysis.SyllableAnalysis;
-import net.cdahmedeh.poetwrite.analyzer.SyllableAnalyzer;
+import net.cdahmedeh.poetwrite.lib.analysis.SyllableAnalysis;
+import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
-import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

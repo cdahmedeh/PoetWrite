@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.lib.analysis;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
-
-import javax.inject.Singleton;
-
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+/**
+ * See the documentation for details on the cache implementation.
+ * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
+ *
+ * This stores the result of a rhetorical analysis computation.
+ *
+ * TODO: Add invalidation method.
+ */
+public abstract class FeatureAnalysis {
+    /**
+     * Use this to check if the analysis has been computed yet. The simplest
+     * way for now, is just to check if the values of the fields are null.
+     *
+     * @return
+     */
+    public abstract boolean analyzed();
 }

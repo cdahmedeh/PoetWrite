@@ -18,11 +18,11 @@
 
 package net.cdahmedeh.poetwrite.test;
 
-import net.cdahmedeh.poetwrite.analysis.RhymeAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.RhymeAnalysis;
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
-import net.cdahmedeh.poetwrite.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.domain.Word;
+import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

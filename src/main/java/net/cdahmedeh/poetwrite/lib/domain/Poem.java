@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.lib.domain;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
+import com.google.common.collect.Lists;
+import lombok.Getter;
 
-import javax.inject.Singleton;
+import java.util.List;
 
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * This is the main root of the domain structure of a poem. Everything rests on
+ * being able to prune through the poem effectively. So this is just your
+ * run-of-the-mill silly OOP pattern.
+ *
+ * You can find how this is all designed in the following documentation.
+ * Poem Syntax and Domain Structure - /docs/poem-syntax-and-domain-structure.md
+ */
+public class Poem {
+    @Getter
+    private final List<Line> lines = Lists.newArrayList();
 }

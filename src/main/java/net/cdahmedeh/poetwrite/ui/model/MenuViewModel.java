@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.ui.model;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
+import net.cdahmedeh.poetwrite.ui.event.AppEvent;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 
-import javax.inject.Singleton;
+public class MenuViewModel extends ViewModel {
+    @AssistedInject
+    public MenuViewModel(AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
+    }
 
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+    @AssistedFactory
+    public interface MenuViewModelFactory {
+        MenuViewModel create();
+    }
+
+    @Override
+    protected void listen(AsynchronousTaskHandler.AsynchronousTask task, AppEvent event) {
+    }
 }

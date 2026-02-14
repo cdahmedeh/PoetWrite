@@ -19,8 +19,8 @@
 package net.cdahmedeh.poetwrite.test;
 
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.constructor.PoemConstructor;
-import net.cdahmedeh.poetwrite.domain.Poem;
+import net.cdahmedeh.poetwrite.lib.constructor.PoemConstructor;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.tools.FileTools;
 import net.cdahmedeh.poetwrite.tools.JsonTools;
 import org.junit.jupiter.api.Test;

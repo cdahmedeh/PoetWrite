@@ -16,17 +16,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.component;
+package net.cdahmedeh.poetwrite.lib.domain;
 
-import dagger.Component;
-import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
-import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import javax.inject.Singleton;
+/**
+ * @author Ahmed El-Hajjar
+ *
+ * A node is anything that is within a Line. In the simplest of cases, it's just
+ * one Words node that has the entire text. But if we put notes or asides, then
+ * they join in as other nodes.
+ *
+ * This is still an early design. See the comments in Line.
+ *
+ * See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
+ */
+public class Node {
+    @Getter
+    private final String text;
 
-@Component
-@Singleton
-public interface TestComponent {
-    RhymeAnalyzer getRhymeAnalyzer();
-    SyllableAnalyzer getWordAnalyzer();
+    public Node(String text) {
+        this.text = text;
+    }
 }
