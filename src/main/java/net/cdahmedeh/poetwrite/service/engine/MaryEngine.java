@@ -27,7 +27,7 @@ import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 import net.cdahmedeh.poetwrite.tools.XmlTools;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import org.jsoup.nodes.Document;
 
 import javax.inject.Inject;
@@ -140,8 +140,8 @@ public class MaryEngine extends LazyService {
     /**
      * Just loads up the MaryTTS server. Will think about async later.
      */
-    /*package*/ MaryEngine(AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+    /*package*/ MaryEngine(TaskBus taskBus) {
+        super(taskBus);
 
     }
 

@@ -25,7 +25,7 @@ import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.lib.domain.WordPair;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -80,10 +80,10 @@ public class RhymeAnalyzer extends FeatureAnalyzer<WordPair, RhymeAnalysis> {
 
     @Inject
     RhymeAnalyzer(
-            AsynchronousTaskHandler taskHandler,
+            TaskBus taskBus,
             AnalysisCache analysisCache,
             PhonemeAnalyzer phonemeAnalyzer) {
-        super(analysisCache, taskHandler);
+        super(analysisCache, taskBus);
         this.phonemeAnalyzer = phonemeAnalyzer;
     }
 

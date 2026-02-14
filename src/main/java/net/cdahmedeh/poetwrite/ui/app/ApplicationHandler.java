@@ -18,7 +18,7 @@
 
 package net.cdahmedeh.poetwrite.ui.app;
 
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.ApplicationClosedEvent;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 
@@ -29,8 +29,8 @@ import javax.inject.Singleton;
 public class ApplicationHandler extends LazyService {
 
     @Inject
-    protected ApplicationHandler(AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+    protected ApplicationHandler(TaskBus taskBus) {
+        super(taskBus);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ApplicationHandler extends LazyService {
 
     public void close() {
             ApplicationClosedEvent event = new ApplicationClosedEvent();
-            taskHandler.submit("Closing App", event, () -> {
+            taskBus.submit("Closing App", event, () -> {
 //                try {
 //                    Thread.sleep(2500);
 //                } catch (InterruptedException e) {
@@ -58,4 +58,23 @@ public class ApplicationHandler extends LazyService {
                 System.exit(0);
             });
         }
+
+
+//    public void close() {
+//        ApplicationClosedEvent event = new ApplicationClosedEvent();
+//
+//        taskHandler.submit("Closing App", event, () -> {
+//
+//            // Wait until the task handler reports it's idle, but DON'T block the UI thread.
+//            taskHandlerStatus
+//                    .map(StatusViewModel::snapshot)
+//                    .filter(s -> s.getActiveTaskCount() == 0 /* && s.getQueuedTaskCount() == 0 if you have it */)
+//                    .take(1)
+//                    .subscribeOn(Schedulers.computation())   // run the wait off the UI thread
+//                    .subscribe(
+//                            __ -> System.exit(0),
+//                            err -> System.exit(1) // or log + exit
+//                    );
+//        });
+//    }
 }

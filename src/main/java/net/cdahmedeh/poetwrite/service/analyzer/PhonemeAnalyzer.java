@@ -24,7 +24,7 @@ import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.service.engine.CmuEngine;
 import net.cdahmedeh.poetwrite.service.engine.MaryEngine;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,10 +50,10 @@ public class PhonemeAnalyzer extends FeatureAnalyzer<Word, PhonemeAnalysis>{
     @Inject
     PhonemeAnalyzer(
             AnalysisCache analysisCache,
-            AsynchronousTaskHandler taskHandler,
+            TaskBus taskBus,
             CmuEngine cmuEngine,
             MaryEngine maryEngine) {
-        super(analysisCache, taskHandler);
+        super(analysisCache, taskBus);
         this.cmuEngine = cmuEngine;
         this.maryEngine = maryEngine;
     }

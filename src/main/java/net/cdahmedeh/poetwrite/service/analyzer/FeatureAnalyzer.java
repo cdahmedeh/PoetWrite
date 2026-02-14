@@ -22,7 +22,7 @@ import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
 import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.lib.domain.Entity;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 /**
  * @author Ahmed El-Hajjar
@@ -40,8 +40,8 @@ import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysis> extends LazyService {
     AnalysisCache analysisCache;
 
-    FeatureAnalyzer(AnalysisCache analysisCache, AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+    FeatureAnalyzer(AnalysisCache analysisCache, TaskBus taskBus) {
+        super(taskBus);
         this.analysisCache = analysisCache;
     }
 

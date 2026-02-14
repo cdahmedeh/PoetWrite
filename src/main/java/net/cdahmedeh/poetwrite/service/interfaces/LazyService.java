@@ -18,7 +18,7 @@
 
 package net.cdahmedeh.poetwrite.service.interfaces;
 
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.ServiceStartingEvent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,10 +27,10 @@ public abstract class LazyService {
     private volatile boolean initialized = false;
     private final AtomicBoolean queued = new AtomicBoolean(false);
 
-    protected final AsynchronousTaskHandler taskHandler;
+    protected final TaskBus taskBus;
 
-    protected LazyService(AsynchronousTaskHandler taskHandler) {
-        this.taskHandler = taskHandler;
+    protected LazyService(TaskBus taskBus) {
+        this.taskBus = taskBus;
         ensure();
     }
 
@@ -40,7 +40,7 @@ public abstract class LazyService {
         if (initialized) return;
         if (!queued.compareAndSet(false, true)) return;
 
-        taskHandler.submit(String.format("Starting %s ",name()), new ServiceStartingEvent(), () -> {
+        taskBus.submit(String.format("Starting %s ",name()), new ServiceStartingEvent(), () -> {
             init();
             initialized = true;
         });

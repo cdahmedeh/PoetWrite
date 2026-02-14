@@ -23,7 +23,7 @@ import net.cdahmedeh.poetwrite.lib.analysis.SyllableAnalysis;
 import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -46,9 +46,9 @@ public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
     @Inject
     SyllableAnalyzer(
             AnalysisCache analysisCache,
-            AsynchronousTaskHandler taskHandler,
+            TaskBus taskBus,
             PhonemeAnalyzer phonemeComputer) {
-        super(analysisCache, taskHandler);
+        super(analysisCache, taskBus);
         this.phonemeComputer = phonemeComputer;
     }
 

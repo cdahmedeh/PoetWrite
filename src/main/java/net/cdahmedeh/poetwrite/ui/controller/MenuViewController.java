@@ -25,7 +25,7 @@ import net.cdahmedeh.poetwrite.ui.event.TextUpdateEvent;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
 import net.cdahmedeh.poetwrite.service.generator.TextGenerator;
 import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 import java.util.Random;
 
@@ -34,8 +34,8 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     private final ApplicationHandler applicationHandler;
 
     @AssistedInject
-    protected MenuViewController(@Assisted MenuViewModel viewModel, AsynchronousTaskHandler taskHandler, TextGenerator textGenerator, ApplicationHandler applicationHandler) {
-        super(viewModel, taskHandler);
+    protected MenuViewController(@Assisted MenuViewModel viewModel, TaskBus taskBus, TextGenerator textGenerator, ApplicationHandler applicationHandler) {
+        super(viewModel, taskBus);
         this.textGenerator = textGenerator;
         this.applicationHandler = applicationHandler;
     }
@@ -46,11 +46,11 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     }
 
     public void generateRandomText() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             TextUpdateEvent event = new TextUpdateEvent();
-            taskHandler.submit("Generating Random Text " + new Random().nextDouble(), event, () -> {
+            taskBus.submit("Generating Random Text " + new Random().nextDouble(), event, () -> {
                 try {
-                    Thread.sleep(30);
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

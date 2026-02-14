@@ -18,15 +18,15 @@
 
 package net.cdahmedeh.poetwrite.ui.controller;
 
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.model.ViewModel;
 
 public abstract class ViewController<VM extends ViewModel> {
     protected final VM viewModel;
-    protected final AsynchronousTaskHandler taskHandler;
+    protected final TaskBus taskBus;
 
-    protected ViewController(VM viewModel, AsynchronousTaskHandler taskHandler) {
+    protected ViewController(VM viewModel, TaskBus taskBus) {
         this.viewModel = viewModel;
-        this.taskHandler = taskHandler;
+        this.taskBus = taskBus;
     }
 }

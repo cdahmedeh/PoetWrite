@@ -20,22 +20,23 @@ package net.cdahmedeh.poetwrite.ui.model;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.AsyncTask;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
+import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
 
 public abstract class ViewModel {
-    private AsynchronousTaskHandler taskHandler;
-    private BehaviorSubject<AsynchronousTaskHandlerStatus> taskCurrent = BehaviorSubject.createDefault(AsynchronousTaskHandlerStatus.empty());
-    protected Observable<AsynchronousTaskHandlerStatus> taskStatus = taskCurrent.hide();
+    private TaskBus taskBus;
+    private BehaviorSubject<TaskBusStatus> taskCurrent = BehaviorSubject.createDefault(TaskBusStatus.empty());
+    protected Observable<TaskBusStatus> taskStatus = taskCurrent.hide();
 
-    public ViewModel(AsynchronousTaskHandler taskHandler) {
-        this.taskHandler = new AsynchronousTaskHandler();
+    public ViewModel(TaskBus taskBus) {
+        this.taskBus = new TaskBus();
 
-        taskHandler.stream().subscribe(task -> {
+        taskBus.stream().subscribe(task -> {
             listen(task, task.getEvent());
         });
     }
 
-    protected abstract void listen(AsynchronousTaskHandler.AsynchronousTask task, AppEvent event);
+    protected abstract void listen(AsyncTask task, AppEvent event);
 }

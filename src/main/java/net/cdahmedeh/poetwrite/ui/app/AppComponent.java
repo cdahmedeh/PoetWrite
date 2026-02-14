@@ -19,7 +19,7 @@
 package net.cdahmedeh.poetwrite.ui.app;
 
 import dagger.Component;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.controller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.controller.MenuViewController;
 import net.cdahmedeh.poetwrite.ui.controller.StatusViewController;
@@ -32,7 +32,7 @@ import javax.inject.Singleton;
 @Singleton
 @Component
 public interface AppComponent {
-    AsynchronousTaskHandler taskHandler();
+    TaskBus taskBus();
 
     MainViewModel.MainViewModelFactory mainViewModelFactory();
     MainViewController.MainViewControllerFactory mainViewControllerFactory();

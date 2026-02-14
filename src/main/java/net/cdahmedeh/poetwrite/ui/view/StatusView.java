@@ -87,9 +87,10 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
         ImageIcon stoppedIcon = new ImageIcon(getClass().getResource("/icons/stopped.png"));
         ImageIcon spinnerIcon = new ImageIcon(getClass().getResource("/icons/spinner.gif"));
 
-        Disposable taskSubscriber = viewModel.stream().subscribe(status -> {
+        Disposable taskSubscriber = viewModel.ui().subscribe(status -> {
+
             SwingUtilities.invokeLater(() -> {
-                        progressBar.setStringPainted(true);
+                progressBar.setStringPainted(true);
                         progressBar.setString(String.format("%d/%d", status.getProgress(), status.getTotal()));
                         if (status.isBusy() == false) {
                             progressBar.setString("done");

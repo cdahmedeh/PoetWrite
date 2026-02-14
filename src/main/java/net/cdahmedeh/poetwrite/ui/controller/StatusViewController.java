@@ -21,13 +21,13 @@ package net.cdahmedeh.poetwrite.ui.controller;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.model.StatusViewModel;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 
 public class StatusViewController extends ViewController<StatusViewModel> {
     @AssistedInject
-    protected StatusViewController(@Assisted StatusViewModel viewModel, AsynchronousTaskHandler taskHandler) {
-        super(viewModel, taskHandler);
+    protected StatusViewController(@Assisted StatusViewModel viewModel, TaskBus taskBus) {
+        super(viewModel, taskBus);
 
         listen();
     }
@@ -38,7 +38,7 @@ public class StatusViewController extends ViewController<StatusViewModel> {
     }
 
     public void listen() {
-        taskHandler.status()
+        taskBus.status()
                 .subscribe(status -> {
                     viewModel.setTaskHandlerStatus(status);
                 });

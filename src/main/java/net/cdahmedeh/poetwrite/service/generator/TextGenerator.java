@@ -21,23 +21,32 @@ package net.cdahmedeh.poetwrite.service.generator;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.service.analyzer.PhonemeAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Random;
 
 @Singleton
 public class TextGenerator extends LazyService {
     public static final int DEFAULT_MIN_PARAGRAPHS = 10;
     public static final int DEFAULT_MAX_PARAGRAPHS = 25;
 
+    private final SyllableAnalyzer syllableAnalyzer;
+    private final PhonemeAnalyzer phonemeAnalyzer;
+    private final RhymeAnalyzer rhymeAnalyzer;
+
     private Lorem lorem;
 
     @Inject
-    public TextGenerator(AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+    public TextGenerator(TaskBus taskBus, SyllableAnalyzer syllableAnalyzer, PhonemeAnalyzer phonemeAnalyzer, RhymeAnalyzer rhymeAnalyzer) {
+        super(taskBus);
+        this.syllableAnalyzer = syllableAnalyzer;
+        this.phonemeAnalyzer = phonemeAnalyzer;
+        this.rhymeAnalyzer = rhymeAnalyzer;
     }
 
     @Override

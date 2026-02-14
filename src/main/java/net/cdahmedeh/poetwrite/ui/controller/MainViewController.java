@@ -22,8 +22,8 @@ import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
@@ -31,8 +31,8 @@ public class MainViewController extends ViewController<MainViewModel> {
 
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, AsynchronousTaskHandler taskHandler, ApplicationHandler applicationHandler) {
-        super(viewModel, taskHandler);
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler) {
+        super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
     }
 

@@ -24,7 +24,7 @@ import net.cdahmedeh.poetwrite.lib.constructor.PhonemeConstructor;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
@@ -93,8 +93,8 @@ public class CmuEngine extends LazyService {
 
     @Inject
     @SneakyThrows
-        /*package*/ CmuEngine(AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+        /*package*/ CmuEngine(TaskBus taskBus) {
+        super(taskBus);
     }
 
     @Override

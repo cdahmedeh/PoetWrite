@@ -21,20 +21,23 @@ package net.cdahmedeh.poetwrite.ui.model;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler.AsynchronousTask;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler.AsynchronousTaskHandlerStatus;
+import net.cdahmedeh.poetwrite.ui.async.AsyncTask;
+import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
+
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
 public class StatusViewModel extends ViewModel {
-    private BehaviorSubject<AsynchronousTaskHandlerStatus> taskHandlerStatus = BehaviorSubject.createDefault(AsynchronousTaskHandlerStatus.empty());
+    private BehaviorSubject<TaskBusStatus> taskHandlerStatus = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
     @AssistedInject
-    public StatusViewModel(AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+    public StatusViewModel(TaskBus taskBus) {
+        super(taskBus);
     }
 
     @AssistedFactory
@@ -43,14 +46,35 @@ public class StatusViewModel extends ViewModel {
     }
 
     @Override
-    protected void listen(AsynchronousTask task, AppEvent event) {
+    protected void listen(AsyncTask task, AppEvent event) {
     }
 
-    public void setTaskHandlerStatus(AsynchronousTaskHandlerStatus taskHandlerStatus) {
+    public void setTaskHandlerStatus(TaskBusStatus taskHandlerStatus) {
         this.taskHandlerStatus.onNext(taskHandlerStatus);
     }
 
-    public Observable<AsynchronousTaskHandlerStatus> stream() {
+    public Observable<TaskBusStatus> stream() {
         return taskHandlerStatus.hide();
+    }
+
+    private static TaskBusStatus snapshot(TaskBusStatus s) {
+        return new TaskBusStatus(
+                s.getCurrent(),
+                s.isBusy(),
+                s.getProgress(),
+                s.getTotal()
+        );
+    }
+
+    private final Observable<TaskBusStatus> ui =
+            taskHandlerStatus
+                    .map(StatusViewModel::snapshot)
+                    .observeOn(Schedulers.computation())
+                    .concatMap(s -> Observable.just(s).delay(50, TimeUnit.MILLISECONDS))
+                    .replay(1)
+                    .refCount();
+
+    public Observable<TaskBusStatus> ui() {
+        return ui;
     }
 }

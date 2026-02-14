@@ -22,17 +22,17 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 import net.cdahmedeh.poetwrite.ui.event.TextUpdateEvent;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
-import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler.AsynchronousTask;
+import net.cdahmedeh.poetwrite.ui.async.AsyncTask;
 
 public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
 
     @AssistedInject
-    public MainViewModel(AsynchronousTaskHandler taskHandler) {
-        super(taskHandler);
+    public MainViewModel(TaskBus taskBus) {
+        super(taskBus);
     }
 
     @AssistedFactory
@@ -41,7 +41,7 @@ public class MainViewModel extends ViewModel {
     }
 
     @Override
-    protected void listen(AsynchronousTask task, AppEvent event) {
+    protected void listen(AsyncTask task, AppEvent event) {
         if (event instanceof TextUpdateEvent textUpdateEvent) {
             String text = textUpdateEvent.getText();
             this.text.onNext(text);
