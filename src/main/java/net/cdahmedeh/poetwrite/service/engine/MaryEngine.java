@@ -25,7 +25,9 @@ import marytts.datatypes.MaryDataType;
 import net.cdahmedeh.poetwrite.lib.constructor.PhonemeConstructor;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 import net.cdahmedeh.poetwrite.tools.XmlTools;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 import org.jsoup.nodes.Document;
 
 import javax.inject.Inject;
@@ -111,7 +113,7 @@ import java.util.Locale;
  * ARPAbet is the universal phoneme representation.
  */
 @Singleton
-public class MaryEngine {
+public class MaryEngine extends LazyService {
     // Config Stuff
 
     // The default settings for MaryTTS, wondering if this one day could become
@@ -131,14 +133,26 @@ public class MaryEngine {
     /**
      * Just the magic server for MaryTTS
      */
-    private final MaryInterface mary;
+    private MaryInterface mary;
 
     @Inject
     @SneakyThrows
     /**
      * Just loads up the MaryTTS server. Will think about async later.
      */
-    /*package*/ MaryEngine() {
+    /*package*/ MaryEngine(AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
+
+    }
+
+    @Override
+    public String name() {
+        return "MaryTTS Engine";
+    }
+
+    @Override
+    @SneakyThrows
+    protected void init() {
         mary = new LocalMaryInterface();
 
         mary.setLocale(MARY_LOCALE);
@@ -195,4 +209,6 @@ public class MaryEngine {
 
         return phonemes;
     }
+
+
 }

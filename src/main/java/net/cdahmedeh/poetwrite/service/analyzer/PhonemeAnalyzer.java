@@ -24,6 +24,7 @@ import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.service.engine.CmuEngine;
 import net.cdahmedeh.poetwrite.service.engine.MaryEngine;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,16 +43,17 @@ import java.util.List;
  *         method.
  */
 @Singleton
-public class PhonemeAnalyzer extends FeatureAnalyzer<Word, PhonemeAnalysis> {
+public class PhonemeAnalyzer extends FeatureAnalyzer<Word, PhonemeAnalysis>{
     CmuEngine cmuEngine;
     MaryEngine maryEngine;
 
     @Inject
     PhonemeAnalyzer(
             AnalysisCache analysisCache,
+            AsynchronousTaskHandler taskHandler,
             CmuEngine cmuEngine,
             MaryEngine maryEngine) {
-        super(analysisCache);
+        super(analysisCache, taskHandler);
         this.cmuEngine = cmuEngine;
         this.maryEngine = maryEngine;
     }
@@ -71,5 +73,15 @@ public class PhonemeAnalyzer extends FeatureAnalyzer<Word, PhonemeAnalysis> {
         }
 
         analysis.setPhonemes(phonemes);
+    }
+
+    @Override
+    public String name() {
+        return "Phoneme Analyzer";
+    }
+
+    @Override
+    protected void init() {
+
     }
 }

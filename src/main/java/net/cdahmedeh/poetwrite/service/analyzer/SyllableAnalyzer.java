@@ -23,6 +23,7 @@ import net.cdahmedeh.poetwrite.lib.analysis.SyllableAnalysis;
 import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,8 +46,9 @@ public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
     @Inject
     SyllableAnalyzer(
             AnalysisCache analysisCache,
+            AsynchronousTaskHandler taskHandler,
             PhonemeAnalyzer phonemeComputer) {
-        super(analysisCache);
+        super(analysisCache, taskHandler);
         this.phonemeComputer = phonemeComputer;
     }
 
@@ -65,5 +67,15 @@ public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
                 .count();
 
         analysis.setNumberOfSyllables(syllables);
+    }
+
+    @Override
+    public String name() {
+        return "Syllable Analyzer";
+    }
+
+    @Override
+    protected void init() {
+
     }
 }

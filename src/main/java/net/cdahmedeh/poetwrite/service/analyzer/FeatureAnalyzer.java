@@ -21,6 +21,8 @@ package net.cdahmedeh.poetwrite.service.analyzer;
 import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
 import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
 import net.cdahmedeh.poetwrite.lib.domain.Entity;
+import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 
 /**
  * @author Ahmed El-Hajjar
@@ -35,10 +37,11 @@ import net.cdahmedeh.poetwrite.lib.domain.Entity;
  * See the documentation for details on the cache implementation.
  * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
  */
-public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysis> {
+public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysis> extends LazyService {
     AnalysisCache analysisCache;
 
-    FeatureAnalyzer(AnalysisCache analysisCache) {
+    FeatureAnalyzer(AnalysisCache analysisCache, AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
         this.analysisCache = analysisCache;
     }
 

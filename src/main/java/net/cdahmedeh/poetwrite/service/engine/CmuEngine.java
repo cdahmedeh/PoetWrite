@@ -23,6 +23,8 @@ import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.lib.constructor.PhonemeConstructor;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
+import net.cdahmedeh.poetwrite.ui.async.AsynchronousTaskHandler;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
@@ -74,7 +76,7 @@ import java.util.regex.Pattern;
  *
  */
 @Singleton
-public class CmuEngine {
+public class CmuEngine extends LazyService {
     public static final String CMUDICT_FILE = "dicts/cmudict-0.7b";
 
     public static final Pattern CMU_ENTRY_PATTERN = Pattern.compile("(.+)\\s\\s(.+)");
@@ -91,7 +93,17 @@ public class CmuEngine {
 
     @Inject
     @SneakyThrows
-        /*package*/ CmuEngine() {
+        /*package*/ CmuEngine(AsynchronousTaskHandler taskHandler) {
+        super(taskHandler);
+    }
+
+    @Override
+    public String name() {
+        return "CMU Engine";
+    }
+
+    @Override
+    protected void init() {
         InputStream stream = ClassLoader.getSystemResourceAsStream(CMUDICT_FILE);
         List<String> entries = IOUtils.readLines(stream, Charset.defaultCharset());
 
@@ -146,4 +158,6 @@ public class CmuEngine {
     private boolean isCommentEntry(String entry) {
         return entry.startsWith(";;;");
     }
+
+
 }
