@@ -98,7 +98,7 @@ public class TaskBus {
 
         TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
-        status.setTotal(status.getTotal() + 1);
+        status.setQueued(status.getQueued() + 1);
 
         announce(status);
     }
@@ -110,8 +110,8 @@ public class TaskBus {
         status.setBusy(tasks.size() > 0 ? true : false);
 
         status.setProgress(status.getProgress() + 1);
-        status.setTotal(status.isBusy() ? status.getTotal() : 0);
-        status.setProgress(status.getProgress() < status.getTotal() ? status.getProgress() : 0);
+        status.setQueued(status.isBusy() ? status.getQueued() : 0);
+        status.setProgress(status.getProgress() < status.getQueued() ? status.getProgress() : 0);
 
         announce(status);
     }
