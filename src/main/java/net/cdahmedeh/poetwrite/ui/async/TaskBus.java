@@ -25,6 +25,7 @@ import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -43,7 +44,7 @@ public class TaskBus {
 
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
-
+    private final ExecutorService state = Executors.newSingleThreadExecutor();
 
     @Inject
     public TaskBus() {
@@ -65,9 +66,15 @@ public class TaskBus {
     public void submit(String name, AppEvent event, Runnable run) {
         AsyncTask task = new AsyncTask(name, event, run);
 
-        increase(task);
+        this.state.execute(() -> {
+            increase(task);
+        });
 
         this.pool.submit(() -> {
+            if (SwingUtilities.isEventDispatchThread()) {
+                System.out.println(String.format("Task %s is running on the EDT", name));
+            }
+
             try {
                 set(task);
                 task.getTask().run();
