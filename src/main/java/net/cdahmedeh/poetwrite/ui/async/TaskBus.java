@@ -79,11 +79,18 @@ public class TaskBus {
     }
 
     private void increase(AsyncTask task) {
+        boolean busy = !tasks.isEmpty();
         tasks.add(task);
 
         TaskBusStatus status = this.monitor.getValue();
-        status.setBusy(tasks.size() > 0 ? true : false);
-        status.setTotal(status.isBusy() ? status.getTotal() + 1 : 0);
+
+        if (!busy) {
+            status.setProgress(0);
+            status.setTotal(0);
+        }
+
+        status.setBusy(true);
+        status.setTotal(status.getTotal() + 1);
 
         announce(status);
     }
@@ -92,10 +99,16 @@ public class TaskBus {
         tasks.remove(task);
 
         TaskBusStatus status = this.monitor.getValue();
-        status.setBusy(tasks.size() > 0 ? true : false);
+
         status.setProgress(status.getProgress() + 1);
-        status.setTotal(status.getProgress() != status.getTotal() ? status.getTotal() : 0);
-        status.setProgress(status.getProgress() < status.getTotal() ? status.getProgress() : 0);
+
+        boolean busy = !tasks.isEmpty();
+        status.setBusy(busy);
+
+        if (!busy) {
+            status.setProgress(0);
+            status.setTotal(0);
+        }
 
         announce(status);
     }
