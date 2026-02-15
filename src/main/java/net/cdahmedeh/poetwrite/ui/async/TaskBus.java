@@ -48,7 +48,12 @@ public class TaskBus {
     }
 
     public Observable<TaskBusStatus> monitor() {
-        return monitor.hide();
+        return monitor
+                .map(s -> TaskBusStatus.snapshot(s))
+                .observeOn(Schedulers.computation())
+                .concatMap(s -> Observable.just(s).delay(100, java.util.concurrent.TimeUnit.MILLISECONDS))
+                .replay(1)
+                .refCount();
     }
 
     public Observable<TaskBusStatus> stream() {
