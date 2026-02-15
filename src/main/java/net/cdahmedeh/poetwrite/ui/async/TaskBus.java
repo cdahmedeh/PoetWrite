@@ -19,6 +19,7 @@
 package net.cdahmedeh.poetwrite.ui.async;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 
@@ -34,23 +35,31 @@ public class TaskBus {
 
     private List<AsyncTask> tasks = new ArrayList<>();
 
-    private BehaviorSubject<TaskBusStatus> status
+    private BehaviorSubject<TaskBusStatus> stream =
+            BehaviorSubject.createDefault(TaskBusStatus.empty());
+
+    private BehaviorSubject<TaskBusStatus> monitor
             = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
-    private BehaviorSubject<AsyncTask> publish = BehaviorSubject.createDefault(AsyncTask.empty());
+
 
     @Inject
     public TaskBus() {
     }
 
-    public Observable<TaskBusStatus> status() {
-        return status.hide();
+    public Observable<TaskBusStatus> monitor() {
+        return monitor
+                .map(TaskBusStatus::snapshot)
+                .observeOn(Schedulers.computation())
+                .concatMap(s -> Observable.just(s).delay(50, java.util.concurrent.TimeUnit.MILLISECONDS))
+                .replay(1)
+                .refCount();
     }
 
-    public Observable<AsyncTask> stream() {
-        return publish.hide();
+    public Observable<TaskBusStatus> stream() {
+        return stream.hide();
     }
 
     public void submit(String name, AppEvent event, Runnable run) {
@@ -60,43 +69,51 @@ public class TaskBus {
 
         this.pool.submit(() -> {
             try {
-//                System.out.println("Running task: " + task.name);
                 set(task);
                 task.getTask().run();
             } finally {
-//                System.out.println("Finished task: " + task.name);
-                this.publish.onNext(task);
+                publish(task);
                 decrease(task);
             }
         });
     }
 
     private void set(AsyncTask task) {
-        TaskBusStatus status = this.status.getValue();
+        TaskBusStatus status = this.monitor.getValue();
         status.setCurrent(task);
 
-        this.status.onNext(status);
+        announce(status);
     }
 
     private void increase(AsyncTask task) {
         tasks.add(task);
 
-        TaskBusStatus status = this.status.getValue();
+        TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
         status.setTotal(status.isBusy() ? status.getTotal() + 1 : 0);
 
-        this.status.onNext(status);
+        announce(status);
     }
 
     public void decrease(AsyncTask task) {
         tasks.remove(task);
 
-        TaskBusStatus status = this.status.getValue();
+        TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
         status.setProgress(status.getProgress() + 1);
         status.setTotal(status.getProgress() != status.getTotal() ? status.getTotal() : 0);
         status.setProgress(status.getProgress() < status.getTotal() ? status.getProgress() : 0);
 
-        this.status.onNext(status);
+        announce(status);
     }
+
+    public void publish(AsyncTask task) {
+        TaskBusStatus status = this.stream.getValue();
+        this.stream.onNext(TaskBusStatus.update(status, task));
+    }
+
+    public void announce(TaskBusStatus status) {
+        this.monitor.onNext(TaskBusStatus.snapshot(status));
+    }
+
 }

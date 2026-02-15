@@ -56,25 +56,4 @@ public class StatusViewModel extends ViewModel {
     public Observable<TaskBusStatus> stream() {
         return taskHandlerStatus.hide();
     }
-
-    private static TaskBusStatus snapshot(TaskBusStatus s) {
-        return new TaskBusStatus(
-                s.getCurrent(),
-                s.isBusy(),
-                s.getProgress(),
-                s.getTotal()
-        );
-    }
-
-    private final Observable<TaskBusStatus> ui =
-            taskHandlerStatus
-                    .map(StatusViewModel::snapshot)
-                    .observeOn(Schedulers.computation())
-                    .concatMap(s -> Observable.just(s).delay(50, TimeUnit.MILLISECONDS))
-                    .replay(1)
-                    .refCount();
-
-    public Observable<TaskBusStatus> ui() {
-        return ui;
-    }
 }

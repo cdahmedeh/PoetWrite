@@ -20,4 +20,20 @@ public class TaskBusStatus {
     public static TaskBusStatus empty() {
         return new TaskBusStatus(AsyncTask.empty(), false, 0, 0);
     }
+
+    public static TaskBusStatus snapshot(TaskBusStatus status) {
+        return new TaskBusStatus(
+                status.getCurrent(),
+                status.isBusy(),
+                status.getProgress(),
+                status.getTotal());
+    }
+
+    public static TaskBusStatus update(TaskBusStatus status, AsyncTask task) {
+        return new TaskBusStatus(
+                task,
+                status.isBusy(),
+                status.getProgress(),
+                status.getTotal());
+    }
 }

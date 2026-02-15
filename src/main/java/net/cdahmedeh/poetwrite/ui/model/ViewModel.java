@@ -33,8 +33,8 @@ public abstract class ViewModel {
     public ViewModel(TaskBus taskBus) {
         this.taskBus = new TaskBus();
 
-        taskBus.stream().subscribe(task -> {
-            listen(task, task.getEvent());
+        taskBus.stream().subscribe(status -> {
+            listen(status.getCurrent(), status.getCurrent().getEvent());
         });
     }
 
