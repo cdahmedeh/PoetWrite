@@ -25,7 +25,6 @@ import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -43,8 +42,6 @@ public class TaskBus {
             = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
-
-    private final ExecutorService state = Executors.newSingleThreadExecutor();
 
     @Inject
     public TaskBus() {
@@ -66,15 +63,9 @@ public class TaskBus {
     public void submit(String name, AppEvent event, Runnable run) {
         AsyncTask task = new AsyncTask(name, event, run);
 
-        this.state.execute(() -> {
-            increase(task);
-        });
+        increase(task);
 
         this.pool.submit(() -> {
-            if (SwingUtilities.isEventDispatchThread()) {
-                System.out.println(String.format("Task %s is running on the EDT", name));
-            }
-
             try {
                 set(task);
                 task.getTask().run();
@@ -84,7 +75,6 @@ public class TaskBus {
             }
         });
     }
-
 
     private void set(AsyncTask task) {
         TaskBusStatus status = this.monitor.getValue();
@@ -98,7 +88,7 @@ public class TaskBus {
 
         TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
-        status.setQueued(status.getQueued() + 1);
+        status.setTotal(status.isBusy() ? status.getTotal() + 1 : 0);
 
         announce(status);
     }
@@ -108,10 +98,9 @@ public class TaskBus {
 
         TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
-
         status.setProgress(status.getProgress() + 1);
-        status.setQueued(status.isBusy() ? status.getQueued() : 0);
-        status.setProgress(status.getProgress() < status.getQueued() ? status.getProgress() : 0);
+        status.setTotal(status.getProgress() != status.getTotal() ? status.getTotal() : 0);
+        status.setProgress(status.getProgress() < status.getTotal() ? status.getProgress() : 0);
 
         announce(status);
     }

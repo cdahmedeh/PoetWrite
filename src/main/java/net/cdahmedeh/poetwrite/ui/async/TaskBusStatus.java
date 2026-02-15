@@ -15,7 +15,7 @@ public class TaskBusStatus {
     @Getter @Setter
     private int progress;
     @Getter @Setter
-    private int queued;
+    private int total;
 
     public static TaskBusStatus empty() {
         return new TaskBusStatus(AsyncTask.empty(), false, 0, 0);
@@ -26,7 +26,7 @@ public class TaskBusStatus {
                 status.getCurrent(),
                 status.isBusy(),
                 status.getProgress(),
-                status.getQueued());
+                status.getTotal());
     }
 
     public static TaskBusStatus update(TaskBusStatus status, AsyncTask task) {
@@ -34,6 +34,6 @@ public class TaskBusStatus {
                 task,
                 status.isBusy(),
                 status.getProgress(),
-                status.getQueued());
+                status.getTotal());
     }
 }

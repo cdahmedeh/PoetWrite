@@ -46,7 +46,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     }
 
     public void generateRandomText() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             TextUpdateEvent event = new TextUpdateEvent();
             taskBus.submit("Generating Random Text " + new Random().nextDouble(), event, () -> {
                 try {
