@@ -46,8 +46,6 @@ public class TaskBus {
 
     private final ExecutorService state = Executors.newSingleThreadExecutor();
 
-    private int queued = 0;
-
     @Inject
     public TaskBus() {
     }
@@ -97,11 +95,10 @@ public class TaskBus {
 
     private void increase(AsyncTask task) {
         tasks.add(task);
-        queued = queued + 1;
 
         TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
-        status.setTotal(queued);
+        status.setTotal(status.getTotal() + 1);
 
         announce(status);
     }
@@ -112,12 +109,8 @@ public class TaskBus {
         TaskBusStatus status = this.monitor.getValue();
         status.setBusy(tasks.size() > 0 ? true : false);
 
-        if (status.isBusy() == false) {
-            queued = 0;
-        }
-
         status.setProgress(status.getProgress() + 1);
-        status.setTotal(queued);
+        status.setTotal(status.isBusy() ? status.getTotal() : 0);
         status.setProgress(status.getProgress() < status.getTotal() ? status.getProgress() : 0);
 
         announce(status);
