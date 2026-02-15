@@ -47,34 +47,17 @@ public class ApplicationHandler extends LazyService {
 //        }
     }
 
+    public void hold() {
+        taskBus.monitor()
+                .filter(status -> status.isBusy() == false)
+                .take(1)
+                .blockingSubscribe();
+    }
+
     public void close() {
-            ApplicationClosedEvent event = new ApplicationClosedEvent();
-            taskBus.submit("Closing App", event, () -> {
-//                try {
-//                    Thread.sleep(2500);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                System.exit(0);
-            });
-        }
-
-
-//    public void close() {
-//        ApplicationClosedEvent event = new ApplicationClosedEvent();
-//
-//        taskHandler.submit("Closing App", event, () -> {
-//
-//            // Wait until the task handler reports it's idle, but DON'T block the UI thread.
-//            taskHandlerStatus
-//                    .map(StatusViewModel::snapshot)
-//                    .filter(s -> s.getActiveTaskCount() == 0 /* && s.getQueuedTaskCount() == 0 if you have it */)
-//                    .take(1)
-//                    .subscribeOn(Schedulers.computation())   // run the wait off the UI thread
-//                    .subscribe(
-//                            __ -> System.exit(0),
-//                            err -> System.exit(1) // or log + exit
-//                    );
-//        });
-//    }
+        new Thread(() -> {
+            hold();
+            System.exit(0);
+        }).start();
+    }
 }
