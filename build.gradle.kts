@@ -94,6 +94,6 @@ tasks.generateGrammarSource {
     arguments = arguments + listOf(
         "-visitor",
         "-long-messages",
-        "-package", "${project.group}.parser"
+        "-package", "${project.group}.lib.parser"
     )
 }
