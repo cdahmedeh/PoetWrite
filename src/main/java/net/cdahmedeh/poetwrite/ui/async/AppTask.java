@@ -6,7 +6,7 @@ import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 import net.cdahmedeh.poetwrite.ui.event.TaskBusStartedEvent;
 
 @RequiredArgsConstructor
-public class BusTask {
+public class AppTask {
         @Getter
         private final String name;
         @Getter
@@ -14,8 +14,8 @@ public class BusTask {
         @Getter
         private final Runnable task;
 
-        public static <E extends AppEvent> BusTask empty() {
-            return new BusTask(
+        public static <E extends AppEvent> AppTask empty() {
+            return new AppTask(
                     "Ready",
                     new TaskBusStartedEvent(),
                     () -> {

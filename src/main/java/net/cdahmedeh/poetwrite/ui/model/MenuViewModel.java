@@ -20,7 +20,7 @@ package net.cdahmedeh.poetwrite.ui.model;
 
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import net.cdahmedeh.poetwrite.ui.async.BusTask;
+import net.cdahmedeh.poetwrite.ui.async.AppTask;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
@@ -36,6 +36,6 @@ public class MenuViewModel extends ViewModel {
     }
 
     @Override
-    protected void listen(BusTask task, AppEvent event) {
+    protected void listen(AppTask task, AppEvent event) {
     }
 }

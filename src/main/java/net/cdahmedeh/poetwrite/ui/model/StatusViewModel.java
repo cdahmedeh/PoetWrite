@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
-import net.cdahmedeh.poetwrite.ui.async.BusTask;
+import net.cdahmedeh.poetwrite.ui.async.AppTask;
 import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
 
 import static java.lang.String.format;
@@ -43,7 +43,7 @@ public class StatusViewModel extends ViewModel {
     }
 
     @Override
-    protected void listen(BusTask task, AppEvent event) {
+    protected void listen(AppTask task, AppEvent event) {
     }
 
     public void setTaskHandlerStatus(TaskBusStatus taskHandlerStatus) {

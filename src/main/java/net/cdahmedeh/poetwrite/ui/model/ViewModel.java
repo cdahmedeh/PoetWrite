@@ -20,7 +20,7 @@ package net.cdahmedeh.poetwrite.ui.model;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import net.cdahmedeh.poetwrite.ui.async.BusTask;
+import net.cdahmedeh.poetwrite.ui.async.AppTask;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
@@ -38,5 +38,5 @@ public abstract class ViewModel {
         });
     }
 
-    protected abstract void listen(BusTask task, AppEvent event);
+    protected abstract void listen(AppTask task, AppEvent event);
 }

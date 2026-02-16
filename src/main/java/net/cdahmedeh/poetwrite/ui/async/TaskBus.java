@@ -45,7 +45,7 @@ public class TaskBus {
     }
 
     public void submit(String name, AppEvent event, Runnable run) {
-        BusTask task = new BusTask(name, event, run);
+        AppTask task = new AppTask(name, event, run);
 
         queue(task);
 
@@ -73,7 +73,7 @@ public class TaskBus {
                 .refCount();
     }
 
-    private void queue(BusTask task) {
+    private void queue(AppTask task) {
         System.out.println(task.getName() + " queued");
 
         TaskBusStatus status = this.monitor.getValue();
@@ -82,14 +82,14 @@ public class TaskBus {
         announce(status);
     }
 
-    private void set(BusTask task) {
+    private void set(AppTask task) {
         TaskBusStatus status = this.monitor.getValue();
         status.setTask(task);
 
         announce(status);
     }
 
-    private void progress(BusTask task) {
+    private void progress(AppTask task) {
         TaskBusStatus status = this.monitor.getValue();
 
         status.forward();
@@ -101,7 +101,7 @@ public class TaskBus {
         announce(status);
     }
 
-    private void publish(BusTask task) {
+    private void publish(AppTask task) {
         TaskBusStatus status = this.monitor.getValue();
         status.setTask(task);
         this.stream.onNext(status);

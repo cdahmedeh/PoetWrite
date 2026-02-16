@@ -9,7 +9,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class TaskBusStatus {
     @Getter @Setter
-    private BusTask task;
+    private AppTask task;
     @Getter @Setter
     private int progress;
     @Getter @Setter
@@ -29,7 +29,7 @@ public class TaskBusStatus {
     public void reset() {
         this.progress = 0;
         this.queued = 0;
-        this.task = BusTask.empty();
+        this.task = AppTask.empty();
     }
 
     public void forward() {
@@ -38,7 +38,7 @@ public class TaskBusStatus {
     }
 
     public static TaskBusStatus empty() {
-        return new TaskBusStatus(BusTask.empty(), 0, 0, 0);
+        return new TaskBusStatus(AppTask.empty(), 0, 0, 0);
     }
 
     public static TaskBusStatus snapshot(TaskBusStatus status) {
