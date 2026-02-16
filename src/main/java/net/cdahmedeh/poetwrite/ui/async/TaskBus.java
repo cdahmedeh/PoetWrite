@@ -77,28 +77,32 @@ public class TaskBus {
     }
 
     private void queue(AsyncTask task) {
-        TaskBusStatus status = this.monitor.getValue();
+        TaskBusStatus status = snapshot();
         status.queue();
 
-        this.monitor.onNext(status);
+        announce(status);
     }
 
     private void set(AsyncTask task) {
-        TaskBusStatus status = this.monitor.getValue();
+        TaskBusStatus status = snapshot();
         status.setTask(task);
 
-        this.monitor.onNext(status);
+        announce(status);
     }
 
     private void progress(AsyncTask task) {
-        TaskBusStatus status = this.monitor.getValue();
+        TaskBusStatus status = snapshot();
         status.forward();
 
         if (status.isBusy() == false) {
             status.reset();
         }
 
-        monitor.onNext(status);
+        announce(status);
+    }
+
+    public TaskBusStatus snapshot() {
+        return TaskBusStatus.snapshot(this.monitor.getValue());
     }
 
     public void publish(AsyncTask task) {
