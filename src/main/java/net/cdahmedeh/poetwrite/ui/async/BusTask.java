@@ -16,7 +16,7 @@ public class BusTask {
 
         public static <E extends AppEvent> BusTask empty() {
             return new BusTask(
-                    "Task Handler Starting",
+                    "Ready",
                     new TaskBusStartedEvent(),
                     () -> {
                     });

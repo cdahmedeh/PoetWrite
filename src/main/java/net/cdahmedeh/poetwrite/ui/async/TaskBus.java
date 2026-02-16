@@ -66,7 +66,7 @@ public class TaskBus {
 
     public Observable<TaskBusStatus> monitor() {
         return monitor
-                .map(s -> TaskBusStatus.snapshot(s))
+                .map(TaskBusStatus::snapshot)
                 .observeOn(Schedulers.computation())
                 .concatMap(s -> Observable.just(s).delay(STATUS_DELAY_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
                 .replay(1)
@@ -74,21 +74,24 @@ public class TaskBus {
     }
 
     private void queue(BusTask task) {
-        TaskBusStatus status = snapshot();
+        System.out.println(task.getName() + " queued");
+
+        TaskBusStatus status = this.monitor.getValue();
         status.queue();
 
         announce(status);
     }
 
     private void set(BusTask task) {
-        TaskBusStatus status = snapshot();
+        TaskBusStatus status = this.monitor.getValue();
         status.setTask(task);
 
         announce(status);
     }
 
     private void progress(BusTask task) {
-        TaskBusStatus status = snapshot();
+        TaskBusStatus status = this.monitor.getValue();
+
         status.forward();
 
         if (status.isBusy() == false) {
@@ -98,16 +101,13 @@ public class TaskBus {
         announce(status);
     }
 
-    private TaskBusStatus snapshot() {
-        return TaskBusStatus.snapshot(this.monitor.getValue());
-    }
-
     private void publish(BusTask task) {
         TaskBusStatus status = this.monitor.getValue();
-        this.stream.onNext(TaskBusStatus.update(status, task));
+        status.setTask(task);
+        this.stream.onNext(status);
     }
 
     private void announce(TaskBusStatus status) {
-        this.monitor.onNext(TaskBusStatus.snapshot(status));
+        this.monitor.onNext(status);
     }
 }

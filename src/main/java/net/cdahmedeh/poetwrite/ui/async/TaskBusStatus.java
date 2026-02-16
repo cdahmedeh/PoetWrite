@@ -48,12 +48,4 @@ public class TaskBusStatus {
                 status.getQueued(),
                 status.getRemaining());
     }
-
-    public static TaskBusStatus update(TaskBusStatus status, BusTask task) {
-        return new TaskBusStatus(
-                task,
-                status.getProgress(),
-                status.getQueued(),
-                status.getRemaining());
-    }
 }
