@@ -9,31 +9,51 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class TaskBusStatus {
     @Getter @Setter
-    private AsyncTask current;
-    @Getter @Setter
-    private boolean busy;
+    private AsyncTask task;
     @Getter @Setter
     private int progress;
     @Getter @Setter
-    private int total;
+    private int queued;
+    @Getter @Setter
+    private int remaining;
+
+    public boolean isBusy() {
+        return remaining > 0;
+    }
+
+    public void queue() {
+        this.queued = this.queued + 1;
+        this.remaining = this.remaining + 1;
+    }
+
+    public void reset() {
+        this.progress = 0;
+        this.queued = 0;
+        this.task = AsyncTask.empty();
+    }
+
+    public void forward() {
+        this.progress = this.progress + 1;
+        this.remaining = this.remaining - 1;
+    }
 
     public static TaskBusStatus empty() {
-        return new TaskBusStatus(AsyncTask.empty(), false, 0, 0);
+        return new TaskBusStatus(AsyncTask.empty(), 0, 0, 0);
     }
 
     public static TaskBusStatus snapshot(TaskBusStatus status) {
         return new TaskBusStatus(
-                status.getCurrent(),
-                status.isBusy(),
+                status.getTask(),
                 status.getProgress(),
-                status.getTotal());
+                status.getQueued(),
+                status.getRemaining());
     }
 
     public static TaskBusStatus update(TaskBusStatus status, AsyncTask task) {
         return new TaskBusStatus(
                 task,
-                status.isBusy(),
                 status.getProgress(),
-                status.getTotal());
+                status.getQueued(),
+                status.getRemaining());
     }
 }

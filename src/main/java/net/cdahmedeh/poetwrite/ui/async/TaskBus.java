@@ -47,6 +47,10 @@ public class TaskBus {
     public TaskBus() {
     }
 
+    public Observable<TaskBusStatus> stream() {
+        return stream;
+    }
+
     public Observable<TaskBusStatus> monitor() {
         return monitor
                 .map(s -> TaskBusStatus.snapshot(s))
@@ -56,75 +60,53 @@ public class TaskBus {
                 .refCount();
     }
 
-    public Observable<TaskBusStatus> stream() {
-        return stream.hide();
-    }
-
     public void submit(String name, AppEvent event, Runnable run) {
         AsyncTask task = new AsyncTask(name, event, run);
 
-        increase(task);
+        queue(task);
 
         this.pool.submit(() -> {
             try {
                 set(task);
-                task.getTask().run();
+                run.run();
             } finally {
                 publish(task);
-                decrease(task);
+                progress(task);
             }
         });
     }
 
+    private void queue(AsyncTask task) {
+        TaskBusStatus status = this.monitor.getValue();
+        status.queue();
+
+        this.monitor.onNext(status);
+    }
+
     private void set(AsyncTask task) {
         TaskBusStatus status = this.monitor.getValue();
-        status.setCurrent(task);
+        status.setTask(task);
 
-        announce(status);
+        this.monitor.onNext(status);
     }
 
-    private void increase(AsyncTask task) {
-        boolean busy = !tasks.isEmpty();
-        tasks.add(task);
-
+    private void progress(AsyncTask task) {
         TaskBusStatus status = this.monitor.getValue();
+        status.forward();
 
-        if (!busy) {
-            status.setProgress(0);
-            status.setTotal(0);
+        if (status.isBusy() == false) {
+            status.reset();
         }
 
-        status.setBusy(true);
-        status.setTotal(status.getTotal() + 1);
-
-        announce(status);
-    }
-
-    public void decrease(AsyncTask task) {
-        tasks.remove(task);
-
-        TaskBusStatus status = this.monitor.getValue();
-
-        status.setProgress(status.getProgress() + 1);
-
-        boolean busy = !tasks.isEmpty();
-        status.setBusy(busy);
-
-        if (!busy) {
-            status.setProgress(0);
-            status.setTotal(0);
-        }
-
-        announce(status);
+        monitor.onNext(status);
     }
 
     public void publish(AsyncTask task) {
-        TaskBusStatus status = this.stream.getValue();
+        TaskBusStatus status = this.monitor.getValue();
         this.stream.onNext(TaskBusStatus.update(status, task));
     }
 
     public void announce(TaskBusStatus status) {
         this.monitor.onNext(TaskBusStatus.snapshot(status));
     }
-
 }

@@ -91,7 +91,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
             SwingUtilities.invokeLater(() -> {
                 progressBar.setStringPainted(true);
-                        progressBar.setString(String.format("%d/%d", status.getProgress(), status.getTotal()));
+                        progressBar.setString(String.format("%d/%d", status.getProgress(), status.getQueued()));
                         if (status.isBusy() == false) {
                             progressBar.setString("done");
                             nameButton.setText("Ready...");
@@ -100,8 +100,8 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
                             spinner.setIcon(stoppedIcon);
                         } else {
                             spinner.setIcon(spinnerIcon);
-                            nameButton.setText(status.getCurrent().getName());
-                            progressBar.setMaximum(status.getTotal());
+                            nameButton.setText(status.getTask().getName());
+                            progressBar.setMaximum(status.getQueued());
                             progressBar.setValue(status.getProgress());
                         }
                     });
