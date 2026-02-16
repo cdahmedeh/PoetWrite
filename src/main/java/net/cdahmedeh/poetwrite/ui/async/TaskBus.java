@@ -25,6 +25,7 @@ import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -32,8 +33,9 @@ import java.util.concurrent.Executors;
 
 @Singleton
 public class TaskBus {
+    private static final long STATUS_DELAY_MILLIS = 500;
 
-    private List<AsyncTask> tasks = new ArrayList<>();
+    private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
     private BehaviorSubject<TaskBusStatus> stream =
             BehaviorSubject.createDefault(TaskBusStatus.empty());
@@ -41,23 +43,8 @@ public class TaskBus {
     private BehaviorSubject<TaskBusStatus> monitor
             = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
-    private final ExecutorService pool = Executors.newSingleThreadExecutor();
-
     @Inject
     public TaskBus() {
-    }
-
-    public Observable<TaskBusStatus> stream() {
-        return stream;
-    }
-
-    public Observable<TaskBusStatus> monitor() {
-        return monitor
-                .map(s -> TaskBusStatus.snapshot(s))
-                .observeOn(Schedulers.computation())
-                .concatMap(s -> Observable.just(s).delay(100, java.util.concurrent.TimeUnit.MILLISECONDS))
-                .replay(1)
-                .refCount();
     }
 
     public void submit(String name, AppEvent event, Runnable run) {
@@ -74,6 +61,19 @@ public class TaskBus {
                 progress(task);
             }
         });
+    }
+
+    public Observable<TaskBusStatus> stream() {
+        return stream;
+    }
+
+    public Observable<TaskBusStatus> monitor() {
+        return monitor
+                .map(s -> TaskBusStatus.snapshot(s))
+                .observeOn(Schedulers.computation())
+                .concatMap(s -> Observable.just(s).delay(STATUS_DELAY_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
+                .replay(1)
+                .refCount();
     }
 
     private void queue(AsyncTask task) {
@@ -101,16 +101,16 @@ public class TaskBus {
         announce(status);
     }
 
-    public TaskBusStatus snapshot() {
+    private TaskBusStatus snapshot() {
         return TaskBusStatus.snapshot(this.monitor.getValue());
     }
 
-    public void publish(AsyncTask task) {
+    private void publish(AsyncTask task) {
         TaskBusStatus status = this.monitor.getValue();
         this.stream.onNext(TaskBusStatus.update(status, task));
     }
 
-    public void announce(TaskBusStatus status) {
+    private void announce(TaskBusStatus status) {
         this.monitor.onNext(TaskBusStatus.snapshot(status));
     }
 }
