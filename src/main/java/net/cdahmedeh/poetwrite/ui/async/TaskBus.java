@@ -25,9 +25,6 @@ import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -48,7 +45,7 @@ public class TaskBus {
     }
 
     public void submit(String name, AppEvent event, Runnable run) {
-        AsyncTask task = new AsyncTask(name, event, run);
+        BusTask task = new BusTask(name, event, run);
 
         queue(task);
 
@@ -76,21 +73,21 @@ public class TaskBus {
                 .refCount();
     }
 
-    private void queue(AsyncTask task) {
+    private void queue(BusTask task) {
         TaskBusStatus status = snapshot();
         status.queue();
 
         announce(status);
     }
 
-    private void set(AsyncTask task) {
+    private void set(BusTask task) {
         TaskBusStatus status = snapshot();
         status.setTask(task);
 
         announce(status);
     }
 
-    private void progress(AsyncTask task) {
+    private void progress(BusTask task) {
         TaskBusStatus status = snapshot();
         status.forward();
 
@@ -105,7 +102,7 @@ public class TaskBus {
         return TaskBusStatus.snapshot(this.monitor.getValue());
     }
 
-    private void publish(AsyncTask task) {
+    private void publish(BusTask task) {
         TaskBusStatus status = this.monitor.getValue();
         this.stream.onNext(TaskBusStatus.update(status, task));
     }

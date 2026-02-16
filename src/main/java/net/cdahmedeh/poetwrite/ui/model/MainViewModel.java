@@ -25,7 +25,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 import net.cdahmedeh.poetwrite.ui.event.TextUpdateEvent;
-import net.cdahmedeh.poetwrite.ui.async.AsyncTask;
+import net.cdahmedeh.poetwrite.ui.async.BusTask;
 
 public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
@@ -41,7 +41,7 @@ public class MainViewModel extends ViewModel {
     }
 
     @Override
-    protected void listen(AsyncTask task, AppEvent event) {
+    protected void listen(BusTask task, AppEvent event) {
         if (event instanceof TextUpdateEvent textUpdateEvent) {
             String text = textUpdateEvent.getText();
             this.text.onNext(text);

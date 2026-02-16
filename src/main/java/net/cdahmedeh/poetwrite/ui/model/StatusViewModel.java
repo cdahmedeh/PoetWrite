@@ -21,14 +21,11 @@ package net.cdahmedeh.poetwrite.ui.model;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
-import net.cdahmedeh.poetwrite.ui.async.AsyncTask;
+import net.cdahmedeh.poetwrite.ui.async.BusTask;
 import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
-
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -46,7 +43,7 @@ public class StatusViewModel extends ViewModel {
     }
 
     @Override
-    protected void listen(AsyncTask task, AppEvent event) {
+    protected void listen(BusTask task, AppEvent event) {
     }
 
     public void setTaskHandlerStatus(TaskBusStatus taskHandlerStatus) {
