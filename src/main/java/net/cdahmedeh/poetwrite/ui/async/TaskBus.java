@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 
 @Singleton
 public class TaskBus {
-    private static final long STATUS_DELAY_MILLIS = 500;
+    private static final long STATUS_DELAY_MILLIS = 40;
 
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
