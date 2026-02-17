@@ -32,6 +32,8 @@ import java.util.concurrent.Executors;
 public class TaskBus {
     private static final long STATUS_DELAY_MILLIS = 80;
 
+    private boolean testMode = false;
+
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
     private BehaviorSubject<TaskBusStatus> stream =
@@ -44,12 +46,16 @@ public class TaskBus {
     public TaskBus() {
     }
 
+    public void enableTestMode() {
+        this.testMode = true;
+    }
+
     public void submit(String name, AppEvent event, Runnable run) {
         AppTask task = new AppTask(name, event, run);
 
         queue(task);
 
-        this.pool.submit(() -> {
+        Runnable runnable = () -> {
             try {
                 set(task);
                 run.run();
@@ -57,7 +63,14 @@ public class TaskBus {
                 publish(task);
                 progress(task);
             }
-        });
+        };
+
+        if (testMode) {
+            runnable.run();
+        } else {
+            this.pool.submit(runnable);
+        }
+
     }
 
     public Observable<TaskBusStatus> stream() {

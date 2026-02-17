@@ -85,6 +85,7 @@ public class RhymeAnalyzer extends FeatureAnalyzer<WordPair, RhymeAnalysis> {
             PhonemeAnalyzer phonemeAnalyzer) {
         super(analysisCache, taskBus);
         this.phonemeAnalyzer = phonemeAnalyzer;
+        ensure();
     }
 
     public RhymeAnalysis get(Word wordA, Word wordB) {

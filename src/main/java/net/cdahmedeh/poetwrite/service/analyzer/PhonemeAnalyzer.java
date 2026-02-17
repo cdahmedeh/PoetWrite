@@ -56,6 +56,7 @@ public class PhonemeAnalyzer extends FeatureAnalyzer<Word, PhonemeAnalysis>{
         super(analysisCache, taskBus);
         this.cmuEngine = cmuEngine;
         this.maryEngine = maryEngine;
+        ensure();
     }
 
     public PhonemeAnalysis get(Word word) {

@@ -23,6 +23,7 @@ import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
 import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -43,11 +44,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RhymeTest {
     @Inject
+    TaskBus taskBus;
+
+    @Inject
     RhymeAnalyzer rhymeAnalyzer;
 
     @BeforeAll
     void setup() {
         TestComponent component = DaggerTestComponent.create();
+
+        taskBus = component.getTaskBus();
+        taskBus.enableTestMode();
+
         rhymeAnalyzer = component.getRhymeAnalyzer();
     }
 

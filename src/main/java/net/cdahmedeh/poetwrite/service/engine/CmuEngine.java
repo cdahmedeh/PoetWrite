@@ -95,6 +95,7 @@ public class CmuEngine extends LazyService {
     @SneakyThrows
         /*package*/ CmuEngine(TaskBus taskBus) {
         super(taskBus);
+        ensure();
     }
 
     @Override

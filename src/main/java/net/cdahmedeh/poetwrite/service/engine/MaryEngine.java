@@ -142,7 +142,7 @@ public class MaryEngine extends LazyService {
      */
     /*package*/ MaryEngine(TaskBus taskBus) {
         super(taskBus);
-
+        ensure();
     }
 
     @Override

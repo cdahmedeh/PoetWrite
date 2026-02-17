@@ -31,7 +31,6 @@ public abstract class LazyService {
 
     protected LazyService(TaskBus taskBus) {
         this.taskBus = taskBus;
-        ensure();
     }
 
     public abstract String name();

@@ -24,6 +24,7 @@ import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -52,11 +53,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SyllableTest {
     @Inject
+    TaskBus taskBus;
+
+    @Inject
     SyllableAnalyzer syllableAnalyzer;
 
     @BeforeAll
     void setup() {
         TestComponent component = DaggerTestComponent.create();
+
+        taskBus = component.getTaskBus();
+        taskBus.enableTestMode();
 
         syllableAnalyzer = component.getWordAnalyzer();
     }
