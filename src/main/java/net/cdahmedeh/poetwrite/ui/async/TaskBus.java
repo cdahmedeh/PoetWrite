@@ -21,12 +21,14 @@ package net.cdahmedeh.poetwrite.ui.async;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Singleton
 public class TaskBus {
@@ -50,6 +52,7 @@ public class TaskBus {
         this.testMode = true;
     }
 
+    @SneakyThrows
     public void submit(String name, AppEvent event, Runnable run) {
         AppTask task = new AppTask(name, event, run);
 
@@ -65,12 +68,10 @@ public class TaskBus {
             }
         };
 
+        Future<?> future = this.pool.submit(runnable);
         if (testMode) {
-            runnable.run();
-        } else {
-            this.pool.submit(runnable);
+            future.get();
         }
-
     }
 
     public Observable<TaskBusStatus> stream() {

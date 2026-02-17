@@ -47,7 +47,6 @@ public class TextGenerator extends LazyService {
         this.syllableAnalyzer = syllableAnalyzer;
         this.phonemeAnalyzer = phonemeAnalyzer;
         this.rhymeAnalyzer = rhymeAnalyzer;
-        ensure();
     }
 
     @Override

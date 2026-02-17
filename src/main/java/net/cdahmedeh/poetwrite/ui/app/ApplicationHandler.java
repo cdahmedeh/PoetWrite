@@ -31,7 +31,6 @@ public class ApplicationHandler extends LazyService {
     @Inject
     protected ApplicationHandler(TaskBus taskBus) {
         super(taskBus);
-        ensure();
     }
 
     @Override

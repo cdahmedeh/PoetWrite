@@ -50,7 +50,6 @@ public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
             PhonemeAnalyzer phonemeComputer) {
         super(analysisCache, taskBus);
         this.phonemeComputer = phonemeComputer;
-        ensure();
     }
 
     public SyllableAnalysis get(Word word) {

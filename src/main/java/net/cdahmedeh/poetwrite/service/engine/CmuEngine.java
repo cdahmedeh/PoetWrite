@@ -89,13 +89,12 @@ public class CmuEngine extends LazyService {
      * { "calculation" , "K AE2 L K Y AH0 L EY1 SH AH0 N" }
      * { "speculation" , "S P EH2 K Y AH0 L EY1 SH AH0 N" }
      */
-    private final Map<String, List<Phoneme>> cmuMap = Maps.newHashMap();
+    private Map<String, List<Phoneme>> cmuMap;
 
     @Inject
     @SneakyThrows
         /*package*/ CmuEngine(TaskBus taskBus) {
         super(taskBus);
-        ensure();
     }
 
     @Override
@@ -105,6 +104,8 @@ public class CmuEngine extends LazyService {
 
     @Override
     protected void init() {
+        cmuMap = Maps.newHashMap();
+
         InputStream stream = ClassLoader.getSystemResourceAsStream(CMUDICT_FILE);
         List<String> entries = IOUtils.readLines(stream, Charset.defaultCharset());
 
