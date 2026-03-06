@@ -49,9 +49,7 @@ public class ApplicationHandler extends LazyService {
 
     public void hold() {
         taskBus.monitor()
-                .skipWhile(s -> s.getRemaining() == 0)
-                .filter(s -> s.getRemaining() == 0)
-                .take(1)
+                .takeUntil(s -> s.getRemaining() == 0)
                 .blockingSubscribe();
     }
 
