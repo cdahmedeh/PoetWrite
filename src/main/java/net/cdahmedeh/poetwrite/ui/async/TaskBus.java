@@ -29,6 +29,7 @@ import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class TaskBus {
@@ -81,8 +82,8 @@ public class TaskBus {
     public Observable<TaskBusStatus> monitor() {
         return monitor
                 .map(TaskBusStatus::snapshot)
-                .observeOn(Schedulers.computation())
-                .concatMap(s -> Observable.just(s).delay(STATUS_DELAY_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS))
+                .concatMap(s -> Observable.just(s)
+                        .delay(STATUS_DELAY_MILLIS, TimeUnit.MILLISECONDS))
                 .replay(1)
                 .refCount();
     }
