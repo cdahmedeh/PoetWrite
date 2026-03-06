@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class LazyService {
     private volatile boolean initialized = false;
-    private final AtomicBoolean queued = new AtomicBoolean(false);
 
     protected final TaskBus taskBus;
 
@@ -38,7 +37,6 @@ public abstract class LazyService {
 
     public void ensure() {
         if (initialized) return;
-        if (!queued.compareAndSet(false, true)) return;
 
         taskBus.submit(String.format("Starting %s ",name()), new ServiceStartingEvent(), () -> {
             init();
