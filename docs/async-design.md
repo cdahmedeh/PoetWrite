@@ -262,3 +262,5 @@ public class ExampleViewController extends ViewController<ExampleViewModel> {
 ‼️Right now, everything is done in a single-threaded pool, so only one task at a time. However, something like parsing the poem should be done frequently. But if a dictionary is being loaded in he background, suddenly the parsing will stop for a long time. 
 
 ⛅Considering the above, it means that we might need some more sophisticated dependency hierarchy mechanism. Though I'm leaving this as an exercise for much later. I don't want to re-implement something akin to an init system like upstart or systemd. Could you imagine the nightmare?
+
+‼️One massive flaw with this system is the question, is where the thread is actually running? If the controller is the one submitting to the TaskBus, then the task is running on the Swing EDT? Now, you have to ask yourself is calling ``SwingUtilities.invokeLater(..)`` is a good idea or not. There's ways to fix this, but I don't want to splatter ``invokeLater`` like we're doing right now.
