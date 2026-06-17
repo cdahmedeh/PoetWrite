@@ -64,7 +64,7 @@ At this point, the view gets quite cleaned up. Because now, it only has two resp
 
 First, the obvious one, create the display for the UI.
 
-Second, invoke the ViewController to do some kind of action.
+Second, allow for the user to interact with this application. Which eventually invokes the ViewController to do some kind of action.
 
 # Suggested Flow
 
