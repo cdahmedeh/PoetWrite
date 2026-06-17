@@ -24,6 +24,21 @@ import net.cdahmedeh.poetwrite.ui.model.ViewModel;
 
 import java.awt.*;
 
+/**
+ * See ./docs/ui-architecture.md for design overview.
+ *
+ * The View is what draws the screens and allows the user to interact with the
+ * application.
+ *
+ * Implementation Guide:
+ * - Implement setup() for laying out your UI.
+ * - Make root() return the top of the component hierarchy. Usually a JFrame.
+ * - Implement subscribe() to subscribe to the observables in the model. You
+ *   can listen to them for changes, and update the View accordingly.
+ *
+ * - You can call the ViewController upon user interaction to run some logic.
+ * - You can call the ViewModel to subscribe to the observables.
+ */
 public abstract class View<VM extends ViewModel, VC extends ViewController, RC extends Component> {
     protected final VM viewModel;
     protected final VC viewController;

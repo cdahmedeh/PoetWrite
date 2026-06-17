@@ -21,6 +21,17 @@ package net.cdahmedeh.poetwrite.ui.controller;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.model.ViewModel;
 
+/**
+ * See ./docs/ui-architecture.md for design overview.
+ *
+ * The ViewController is invoked by the View to perform some business logic.
+ *
+ * Implementation Guide:
+ * - Create methods corresponding to tasks.
+ * - These methods should send the business logic on a separate thread by
+ *   submitting their code to the TaskBus
+ * - Never refer to the ViewModel. Any updated data must come from an AppEvent.
+ */
 public abstract class ViewController<VM extends ViewModel> {
     protected final VM viewModel;
     protected final TaskBus taskBus;

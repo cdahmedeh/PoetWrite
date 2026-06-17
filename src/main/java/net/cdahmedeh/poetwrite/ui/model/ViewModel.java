@@ -25,6 +25,18 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
 import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
 
+/**
+ * See ./docs/ui-architecture.md for design overview.
+ *
+ * The ViewModel contains whatever the view wants to display.
+ *
+ * Implementation Guide:
+ * - All data/variables should be in a BehaviourSubject observable. So that the
+ *   View can later listen to them for changes.
+ * - Extend listen(..) to determine how to respond to results that come from
+ *   AppEvent(s).
+ * - Never refer to the view directly.
+ */
 public abstract class ViewModel {
     private TaskBus taskBus;
     private BehaviorSubject<TaskBusStatus> taskCurrent = BehaviorSubject.createDefault(TaskBusStatus.empty());
