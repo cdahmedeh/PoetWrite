@@ -30,11 +30,18 @@ import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * Placeholder service for generating random 'lorem ipsum' text. Used to test
+ * the lazy loading system.
+ *
+ * TODO: Remove me when you have something real.
+ */
 @Singleton
 public class TextGenerator extends LazyService {
     public static final int DEFAULT_MIN_PARAGRAPHS = 10;
     public static final int DEFAULT_MAX_PARAGRAPHS = 25;
 
+    // TODO: These dependencies are artifical, to test the lazy initialization system.
     private final SyllableAnalyzer syllableAnalyzer;
     private final PhonemeAnalyzer phonemeAnalyzer;
     private final RhymeAnalyzer rhymeAnalyzer;
@@ -57,22 +64,11 @@ public class TextGenerator extends LazyService {
     @Override
     @SneakyThrows
     public void init() {
-//        try {
-//            Thread.sleep(4000);
-//        } catch (InterruptedException e) {
-//        }
         lorem = LoremIpsum.getInstance();
     }
 
     @SneakyThrows
     public String generate() {
-//        Thread.sleep(new Random().nextInt(1000));
         return lorem.getParagraphs(DEFAULT_MIN_PARAGRAPHS, DEFAULT_MAX_PARAGRAPHS);
-    }
-
-    @SneakyThrows
-    public String make(long sleep, String word) {
-        Thread.sleep(sleep);
-        return word;
     }
 }

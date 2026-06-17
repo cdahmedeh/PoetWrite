@@ -18,17 +18,16 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * Basic Event for when Text is updated. Currently only used for passing the
+ * randomly generated text.
+ */
+@NoArgsConstructor
 public class TextUpdateEvent extends AppEvent {
+    @Getter @Setter
     private String text = "";
-
-    public TextUpdateEvent() {
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
 }
