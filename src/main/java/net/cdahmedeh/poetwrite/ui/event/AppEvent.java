@@ -18,5 +18,13 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+/**
+ * See ./docs/async-design.md for design overview.
+ *
+ * Basically a notification that can be used by the UI layer to know when a
+ * computation is complete and get its result. AppEvent contains no
+ * special features of any kind. Extended classes contain the results in any
+ * way that is appropriate for the computation.
+ */
 public abstract class AppEvent {
 }

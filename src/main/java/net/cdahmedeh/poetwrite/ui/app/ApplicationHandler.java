@@ -25,6 +25,10 @@ import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * For handling application-related actions. Currently just to exit the
+ * application cleanly.
+ */
 @Singleton
 public class ApplicationHandler extends LazyService {
 
@@ -40,19 +44,25 @@ public class ApplicationHandler extends LazyService {
 
     @Override
     protected void init() {
-//        try {
-//            Thread.sleep(2500);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
+    /**
+     * This ensures that all tasks in the task bus have been completed. Will
+     * be useful in the future once we have file writes. For example, waiting
+     * until the files are saved before quiting the app.
+     */
     public void hold() {
         taskBus.monitor()
                 .takeUntil(s -> s.getRemaining() == 0)
                 .blockingSubscribe();
     }
 
+    /**
+     * Closes the application. It's done a seperate thread because TaskBus might
+     * fight with it.
+     *
+     * TODO: Find a way to make it happen using TaskBus.
+     */
     public void close() {
         new Thread(() -> {
             hold();
