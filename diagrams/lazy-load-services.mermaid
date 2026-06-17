@@ -1,0 +1,41 @@
+sequenceDiagram
+    autonumber
+
+    participant UI as UI Controller / ViewModel
+    participant Dagger as Dagger
+    participant Rhyme as RhymeAnalyzer
+    participant Phoneme as PhonemeAnalyzer
+    participant Cmu as CmuEngine
+    participant Mary as MaryEngine
+    participant Lazy as LazyService
+    participant TaskBus as TaskBus
+    participant Worker as Worker Thread
+
+    UI->>Dagger: 1. Request injected RhymeAnalyzer
+
+    Dagger->>Dagger: 2. Resolve RhymeAnalyzer dependencies
+
+    Dagger->>Phoneme: 3. RhymeAnalyzer requires PhonemeAnalyzer
+
+    Dagger->>Cmu: 4. PhonemeAnalyzer requires CmuEngine
+    Dagger->>Cmu: 5. Construct CmuEngine
+    Cmu->>Lazy: 6. Call LazyService constructor
+    Lazy->>Lazy: 7. Call ensure()
+    Lazy->>Lazy: 8. Check initialized == false
+    Lazy->>TaskBus: 9. Submit "Starting CmuEngine"
+    TaskBus->>TaskBus: 10. Queue initialization task
+    TaskBus->>Worker: 11. Run CmuEngine.init() asynchronously
+
+    Dagger->>Mary: 12. Construct MaryEngine
+    Mary->>Lazy: 13. Call LazyService constructor
+    Lazy->>TaskBus: 14. Submit "Starting MaryEngine"
+    TaskBus->>TaskBus: 15. Queue initialization task
+    TaskBus->>Worker: 16. Run MaryEngine.init() asynchronously
+
+    Dagger->>Phoneme: 17. Construct PhonemeAnalyzer with CmuEngine and MaryEngine
+
+    Dagger->>Rhyme: 18. Construct RhymeAnalyzer with PhonemeAnalyzer
+
+    Dagger-->>UI: 19. Return injected RhymeAnalyzer
+
+    Note over UI,Worker: 20. UI receives RhymeAnalyzer while expensive services initialize through TaskBus

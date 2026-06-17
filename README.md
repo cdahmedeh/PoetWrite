@@ -1,7 +1,5 @@
 # Welcome to PoetWrite!
 
-![PoetWrite Banner](./assets/logo-header.png)
-
 PoetWrite is an in-progress desktop application to bring an IDE-like experience for English poetry writers. 
 
 At the heart of PoetWrite, is an advanced rhetorical and lexical analysis engine. Whether it's detecting rhyming patterns, measuring meter or calculating sentiment. While poets are known for possessing huge vocabularies, sometimes, you still need some help to find the right word for the next stanza. So PoetWrite will come with various lexicographic dictionaries that can find synonyms matching your pattern, word relationships, various conjugations and more.
@@ -13,11 +11,15 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 
 ## Documentation
 
+[Asynchronous Task Bus and Lazy-Loaded Services](/docs/async-design.md) - My obsession with making PoetWrite as responsive as possible had lead me to develop a semi-custom task bus system. It ensures that compute-intensive tasks stay out of the UI thread so it doesn't hang. The same system also handles lazy-loading of services by (ab)using the dependency resolution system in the Dagger framework.
+
+[Poem Analysis Implementation and Cache Design](/docs/entity-architecture.md) - An extensive deep-dive into how PoetWrite handles, stores and caches rhetorical analyses and other features. With detailed overview of the actual 'fool-proof' architecture and implementation through code examples and diagrams.
+
+[Custom MVVM-style UI Framework](/docs/ui-architecture.md) - PoetWrite throws away the traditional MVC pattern for a more modern custom MVVM framework that is completely asynchronous, uses a subscribe-notify event system, and decoupling entities from the model.
+
 [Poem Syntax and Domain Structure](/docs/poem-syntax-and-domain-structure.md) - PoetWrite's domain objects structure. And the poem syntax with annotation and commenting features.
 
 [Rhetorical Analysis Basics](/docs/rhetoric-analysis-basics.md) - Introductory topics for basic rhetorical analysis features such as syllable counting and rhyme detection.
-
-[Poem Analysis Implementation and Cache Design](/docs/entity-architecture.md) - An extensive deep-dive into how PoetWrite handles, stores and caches rhetorical analyses and other features. With detailed overview of the actual 'fool-proof' architecture and implementation through code examples and diagrams.
 
 ## Development
 
@@ -39,6 +41,3 @@ You can note some planned functionality that will be present in PoetWrite. As fe
 - One of the core powerful features of PoetWrite will be the lexicographic assistance. In the example below, the user wants to look for a word that rhymes with the last word in the next line, that is synonymous with a certain term. The initial design was to rely on keyboard shortcuts, but they'd be too many to remember. So I've gone for a 'wizard' style auto-complete system. 
 
 ![PoetWrite Main Screen Prototype](./assets/main-screen-prototype.png)
-
-## Transparency
-The PoetWrite logo was AI-generated.
