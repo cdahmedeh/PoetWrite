@@ -11,11 +11,11 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 
 ## Documentation
 
-[Asynchronous Task Bus and Lazy-Loaded Services](/docs/async-design.md) - My obsession with making PoetWrite as responsive as possible had lead me to develop a semi-custom task bus system. It ensures that compute-intensive tasks stay out of the UI thread so it doesn't hang. The same system also handles lazy-loading of services by (ab)using the dependency resolution system in the Dagger framework.
-
 [Poem Analysis Implementation and Cache Design](/docs/entity-architecture.md) - An extensive deep-dive into how PoetWrite handles, stores and caches rhetorical analyses and other features. With detailed overview of the actual 'fool-proof' architecture and implementation through code examples and diagrams.
 
 [Custom MVVM-style UI Framework](/docs/ui-architecture.md) - PoetWrite throws away the traditional MVC pattern for a more modern custom MVVM framework that is completely asynchronous, uses a subscribe-notify event system, and decoupling entities from the model.
+
+[Asynchronous Task Bus and Lazy-Loaded Services](/docs/async-design.md) - My obsession with making PoetWrite as responsive as possible had lead me to develop a semi-custom task bus system. It ensures that compute-intensive tasks stay out of the UI thread so it doesn't hang. The same system also handles lazy-loading of services by (ab)using the dependency resolution system in the Dagger framework.
 
 [Poem Syntax and Domain Structure](/docs/poem-syntax-and-domain-structure.md) - PoetWrite's domain objects structure. And the poem syntax with annotation and commenting features.
 
