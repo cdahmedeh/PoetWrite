@@ -9,6 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * TODO: This is a huge mess. For whoever is reading this, please don't judge
+ *       me.
+ * TODO: Fix Mess
+ * TODO: Hate that Swing doesn't have some kind of Markup. Even WPF has XAML.
+ */
 public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> {
     private JMenuItem generateRandomText;
     private JMenuBar mb;
