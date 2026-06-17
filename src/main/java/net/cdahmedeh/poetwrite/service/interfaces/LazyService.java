@@ -23,7 +23,26 @@ import net.cdahmedeh.poetwrite.ui.event.ServiceStartingEvent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * See ./docs/async-design.md for design overview.
+ *
+ * A LazyService is service that is intended to be loaded asynchronously,
+ * ideally outside of a UI thread. It uses the TaskBus and publishes the
+ * initialization code there.
+ *
+ * It abuses how Dagger handles dependency resolution. Since it can generate
+ * a graph of the dependency, you're guaranteed to have the services initialized
+ * in the right order.
+ *
+ * TODO: What happens when this becomes truly multithreaded?
+ * TODO: What happens when services are so expensive that they block frequent
+ *       tasks like parsing?
+ */
 public abstract class LazyService {
+    // If the service has been inited.
+    // It is volatile because there's the possibiliy that multiple threads might
+    // be trying to do the init, and would run into issues if each thread saw
+    // different true/false values.
     private volatile boolean initialized = false;
 
     protected final TaskBus taskBus;
@@ -33,8 +52,15 @@ public abstract class LazyService {
         ensure();
     }
 
+    /**
+     * The friendly name of the service. Really only for the UI progress bar.
+     */
     public abstract String name();
 
+    /**
+     * Called automatically upon construction. This submits the initialization
+     * code on the TaskBus.
+     */
     public void ensure() {
         if (initialized) return;
 
@@ -44,5 +70,9 @@ public abstract class LazyService {
         });
     };
 
+    /**
+     * Your initialization code for the service. For example, loading a
+     * dictionary file or starting some external service.
+     */
     protected abstract void init();
 }

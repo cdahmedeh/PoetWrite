@@ -39,19 +39,17 @@ import javax.swing.*;
  * Boot app or even worse JavaFX.
  *
  * TODO: Take a deep breath Ahmed, and take it easy.
+ * TODO: I'm still holding it.
+ * TODO: The generation of the MVVM stuff is getting quite ugly. Dagger really
+ *       makes dependency injection a nightmare if there's some cyclical
+ *       dependencies.
+ * TODO: In the future logging will probably go here.
+ *
  */
 
 public class MainApp {
     public void build() {
         AppComponent appComponent = DaggerAppComponent.create();
-//        AsynchronousTaskHandler asynchronousTaskHandler = appComponent.taskHandler();
-//        asynchronousTaskHandler.submit("Welcome to PoetWrite", () -> {
-//            try {
-//                Thread.sleep(3000);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
 
         TaskBus asynchronousTaskHandler = appComponent.taskBus();
         asynchronousTaskHandler.submit("Welcome to PoetWrite!", new ServiceStartingEvent(), () -> {
@@ -62,10 +60,7 @@ public class MainApp {
             }
         });
 
-        FlatLightLaf.setup();
-
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        JDialog.setDefaultLookAndFeelDecorated(true);
+        setupLookAndFeel();
 
         MainViewModel mainViewModel = appComponent.mainViewModelFactory().create();
         MainViewController mainViewController = appComponent.mainViewControllerFactory().create(mainViewModel);
@@ -82,6 +77,13 @@ public class MainApp {
         mainView.attachMenu(menuView.root());
 
         mainView.show();
+    }
+
+    private static void setupLookAndFeel() {
+        FlatLightLaf.setup();
+
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JDialog.setDefaultLookAndFeelDecorated(true);
     }
 
     public static void main(String[] args) {

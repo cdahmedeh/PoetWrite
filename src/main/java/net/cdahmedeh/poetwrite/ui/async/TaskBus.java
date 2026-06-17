@@ -31,17 +31,49 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/*
+ * See ./docs/async-design.md for design overview.
+ *
+ * PoetWrite's main system for handling tasks. Virtually everything has to go
+ * through here from initializing services to doing computations.
+ *
+ * Basically a fancy wrapper around a thread-pool. It just contains certain QoL
+ * features like knowing the status of the TaskBus, like how much tasks are
+ * running.
+ *
+ * Contains observables that can be used by the UI to display the currently
+ * running tasks, and how many are left. The UI observable has an artificial
+ * delay so that the user can see all the tasks that are being run.
+ *
+ * TODO: Single-threaded only.
+ * TODO: (Very badly) Explain the really complicated notification system from
+ *       the following methods:
+ *          queue()
+ *          set()
+ *          progress()
+ *          publish()
+ *          announce()
+ */
+
 @Singleton
 public class TaskBus {
+    // Artificial delay to keep short-running tasks visible in the UI for a bit.
     private static final long STATUS_DELAY_MILLIS = 80;
 
+    // Force everything to run on the main thread and keeps everything linear
+    // and instant. Used for unit tests.
     private boolean testMode = false;
 
+    // The pool that holds the tasks. Very simple, one task at a time. FIFO.
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
+    // Instantaneous status of the TaskBus. Mainly used to determine if no
+    // tasks are running when needing to quit the application.
     private BehaviorSubject<TaskBusStatus> stream =
             BehaviorSubject.createDefault(TaskBusStatus.empty());
 
+    // UI friendly status monitor that introduces an artificial delay so that
+    // it is visble to the user a little bit.
     private BehaviorSubject<TaskBusStatus> monitor
             = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
@@ -53,6 +85,14 @@ public class TaskBus {
         this.testMode = true;
     }
 
+    /**
+     * Submit a task to the TaskBus. It basically takes a Runnable and puts it
+     * into the thread-pool.
+     *
+     * It wraps the Runnable along with a friendly name that is visible on the
+     * UI and the event that it is expected to throw after the task is
+     * completed.
+     */
     @SneakyThrows
     public void submit(String name, AppEvent event, Runnable run) {
         AppTask task = new AppTask(name, event, run);

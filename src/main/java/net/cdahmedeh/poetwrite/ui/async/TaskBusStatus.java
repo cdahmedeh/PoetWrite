@@ -5,15 +5,27 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Used to get the status of the TaskBus. Backend mostly uses it just to know
+ * when there's no more task to run, for a clean exit. Really useful for the
+ * progress bar in the UI.
+ */
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class TaskBusStatus {
+    // The task currently running
     @Getter @Setter
     private AppTask task;
+
+    // How many tasks have been run.
     @Getter @Setter
     private int progress;
+
+    // How many tasks are waiting to be run.
     @Getter @Setter
     private int queued;
+
+    // How many tasks haven't run yet.
     @Getter @Setter
     private int remaining;
 
