@@ -40,13 +40,13 @@ import java.util.List;
  * kind.
  */
 public class FileTools {
-    // not recurisve
-
     /**
      * List all files in a folder with a certain extension. Not recursive.
      *
      * TODO: Sort the files because the order is based on hopes and dreams right
      * now.
+     *
+     * NOTE: Keep in mind that this isn't recursive.
      */
     @SneakyThrows
     public static List<File> listFiles(String folder, String extension) {
