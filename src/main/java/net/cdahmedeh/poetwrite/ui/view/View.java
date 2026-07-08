@@ -61,7 +61,8 @@ public abstract class View<VM extends ViewModel, VC extends ViewController, RC e
 
     protected abstract void listen();
 
+    protected abstract void subscribe(CompositeDisposable disposable);
+
     public abstract RC root();
 
-    protected abstract void subscribe(CompositeDisposable disposable);
 }
