@@ -58,23 +58,6 @@ public class MenuViewController extends ViewController<MenuViewModel> {
                 event.setText(text);
             });
         }
-//        TextUpdateEvent event1 = new TextUpdateEvent();
-//        taskHandler.submit("Generating Random Text " + new Random().nextDouble(), event1, () -> {
-//            String text = textGenerator.make(2000, "1 - Should Be First");
-//            event1.setText(text);
-//        });
-//
-//        TextUpdateEvent event2 = new TextUpdateEvent();
-//        taskHandler.submit("Generating Random Text " + new Random().nextDouble(), event2, () -> {
-//            try {
-//                Thread.sleep(30);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//            String text = textGenerator.make(1000, "2 - Should Be Second");
-//            event2.setText(text);
-//        });
-
     }
 
     public void closeApp() {
