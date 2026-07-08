@@ -53,6 +53,8 @@ import java.util.concurrent.TimeUnit;
  *          progress()
  *          publish()
  *          announce()
+ * TODO: TaskBus should know if it's running on the EDT, and perhaps switch it
+ *       out.
  */
 
 @Singleton
@@ -67,8 +69,9 @@ public class TaskBus {
     // The pool that holds the tasks. Very simple, one task at a time. FIFO.
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
 
-    // Instantaneous status of the TaskBus. Mainly used to determine if no
-    // tasks are running when needing to quit the application.
+    // Instantaneous status of the TaskBus. To send events when they are done.
+    // Also used to determine if no tasks are running when needing to quit the
+    // application.
     private BehaviorSubject<TaskBusStatus> stream =
             BehaviorSubject.createDefault(TaskBusStatus.empty());
 
@@ -81,6 +84,8 @@ public class TaskBus {
     public TaskBus() {
     }
 
+    /** Enable the linear and instant task running mode for testing.
+     */
     public void enableTestMode() {
         this.testMode = true;
     }
@@ -92,9 +97,27 @@ public class TaskBus {
      * It wraps the Runnable along with a friendly name that is visible on the
      * UI and the event that it is expected to throw after the task is
      * completed.
+     *
+     * Created to have a handle on the task to be run. This is not used for
+     * status, look into publish(..) for that. Monitor and stream are what have
+     * the app status.
+     *
+     * It's expected to fill the AppEvent with data so the ViewModel can grab
+     * it.
+     *
+     * See it as a wrapper for a Runnable.
+     * See it as a convenience for the main thread pool, so that the application
+     * can track of where the TaskBus is in term of progress.
+     *
+     * MOTIVE: The reason I did it this way is so that the Runnable doesn't
+     *         have to worry about handling things like updating the status of
+     *         the tasks. This is all done here.
+     * COMMENT: For queue, set, publish, progress and announce, look at the
+     *          method headers.
      */
     @SneakyThrows
     public void submit(String name, AppEvent event, Runnable run) {
+
         AppTask task = new AppTask(name, event, run);
 
         queue(task);
@@ -115,10 +138,16 @@ public class TaskBus {
         }
     }
 
+    /**
+     * Instant task status for keeping track and throwing events.
+     */
     public Observable<TaskBusStatus> stream() {
         return stream;
     }
 
+    /**
+     * UI friendly task statuses with artifical delay to make it UI friendly.
+     */
     public Observable<TaskBusStatus> monitor() {
         return monitor
                 .map(TaskBusStatus::snapshot)
@@ -128,6 +157,9 @@ public class TaskBus {
                 .refCount();
     }
 
+    /**
+     * Increment the total number of pending tasks.
+     */
     private void queue(AppTask task) {
         System.out.println(task.getName() + " queued");
 
@@ -137,6 +169,9 @@ public class TaskBus {
         announce(status);
     }
 
+    /**
+     * Sets the status to the currently running tasks.
+     */
     private void set(AppTask task) {
         TaskBusStatus status = this.monitor.getValue();
         status.setTask(task);
@@ -144,6 +179,9 @@ public class TaskBus {
         announce(status);
     }
 
+    /**
+     * Increments the number of tasks completed.
+     */
     private void progress(AppTask task) {
         TaskBusStatus status = this.monitor.getValue();
 
@@ -156,12 +194,20 @@ public class TaskBus {
         announce(status);
     }
 
+    /**
+     * Called when a task is completed. At this point, the model will know
+     * that the task is done, and receive the event to know what to do with it.
+     */
     private void publish(AppTask task) {
         TaskBusStatus status = this.monitor.getValue();
         status.setTask(task);
         this.stream.onNext(status);
     }
 
+    /**
+     * Used by the UI to know that the status has changed. Such as a task being
+     * queued, a task started, a task ended.
+     */
     private void announce(TaskBusStatus status) {
         this.monitor.onNext(status);
     }
