@@ -50,7 +50,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
             TextUpdateEvent event = new TextUpdateEvent();
             taskBus.submit("Generating Random Text " + new Random().nextDouble(), event, () -> {
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

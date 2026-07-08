@@ -51,9 +51,12 @@ public abstract class View<VM extends ViewModel, VC extends ViewController, RC e
 
         setup();
         subscribe(disposable);
+        listen();
     }
 
     protected abstract void setup();
+
+    protected abstract void listen();
 
     public abstract RC root();
 

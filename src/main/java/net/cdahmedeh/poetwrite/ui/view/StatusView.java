@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.ui.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.controller.StatusViewController;
 import net.cdahmedeh.poetwrite.ui.model.StatusViewModel;
 import net.miginfocom.swing.MigLayout;
@@ -30,16 +31,14 @@ import java.awt.*;
 /**
  * TODO: This is a huge mess. For whoever is reading this, please don't judge
  *       me.
- * TODO: Fix Mess
  * TODO: Hate that Swing doesn't have some kind of Markup. Even WPF has XAML.
  */
 public class StatusView extends View<StatusViewModel, StatusViewController, JPanel> {
     private JPanel pane;
-    private JLabel nameButton;
-    private JButton numberButton;
-    private JButton leftButton;
-    private JProgressBar progressBar;
-    private JLabel spinner;
+
+    private JLabel currentTaskNameLabel;
+    private JProgressBar tasksRunningProgressBar;
+    private JLabel taskActivityStatusIcon;
 
     public StatusView(StatusViewModel viewModel, StatusViewController viewController) {
         super(viewModel, viewController);
@@ -48,35 +47,37 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
     @Override
     protected void setup() {
         pane = new JPanel(new BorderLayout());
-//        pane.setLayout(new MigLayout("insets dialog", "[fill]"));
+
+        setupProgressBar();
+    }
+
+    private void setupProgressBar() {
 
         pane.setLayout(new MigLayout(
                 "insets dialog",
                 "[grow, fill] [20!] [200!] [120!]",
                 "[min!]"));
 
-        JSeparator seperator = new JSeparator();
-//        pane.add(seperator, "cell 0 0 4 1");
+        currentTaskNameLabel = new JLabel(UIConstants.STRING_STATUS_DEFAULT);
+        currentTaskNameLabel.setFont(currentTaskNameLabel.getFont().deriveFont(Font.BOLD));
+        currentTaskNameLabel.setForeground(Color.GRAY);
+        pane.add(currentTaskNameLabel, "cell 2 0, w 200!, aligny center");
 
-        ImageIcon spinnerIcon = new ImageIcon(getClass().getResource("/icons/spinner.gif"));
-        ImageIcon stoppedIcon = new ImageIcon(getClass().getResource("/icons/stopped.png"));
+        tasksRunningProgressBar = new JProgressBar();
+        pane.add(tasksRunningProgressBar, "cell 3 0, w 120!, aligny center");
+        tasksRunningProgressBar.setStringPainted(true);
+        tasksRunningProgressBar.setFont(tasksRunningProgressBar.getFont().deriveFont(13f));
+        tasksRunningProgressBar.setForeground(Color.GRAY);
 
-        nameButton = new JLabel("Ready");
-        nameButton.setFont(nameButton.getFont().deriveFont(Font.BOLD));
-        nameButton.setForeground(Color.GRAY);
-        pane.add(nameButton, "cell 2 0, w 200!, aligny center");
+        taskActivityStatusIcon = new JLabel();
+        taskActivityStatusIcon.setPreferredSize(new Dimension(16, 16));
+        taskActivityStatusIcon.setHorizontalAlignment(SwingConstants.CENTER);
+        pane.add(taskActivityStatusIcon, "cell 1 0, w 20!, aligny center");
+    }
 
-        progressBar = new JProgressBar();
-        pane.add(progressBar, "cell 3 0, w 120!, aligny center");
-        progressBar.setStringPainted(true);
-        progressBar.setFont(progressBar.getFont().deriveFont(13f));
-        progressBar.setForeground(Color.GRAY);
+    @Override
+    protected void listen() {
 
-
-        spinner = new JLabel();
-        spinner.setPreferredSize(new Dimension(16, 16));
-        spinner.setHorizontalAlignment(SwingConstants.CENTER);
-        pane.add(spinner, "cell 1 0, w 20!, aligny center");
     }
 
     @Override
@@ -95,23 +96,23 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
         Disposable taskSubscriber = viewModel.stream().subscribe(status -> {
 
-            SwingUtilities.invokeLater(() -> {
-                progressBar.setStringPainted(true);
-                        progressBar.setString(String.format("%d/%d", status.getProgress(), status.getQueued()));
-                        if (status.isBusy() == false) {
-                            progressBar.setString("done");
-                            nameButton.setText("Ready...");
-                            progressBar.setMaximum(10);
-                            progressBar.setValue(10);
-                            spinner.setIcon(stoppedIcon);
-                        } else {
-                            spinner.setIcon(spinnerIcon);
-                            nameButton.setText(status.getTask().getName());
-                            progressBar.setMaximum(status.getQueued());
-                            progressBar.setValue(status.getProgress());
-                        }
-                    });
+        SwingUtilities.invokeLater(() -> {
+            tasksRunningProgressBar.setStringPainted(true);
+                    tasksRunningProgressBar.setString(String.format("%d/%d", status.getProgress(), status.getQueued()));
+                    if (status.isBusy() == false) {
+                        tasksRunningProgressBar.setString(UIConstants.STRING_STATUS_COMPLETE);
+                        currentTaskNameLabel.setText(UIConstants.STRING_STATUS_DEFAULT + "...");
+                        tasksRunningProgressBar.setMaximum(10);
+                        tasksRunningProgressBar.setValue(10);
+                        taskActivityStatusIcon.setIcon(stoppedIcon);
+                    } else {
+                        taskActivityStatusIcon.setIcon(spinnerIcon);
+                        currentTaskNameLabel.setText(status.getTask().getName());
+                        tasksRunningProgressBar.setMaximum(status.getQueued());
+                        tasksRunningProgressBar.setValue(status.getProgress());
+                    }
                 });
+            });
 
         disposable.add(taskSubscriber);
     }
