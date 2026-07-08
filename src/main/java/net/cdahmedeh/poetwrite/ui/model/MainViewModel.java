@@ -24,8 +24,12 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.AppEvent;
+import net.cdahmedeh.poetwrite.ui.event.FileOpenedEvent;
+import net.cdahmedeh.poetwrite.ui.event.NewFileEvent;
 import net.cdahmedeh.poetwrite.ui.event.TextUpdateEvent;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
+
+import java.awt.desktop.OpenFilesEvent;
 
 public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
@@ -45,6 +49,14 @@ public class MainViewModel extends ViewModel {
         if (event instanceof TextUpdateEvent textUpdateEvent) {
             String text = textUpdateEvent.getText();
             this.text.onNext(text);
+        }
+
+        if (event instanceof NewFileEvent newFileEvent) {
+            this.text.onNext("");
+        }
+
+        if (event instanceof FileOpenedEvent fileOpenedEvent) {
+            this.text.onNext(fileOpenedEvent.getContent());
         }
     }
 

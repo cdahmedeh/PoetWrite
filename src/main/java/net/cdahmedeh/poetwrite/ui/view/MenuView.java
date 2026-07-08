@@ -13,10 +13,16 @@ import javax.swing.*;
  * TODO: Hate that Swing doesn't have some kind of Markup. Even WPF has XAML.
  */
 public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> {
-    private JMenuItem generateRandomTextMenuItem;
     private JMenuBar menuBar;
 
+    private JMenuItem newMenuItem;
+    private JMenuItem openMenuItem;
+    private JMenuItem saveMenuItem;
+    private JMenuItem saveAsMenuItem;
+
     private JMenuItem exitMenuItem;
+
+    private JMenuItem generateRandomTextMenuItem;
 
     public MenuView(MenuViewModel viewModel, MenuViewController viewController) {
         super(viewModel, viewController);
@@ -33,6 +39,46 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     private void setupFileMenu() {
         JMenu fileMenu = new JMenu(UIConstants.STRING_FILE);
 
+        // New
+        newMenuItem = new JMenuItem(UIConstants.STRING_NEW);
+        fileMenu.add(newMenuItem);
+
+        FlatSVGIcon newIcon = new FlatSVGIcon(getClass().getResource(UIConstants.NEW_ICON_PATH));
+        fileMenu.add(newMenuItem);
+
+        newMenuItem.setIcon(newIcon);
+
+        // Open
+        openMenuItem = new JMenuItem(UIConstants.STRING_OPEN);
+        fileMenu.add(openMenuItem);
+
+        FlatSVGIcon openIcon = new FlatSVGIcon(getClass().getResource(UIConstants.OPEN_ICON_PATH));
+        fileMenu.add(openMenuItem);
+
+        openMenuItem.setIcon(openIcon);
+
+        // Save
+        saveMenuItem = new JMenuItem(UIConstants.STRING_SAVE);
+        fileMenu.add(saveMenuItem);
+
+        FlatSVGIcon saveIcon = new FlatSVGIcon(getClass().getResource(UIConstants.SAVE_ICON_PATH));
+        fileMenu.add(saveMenuItem);
+
+        saveMenuItem.setIcon(saveIcon);
+
+        // Save As
+        saveAsMenuItem = new JMenuItem(UIConstants.STRING_SAVE_AS);
+        fileMenu.add(saveAsMenuItem);
+
+        FlatSVGIcon saveAsIcon = new FlatSVGIcon(getClass().getResource(UIConstants.SAVE_AS_ICON_PATH));
+        fileMenu.add(saveAsMenuItem);
+
+        saveAsMenuItem.setIcon(saveAsIcon);
+
+        // Separator
+        fileMenu.addSeparator();
+
+        // Exit
         exitMenuItem = new JMenuItem(UIConstants.STRING_EXIT);
         fileMenu.add(exitMenuItem);
 
@@ -59,7 +105,26 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
     @Override
     protected void listen() {
+        newMenuItem.addActionListener(e -> viewController.create());
+
+        openMenuItem.addActionListener(e-> {
+            JFileChooser chooser = new JFileChooser();
+            if (chooser.showOpenDialog(menuBar) == JFileChooser.APPROVE_OPTION) {
+                viewController.open(chooser.getSelectedFile());
+            }
+        });
+
+        saveMenuItem.addActionListener(e -> viewController.save());
+
+        saveAsMenuItem.addActionListener(e-> {
+            JFileChooser chooser = new JFileChooser();
+            if (chooser.showSaveDialog(menuBar) == JFileChooser.APPROVE_OPTION) {
+                viewController.saveAs(chooser.getSelectedFile());
+            }
+        });
+
         exitMenuItem.addActionListener(e -> viewController.closeApp());
+
         generateRandomTextMenuItem.addActionListener(e -> viewController.generateRandomText());
     }
 

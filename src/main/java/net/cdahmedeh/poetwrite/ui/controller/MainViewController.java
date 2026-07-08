@@ -22,18 +22,32 @@ import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
+import net.cdahmedeh.poetwrite.ui.event.ContentUpdateEvent;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
     private final ApplicationHandler applicationHandler;
+    private final PersistenceHandler persistenceHandler;
 
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceHandler persistenceHandler) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
+        this.persistenceHandler = persistenceHandler;
+    }
+
+    public void update(String content) {
+        ContentUpdateEvent event = new ContentUpdateEvent();
+        taskBus.submit("Updating Content", event, new Runnable() {
+            @Override
+            public void run() {
+                persistenceHandler.update(content);
+            }
+        });
     }
 
     @AssistedFactory

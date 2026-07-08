@@ -21,23 +21,42 @@ package net.cdahmedeh.poetwrite.ui.controller;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import net.cdahmedeh.poetwrite.ui.event.TextUpdateEvent;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
 import net.cdahmedeh.poetwrite.service.generator.TextGenerator;
 import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
+import java.io.File;
 import java.util.Random;
 
 public class MenuViewController extends ViewController<MenuViewModel> {
     private final TextGenerator textGenerator;
     private final ApplicationHandler applicationHandler;
+    private final PersistenceHandler persistenceHandler;
 
     @AssistedInject
-    protected MenuViewController(@Assisted MenuViewModel viewModel, TaskBus taskBus, TextGenerator textGenerator, ApplicationHandler applicationHandler) {
+    protected MenuViewController(@Assisted MenuViewModel viewModel, TaskBus taskBus, TextGenerator textGenerator, ApplicationHandler applicationHandler, PersistenceHandler persistenceHandler) {
         super(viewModel, taskBus);
         this.textGenerator = textGenerator;
         this.applicationHandler = applicationHandler;
+        this.persistenceHandler = persistenceHandler;
+    }
+
+    public void open(File file) {
+        FileOpenedEvent event = new FileOpenedEvent();
+        taskBus.submit("Opening File", event, () -> {
+            persistenceHandler.open(file);
+            event.setContent(persistenceHandler.getContent());
+        });
+    }
+
+    public void saveAs(File file) {
+        SaveAsEvent event = new SaveAsEvent();
+        taskBus.submit("Saving File As", event, () -> {
+            persistenceHandler.saveAs(file);
+        });
     }
 
     @AssistedFactory
@@ -58,6 +77,21 @@ public class MenuViewController extends ViewController<MenuViewModel> {
                 event.setText(text);
             });
         }
+    }
+
+    public void save() {
+        SaveEvent event = new SaveEvent();
+
+        taskBus.submit("Saving Poem", event, () -> {
+            persistenceHandler.save();
+        });
+    }
+
+    public void create() {
+        NewFileEvent event = new NewFileEvent();
+        taskBus.submit("Creating New Poem", event, () -> {
+            persistenceHandler.create();
+        });
     }
 
     public void closeApp() {
