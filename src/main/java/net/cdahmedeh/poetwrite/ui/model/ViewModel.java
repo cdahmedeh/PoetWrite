@@ -36,11 +36,15 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
  * - Extend listen(..) to determine how to respond to results that come from
  *   AppEvent(s).
  * - Never refer to the view directly.
+ *
+ * IMPORTANT NOTE:
+ * Normally, models would be waiting for an event from the TaskBus. But we can't
+ * do this because we'd have an infinite loop of events coming in. So instead,
+ * the model is listening directly from TaskBus itself.
  */
 public abstract class ViewModel {
     private TaskBus taskBus;
     private BehaviorSubject<TaskBusStatus> taskCurrent = BehaviorSubject.createDefault(TaskBusStatus.empty());
-    protected Observable<TaskBusStatus> taskStatus = taskCurrent.hide();
 
     public ViewModel(TaskBus taskBus) {
         this.taskBus = new TaskBus();
