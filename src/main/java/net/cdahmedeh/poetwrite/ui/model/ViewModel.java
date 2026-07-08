@@ -47,7 +47,7 @@ public abstract class ViewModel {
     private BehaviorSubject<TaskBusStatus> taskCurrent = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
     public ViewModel(TaskBus taskBus) {
-        this.taskBus = new TaskBus();
+        this.taskBus = taskBus;
 
         taskBus.stream().subscribe(status -> {
             listen(status.getTask(), status.getTask().getEvent());
