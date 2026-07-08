@@ -35,6 +35,9 @@ import java.awt.*;
  * - Make root() return the top of the component hierarchy. Usually a JFrame.
  * - Implement subscribe() to subscribe to the observables in the model. You
  *   can listen to them for changes, and update the View accordingly.
+ * - Implement listeners so you can add, normally actions listeners, to the
+ *   various UI items. This isn't enforced, you should just create the UI
+ *   first in setup(), and then setup the listeners in listen().
  *
  * - You can call the ViewController upon user interaction to run some logic.
  * - You can call the ViewModel to subscribe to the observables.
