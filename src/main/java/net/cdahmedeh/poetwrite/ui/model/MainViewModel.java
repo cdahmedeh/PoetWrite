@@ -26,12 +26,14 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 
-import java.awt.desktop.OpenFilesEvent;
-
 public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
 
     private BehaviorSubject<Boolean> dialogNeeded = BehaviorSubject.createDefault(false);
+
+    private BehaviorSubject<String> fileName = BehaviorSubject.createDefault("");
+
+    private BehaviorSubject<Boolean> fileChanged = BehaviorSubject.createDefault(true);
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -45,21 +47,28 @@ public class MainViewModel extends ViewModel {
 
     @Override
     protected void listen(AppTask task, AppEvent event) {
-        if (event instanceof TextUpdateEvent textUpdateEvent) {
-            String text = textUpdateEvent.getText();
-            this.text.onNext(text);
+        if (event instanceof ContentChangedEvent contentChangedEvent) {
+            String text = contentChangedEvent.getContent();
+            this.fileChanged.onNext(contentChangedEvent.isChanged());
         }
 
         if (event instanceof NewFileEvent newFileEvent) {
+            this.fileName.onNext(newFileEvent.getFile());
             this.text.onNext("");
+            this.fileChanged.onNext(true);
         }
 
         if (event instanceof FileOpenedEvent fileOpenedEvent) {
+            this.fileName.onNext(fileOpenedEvent.getFile());
             this.text.onNext(fileOpenedEvent.getContent());
         }
 
         if (event instanceof FileDialogNeededEvent dialogNeededEvent) {
             this.dialogNeeded.onNext(dialogNeededEvent.isNeeded());
+        }
+
+        if (event instanceof FileEvent) {
+            this.fileName.onNext(((FileEvent) event).getFile());
         }
     }
 
@@ -69,5 +78,13 @@ public class MainViewModel extends ViewModel {
 
     public Observable<Boolean> streamDialogNeeded() {
         return this.dialogNeeded.hide();
+    }
+
+    public Observable<Boolean> streamFileChanged() {
+        return this.fileChanged.hide();
+    }
+
+    public Observable<String> streamFileName() {
+        return this.fileName.hide();
     }
 }

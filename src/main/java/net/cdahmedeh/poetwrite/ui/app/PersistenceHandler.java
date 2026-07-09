@@ -68,6 +68,10 @@ public class PersistenceHandler extends LazyService {
         return b;
     }
 
+    public boolean changed() {
+        return fileChanged;
+    }
+
     @SneakyThrows
     public void create() {
         this.newFile = true;
@@ -106,6 +110,11 @@ public class PersistenceHandler extends LazyService {
             this.newFile = true;
         }
         this.currentFile = file.toPath();
+        Files.writeString(currentFile, content);
+    }
+
+    @SneakyThrows
+    public void save() {
         Files.writeString(currentFile, content);
     }
 }

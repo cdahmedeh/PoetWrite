@@ -52,18 +52,18 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     }
 
     public void generateRandomText() {
-        for (int i = 0; i < 10; i++) {
-            TextUpdateEvent event = new TextUpdateEvent();
-            taskBus.submit("Generating Random Text " + new Random().nextDouble(), event, () -> {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                String text = textGenerator.generate();
-                event.setText(text);
-            });
-        }
+//        for (int i = 0; i < 10; i++) {
+//            TextUpdateEvent event = new TextUpdateEvent();
+//            taskBus.submit("Generating Random Text " + new Random().nextDouble(), event, () -> {
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                String text = textGenerator.generate();
+//                event.setText(text);
+//            });
+//        }
     }
 
     public void save() {

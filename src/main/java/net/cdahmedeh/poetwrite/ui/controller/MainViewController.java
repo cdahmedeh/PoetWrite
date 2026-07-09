@@ -24,7 +24,7 @@ import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.ContentUpdateEvent;
+import net.cdahmedeh.poetwrite.ui.event.ContentChangedEvent;
 import net.cdahmedeh.poetwrite.ui.event.FileDialogNeededEvent;
 import net.cdahmedeh.poetwrite.ui.event.SaveEvent;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
@@ -45,11 +45,14 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void update(String content) {
-        ContentUpdateEvent event = new ContentUpdateEvent();
+        ContentChangedEvent event = new ContentChangedEvent();
         taskBus.submit("Updating Content", event, new Runnable() {
             @Override
             public void run() {
                 persistenceHandler.update(content);
+                if (persistenceHandler.check()) {
+                    event.setChanged(persistenceHandler.changed());
+                }
             }
         });
     }
@@ -65,6 +68,15 @@ public class MainViewController extends ViewController<MainViewModel> {
     @AssistedFactory
     public interface MainViewControllerFactory {
         MainViewController create(MainViewModel mainViewModel);
+    }
+
+    public void save() {
+        SaveEvent event = new SaveEvent();
+
+        taskBus.submit("Saving Poem", event, () -> {
+            persistenceHandler.save();
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+        });
     }
 
     public void save(File selectedFile) {

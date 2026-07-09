@@ -44,6 +44,9 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private JFrame frame;
     private RSyntaxTextArea textArea;
 
+    private String currentFile = "none";
+    private boolean changed = false;
+
     public MainView(MainViewModel viewModel, MainViewController viewController) {
         super(viewModel, viewController);
     }
@@ -156,10 +159,27 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                             viewController.save(selectedFile);
                             return;
                         }
+                    } else {
+                        viewController.save();
+                        return;
                     }
                 });
 
         disposable.add(dialogNeededSubscriber);
+
+        Disposable fileChangedDisposable = viewModel.streamFileChanged()
+                .subscribe(fileChanged -> {
+                    changed = fileChanged;
+                    frame.setTitle("PoetWrite - " + currentFile + " " + changed);
+                });
+        disposable.add(fileChangedDisposable);
+
+        Disposable fileNameDisposable = viewModel.streamFileName()
+                .subscribe(fileName -> {
+                    currentFile = fileName;
+                    frame.setTitle("PoetWrite - " + currentFile + " " + changed);
+                });
+        disposable.add(fileNameDisposable);
     }
 
     public void show() {

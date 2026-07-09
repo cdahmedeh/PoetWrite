@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2026 Ahmed El-Hajjar
+ * Copyright (C) 2025 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Basic Event for when Text is updated. Currently only used for passing the
- * randomly generated text.
- */
 @NoArgsConstructor
-public class TextUpdateEvent extends AppEvent {
+public class ContentChangedEvent extends AppEvent {
     @Getter @Setter
-    private String text = "";
+    private String content = "";
+
+    @Getter @Setter
+    private boolean changed = true;
 }
