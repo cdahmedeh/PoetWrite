@@ -134,6 +134,9 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
                 if (selectedFile.exists()) {
                     int confirm = JOptionPane.showConfirmDialog(menuBar, UIConstants.MESSAGE_OVERWRITE_PROMPT);
+                    if (confirm == JOptionPane.CANCEL_OPTION) {
+                        return;
+                    }
                     if (confirm != JOptionPane.YES_OPTION) {
                         continue;
                     }
