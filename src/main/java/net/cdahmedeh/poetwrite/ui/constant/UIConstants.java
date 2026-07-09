@@ -33,6 +33,9 @@ public class UIConstants {
     public static final String STRING_STATUS_DEFAULT = "Ready";
     public static final String STRING_STATUS_COMPLETE = "Done";
 
+    public static final String MESSAGE_OVERWRITE_PROMPT =
+            "This file already exists. Would you like to overwrite?";
+
     public static final String APP_ICON_PATH = "/icons/appicon.png";
 
     public static final String NEW_ICON_PATH = "/icons/new.svg";

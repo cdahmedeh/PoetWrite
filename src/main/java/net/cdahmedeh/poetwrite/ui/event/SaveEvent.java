@@ -18,8 +18,13 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 public class SaveEvent extends AppEvent{
+    @Getter
+    @Setter
+    private String file;
 }

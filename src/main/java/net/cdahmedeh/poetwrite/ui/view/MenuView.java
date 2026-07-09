@@ -7,6 +7,8 @@ import net.cdahmedeh.poetwrite.ui.controller.MenuViewController;
 import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 
 /**
  * TODO: This is a huge mess. For whoever is reading this, please don't judge
@@ -23,6 +25,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     private JMenuItem exitMenuItem;
 
     private JMenuItem generateRandomTextMenuItem;
+    private File selectedFile;
 
     public MenuView(MenuViewModel viewModel, MenuViewController viewController) {
         super(viewModel, viewController);
@@ -105,10 +108,13 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
     @Override
     protected void listen() {
+        FileNameExtensionFilter poemFilter = new FileNameExtensionFilter("Poem Files (*.poem)", "poem");
+
         newMenuItem.addActionListener(e -> viewController.create());
 
         openMenuItem.addActionListener(e-> {
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(poemFilter);
             if (chooser.showOpenDialog(menuBar) == JFileChooser.APPROVE_OPTION) {
                 viewController.open(chooser.getSelectedFile());
             }
@@ -118,8 +124,23 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         saveAsMenuItem.addActionListener(e-> {
             JFileChooser chooser = new JFileChooser();
-            if (chooser.showSaveDialog(menuBar) == JFileChooser.APPROVE_OPTION) {
-                viewController.saveAs(chooser.getSelectedFile());
+            chooser.setFileFilter(poemFilter);
+            while (true) {
+                if (chooser.showSaveDialog(menuBar) != JFileChooser.APPROVE_OPTION) {
+                    return;
+                }
+
+                File selectedFile = chooser.getSelectedFile();
+
+                if (selectedFile.exists()) {
+                    int confirm = JOptionPane.showConfirmDialog(menuBar, UIConstants.MESSAGE_OVERWRITE_PROMPT);
+                    if (confirm != JOptionPane.YES_OPTION) {
+                        continue;
+                    }
+                }
+
+                viewController.saveAs(selectedFile);
+                return;
             }
         });
 

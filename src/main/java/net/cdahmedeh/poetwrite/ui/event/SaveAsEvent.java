@@ -18,5 +18,11 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class SaveAsEvent extends AppEvent{
+    @Getter
+    @Setter
+    private String file;
 }

@@ -49,13 +49,16 @@ public class MenuViewController extends ViewController<MenuViewModel> {
         taskBus.submit("Opening File", event, () -> {
             persistenceHandler.open(file);
             event.setContent(persistenceHandler.getContent());
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
         });
     }
 
     public void saveAs(File file) {
         SaveAsEvent event = new SaveAsEvent();
         taskBus.submit("Saving File As", event, () -> {
+            event.setFile(file.getName());
             persistenceHandler.saveAs(file);
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
         });
     }
 
@@ -84,6 +87,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
 
         taskBus.submit("Saving Poem", event, () -> {
             persistenceHandler.save();
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
         });
     }
 
@@ -91,6 +95,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
         NewFileEvent event = new NewFileEvent();
         taskBus.submit("Creating New Poem", event, () -> {
             persistenceHandler.create();
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
         });
     }
 

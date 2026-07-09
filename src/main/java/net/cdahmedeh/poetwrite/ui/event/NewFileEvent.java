@@ -18,5 +18,12 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
 public class NewFileEvent extends AppEvent {
+    @Getter @Setter
+    public String file;
 }

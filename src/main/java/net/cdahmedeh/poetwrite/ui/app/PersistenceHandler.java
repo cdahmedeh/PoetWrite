@@ -35,11 +35,16 @@ import java.nio.file.StandardOpenOption;
 
 @Singleton
 public class PersistenceHandler extends LazyService {
-    @Serial
+    public static final String DEFAULT_FILE_EXTENSION = "poem";
+
+    @Getter
     private Path currentFile;
 
     @Getter
     private String content;
+
+    @Getter
+    private boolean isNewFile = true;
 
     @Inject
     protected PersistenceHandler(TaskBus taskBus) {
@@ -56,10 +61,12 @@ public class PersistenceHandler extends LazyService {
     protected void init() {
         currentFile = Files.createTempFile("poet-write-temp", ".poem" );
         this.content = "";
+        this.isNewFile = true;
     }
 
     @SneakyThrows
     public void create() {
+        this.isNewFile = false;
         currentFile = Files.createTempFile("poet-write-temp", ".poem" );
         this.content = "";
     }
@@ -70,11 +77,13 @@ public class PersistenceHandler extends LazyService {
 
     @SneakyThrows
     public void save() {
+        this.isNewFile = false;
         Files.writeString(currentFile, content);
     }
 
     @SneakyThrows
     public void open(File file) {
+        this.isNewFile = false;
         String content = Files.readString(file.toPath());
         this.currentFile = file.toPath();
         this.content = content;
@@ -82,6 +91,11 @@ public class PersistenceHandler extends LazyService {
 
     @SneakyThrows
     public void saveAs(File file) {
+        if (file.exists()) {
+            this.isNewFile = false;
+        } else {
+            this.isNewFile = true;
+        }
         this.currentFile = file.toPath();
         Files.writeString(currentFile, content);
     }
