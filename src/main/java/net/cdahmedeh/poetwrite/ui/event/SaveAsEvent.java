@@ -1,6 +1,6 @@
 /**
  * PoetWrite - A Poetry Writing Application
- * Copyright (C) 2025 Ahmed El-Hajjar
+ * Copyright (C) 2026 Ahmed El-Hajjar
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,5 @@ package net.cdahmedeh.poetwrite.ui.event;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SaveAsEvent extends AppEvent{
-    @Getter
-    @Setter
-    private String file;
+public class SaveAsEvent extends FileEvent{
 }
