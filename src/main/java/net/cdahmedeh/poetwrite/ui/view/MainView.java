@@ -30,9 +30,11 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 /**
  * TODO: This is a huge mess. For whoever is reading this, please don't judge
@@ -123,6 +125,41 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 });
 
         disposable.add(textSubscriber);
+
+        Disposable dialogNeededSubscriber =  viewModel.streamDialogNeeded()
+                .subscribe(dialogNeeded -> {
+                    if (dialogNeeded) {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setFileFilter(new FileNameExtensionFilter("Poem Files (*.poem)", "poem"));
+
+                        while (true) {
+                            if (chooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
+                                return;
+                            }
+
+                            File selectedFile = chooser.getSelectedFile();
+
+                            if (selectedFile.exists()) {
+                                int confirm = JOptionPane.showConfirmDialog(frame, UIConstants.MESSAGE_OVERWRITE_PROMPT);
+                                if (confirm == JOptionPane.NO_OPTION) {
+                                    viewController.ask(selectedFile);
+                                    return;
+                                }
+                                if (confirm == JOptionPane.CANCEL_OPTION) {
+                                    return;
+                                }
+                                if (confirm != JOptionPane.YES_OPTION) {
+                                    continue;
+                                }
+                            }
+
+                            viewController.save(selectedFile);
+                            return;
+                        }
+                    }
+                });
+
+        disposable.add(dialogNeededSubscriber);
     }
 
     public void show() {

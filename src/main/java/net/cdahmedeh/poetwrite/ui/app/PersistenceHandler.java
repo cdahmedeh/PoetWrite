@@ -19,19 +19,15 @@
 package net.cdahmedeh.poetwrite.ui.app;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.ContentUpdateEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
-import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 @Singleton
 public class PersistenceHandler extends LazyService {
@@ -44,7 +40,10 @@ public class PersistenceHandler extends LazyService {
     private String content;
 
     @Getter
-    private boolean isNewFile = true;
+    private boolean newFile = true;
+
+    @Getter
+    private boolean fileChanged = true;
 
     @Inject
     protected PersistenceHandler(TaskBus taskBus) {
@@ -61,29 +60,39 @@ public class PersistenceHandler extends LazyService {
     protected void init() {
         currentFile = Files.createTempFile("poet-write-temp", ".poem" );
         this.content = "";
-        this.isNewFile = true;
+        this.newFile = true;
+    }
+
+    public boolean check() {
+        boolean b = newFile;
+        return b;
     }
 
     @SneakyThrows
     public void create() {
-        this.isNewFile = false;
+        this.newFile = true;
         currentFile = Files.createTempFile("poet-write-temp", ".poem" );
         this.content = "";
+        this.fileChanged = true;
     }
 
     public void update(String text) {
         this.content = text;
+        this.fileChanged = true;
     }
 
     @SneakyThrows
-    public void save() {
-        this.isNewFile = false;
+    public void save(File file) {
+        if (newFile) {
+            this.currentFile = file.toPath();
+            newFile = false;
+        }
         Files.writeString(currentFile, content);
     }
 
     @SneakyThrows
     public void open(File file) {
-        this.isNewFile = false;
+        this.newFile = false;
         String content = Files.readString(file.toPath());
         this.currentFile = file.toPath();
         this.content = content;
@@ -92,9 +101,9 @@ public class PersistenceHandler extends LazyService {
     @SneakyThrows
     public void saveAs(File file) {
         if (file.exists()) {
-            this.isNewFile = false;
+            this.newFile = false;
         } else {
-            this.isNewFile = true;
+            this.newFile = true;
         }
         this.currentFile = file.toPath();
         Files.writeString(currentFile, content);

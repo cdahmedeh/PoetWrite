@@ -25,8 +25,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FileEvent extends AppEvent {
     @Getter @Setter
-    private String file;
+    private String file = null;
 
     @Getter @Setter
-    private String content;
+    private String content = "";
 }

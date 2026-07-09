@@ -44,23 +44,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
         this.persistenceHandler = persistenceHandler;
     }
 
-    public void open(File file) {
-        FileOpenedEvent event = new FileOpenedEvent();
-        taskBus.submit("Opening File", event, () -> {
-            persistenceHandler.open(file);
-            event.setContent(persistenceHandler.getContent());
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
-        });
-    }
 
-    public void saveAs(File file) {
-        SaveAsEvent event = new SaveAsEvent();
-        taskBus.submit("Saving File As", event, () -> {
-            event.setFile(file.getName());
-            persistenceHandler.saveAs(file);
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
-        });
-    }
 
     @AssistedFactory
     public interface MenuViewControllerFactory {
@@ -83,11 +67,10 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     }
 
     public void save() {
-        SaveEvent event = new SaveEvent();
-
-        taskBus.submit("Saving Poem", event, () -> {
-            persistenceHandler.save();
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+        FileDialogNeededEvent event = new FileDialogNeededEvent();
+        taskBus.submit("Checking If File Dialog Needed", event, () -> {
+            boolean check = persistenceHandler.check();
+            event.setNeeded(check);
         });
     }
 
@@ -96,6 +79,23 @@ public class MenuViewController extends ViewController<MenuViewModel> {
         taskBus.submit("Creating New Poem", event, () -> {
             persistenceHandler.create();
             event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+        });
+    }
+
+    public void open(File file) {
+        FileOpenedEvent event = new FileOpenedEvent();
+        taskBus.submit("Opening File", event, () -> {
+            persistenceHandler.open(file);
+            event.setContent(persistenceHandler.getContent());
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+        });
+    }
+
+    public void saveAs() {
+        FileDialogNeededEvent event = new FileDialogNeededEvent();
+        taskBus.submit("Checking If File Dialog Needed", event, () -> {
+            boolean check = persistenceHandler.check();
+            event.setNeeded(true);
         });
     }
 

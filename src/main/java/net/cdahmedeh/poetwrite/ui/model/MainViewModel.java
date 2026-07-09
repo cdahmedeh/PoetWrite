@@ -23,16 +23,15 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.AppEvent;
-import net.cdahmedeh.poetwrite.ui.event.FileOpenedEvent;
-import net.cdahmedeh.poetwrite.ui.event.NewFileEvent;
-import net.cdahmedeh.poetwrite.ui.event.TextUpdateEvent;
+import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 
 import java.awt.desktop.OpenFilesEvent;
 
 public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
+
+    private BehaviorSubject<Boolean> dialogNeeded = BehaviorSubject.createDefault(false);
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -58,9 +57,17 @@ public class MainViewModel extends ViewModel {
         if (event instanceof FileOpenedEvent fileOpenedEvent) {
             this.text.onNext(fileOpenedEvent.getContent());
         }
+
+        if (event instanceof FileDialogNeededEvent dialogNeededEvent) {
+            this.dialogNeeded.onNext(dialogNeededEvent.isNeeded());
+        }
     }
 
     public Observable<String> streamText() {
         return this.text.hide();
+    }
+
+    public Observable<Boolean> streamDialogNeeded() {
+        return this.dialogNeeded.hide();
     }
 }

@@ -123,28 +123,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         saveMenuItem.addActionListener(e -> viewController.save());
 
         saveAsMenuItem.addActionListener(e-> {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(poemFilter);
-            while (true) {
-                if (chooser.showSaveDialog(menuBar) != JFileChooser.APPROVE_OPTION) {
-                    return;
-                }
-
-                File selectedFile = chooser.getSelectedFile();
-
-                if (selectedFile.exists()) {
-                    int confirm = JOptionPane.showConfirmDialog(menuBar, UIConstants.MESSAGE_OVERWRITE_PROMPT);
-                    if (confirm == JOptionPane.CANCEL_OPTION) {
-                        return;
-                    }
-                    if (confirm != JOptionPane.YES_OPTION) {
-                        continue;
-                    }
-                }
-
-                viewController.saveAs(selectedFile);
-                return;
-            }
+                viewController.saveAs();
         });
 
         exitMenuItem.addActionListener(e -> viewController.closeApp());

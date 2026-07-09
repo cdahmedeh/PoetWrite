@@ -25,7 +25,11 @@ import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.ContentUpdateEvent;
+import net.cdahmedeh.poetwrite.ui.event.FileDialogNeededEvent;
+import net.cdahmedeh.poetwrite.ui.event.SaveEvent;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
+
+import java.io.File;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
@@ -50,9 +54,26 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    public void ask(File selectedFile) {
+        FileDialogNeededEvent event = new FileDialogNeededEvent();
+        taskBus.submit("Checking If File Dialog Needed", event, () -> {
+            boolean check = persistenceHandler.check();
+            event.setNeeded(true);
+        });
+    }
+
     @AssistedFactory
     public interface MainViewControllerFactory {
         MainViewController create(MainViewModel mainViewModel);
+    }
+
+    public void save(File selectedFile) {
+        SaveEvent event = new SaveEvent();
+
+        taskBus.submit("Saving Poem", event, () -> {
+            persistenceHandler.save(selectedFile);
+            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+        });
     }
 
     public void closeApp() {
