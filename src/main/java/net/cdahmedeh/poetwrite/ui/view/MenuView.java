@@ -8,6 +8,9 @@ import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 /**
@@ -42,12 +45,18 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     private void setupFileMenu() {
         JMenu fileMenu = new JMenu(UIConstants.STRING_FILE);
 
+        FlatSVGIcon fileMenuIcon = new FlatSVGIcon(getClass().getResource(UIConstants.NEW_ICON_PATH));
+        fileMenu.setIcon(fileMenuIcon);
+
         // New
         newMenuItem = new JMenuItem(UIConstants.STRING_NEW);
         fileMenu.add(newMenuItem);
 
         FlatSVGIcon newIcon = new FlatSVGIcon(getClass().getResource(UIConstants.NEW_ICON_PATH));
         fileMenu.add(newMenuItem);
+
+        newMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         newMenuItem.setIcon(newIcon);
 
@@ -58,6 +67,9 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         FlatSVGIcon openIcon = new FlatSVGIcon(getClass().getResource(UIConstants.OPEN_ICON_PATH));
         fileMenu.add(openMenuItem);
 
+        openMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+
         openMenuItem.setIcon(openIcon);
 
         // Save
@@ -67,6 +79,9 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         FlatSVGIcon saveIcon = new FlatSVGIcon(getClass().getResource(UIConstants.SAVE_ICON_PATH));
         fileMenu.add(saveMenuItem);
 
+        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+
         saveMenuItem.setIcon(saveIcon);
 
         // Save As
@@ -75,6 +90,10 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         FlatSVGIcon saveAsIcon = new FlatSVGIcon(getClass().getResource(UIConstants.SAVE_AS_ICON_PATH));
         fileMenu.add(saveAsMenuItem);
+
+        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | InputEvent.SHIFT_DOWN_MASK));
 
         saveAsMenuItem.setIcon(saveAsIcon);
 
@@ -88,15 +107,21 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(UIConstants.EXIT_ICON_PATH));
         fileMenu.add(exitMenuItem);
 
+        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_Q,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | InputEvent.ALT_DOWN_MASK));
+
         exitMenuItem.setIcon(exitIcon);
 
         menuBar.add(fileMenu);
     }
 
     private void setupToolsMenu() {
-        JMenu toolsMenu;
+        JMenu toolsMenu = new JMenu(UIConstants.STRING_TOOLS);
 
-        toolsMenu = new JMenu(UIConstants.STRING_TOOLS);
+        FlatSVGIcon toolsMenuIcon = new FlatSVGIcon(getClass().getResource(UIConstants.TOOLS_ICON_PATH));
+        toolsMenu.setIcon(toolsMenuIcon);
+
         generateRandomTextMenuItem = new JMenuItem(UIConstants.STRING_GENERATE);
         toolsMenu.add(generateRandomTextMenuItem);
 

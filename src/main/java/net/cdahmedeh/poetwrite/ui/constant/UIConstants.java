@@ -38,11 +38,14 @@ public class UIConstants {
 
     public static final String APP_ICON_PATH = "/icons/appicon.png";
 
+    public static final String FILE_ICON_PATH = "/icons/file.svg";
     public static final String NEW_ICON_PATH = "/icons/new.svg";
     public static final String OPEN_ICON_PATH = "/icons/open.svg";
     public static final String SAVE_ICON_PATH = "/icons/save.svg";
     public static final String SAVE_AS_ICON_PATH = "/icons/save-as.svg";
     public static final String EXIT_ICON_PATH = "/icons/exit.svg";
+
+    public static final String TOOLS_ICON_PATH = "/icons/tools.svg";
     public static final String GENERATE_ICON_PATH = "/icons/generate.svg";
 
     public static final String DEFAULT_EDITOR_FONT = "Aptos";
