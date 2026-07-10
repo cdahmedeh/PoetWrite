@@ -21,7 +21,7 @@ package net.cdahmedeh.poetwrite.ui.view;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
-import net.cdahmedeh.poetwrite.ui.component.PoetWriteTextArea;
+import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.controller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
@@ -75,7 +75,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     }
 
     private void setupEditor() {
-        textArea = new PoetWriteTextArea(20, 60);
+        textArea = new PoemTextArea(20, 60);
 //        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
         textArea.setCodeFoldingEnabled(true);
         textArea.setForeground(new Color(65, 65, 65));

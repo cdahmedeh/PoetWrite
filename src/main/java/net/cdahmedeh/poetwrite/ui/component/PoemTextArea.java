@@ -2,10 +2,10 @@ package net.cdahmedeh.poetwrite.ui.component;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-public class PoetWriteTextArea extends RSyntaxTextArea {
+public class PoemTextArea extends RSyntaxTextArea {
     private float lineSpacingFactor = 1.10f;
 
-    public PoetWriteTextArea(int rows, int cols) {
+    public PoemTextArea(int rows, int cols) {
         super(rows, cols);
     }
 
