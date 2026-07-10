@@ -52,6 +52,10 @@ public class MainViewModel extends ViewModel {
             this.fileChanged.onNext(contentChangedEvent.isChanged());
         }
 
+        if (event instanceof SaveEvent saveEvent) {
+            this.fileChanged.onNext(false);
+        }
+
         if (event instanceof NewFileEvent newFileEvent) {
             this.fileName.onNext(newFileEvent.getFile());
             this.text.onNext("");
