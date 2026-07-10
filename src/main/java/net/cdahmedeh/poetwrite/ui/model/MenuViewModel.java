@@ -23,12 +23,13 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 public class MenuViewModel extends ViewModel {
-    private BehaviorSubject<Boolean> confirmationNeeded = BehaviorSubject.createDefault(true);
+    private BehaviorSubject<Boolean> confirmationNeeded = BehaviorSubject.createDefault(false);
 
 
     @AssistedInject
@@ -48,13 +49,12 @@ public class MenuViewModel extends ViewModel {
     @Override
     protected void listen(AppTask task, AppEvent event) {
         if (event instanceof ContentChangedEvent contentChangedEvent) {
-            String text = contentChangedEvent.getContent();
-            this.confirmationNeeded.onNext(true);
+            boolean changed = contentChangedEvent.getStatus() == PersistenceHandler.FileStatus.CHANGED;
+            this.confirmationNeeded.onNext(changed);
         }
 
         if (event instanceof SaveEvent saveEvent) {
             this.confirmationNeeded.onNext(false);
-
         }
 
         if (event instanceof NewFileEvent newFileEvent) {

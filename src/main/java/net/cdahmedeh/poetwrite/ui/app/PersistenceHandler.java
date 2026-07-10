@@ -33,6 +33,10 @@ import java.nio.file.Path;
 public class PersistenceHandler extends LazyService {
     public static final String DEFAULT_FILE_EXTENSION = "poem";
 
+    public static enum FileStatus {
+        UNKNOWN, NEW, OPENED, UNCHANGED, CHANGED, SAVED;
+    }
+
     @Getter
     private Path currentFile;
 
@@ -40,10 +44,9 @@ public class PersistenceHandler extends LazyService {
     private String content;
 
     @Getter
-    private boolean newFile = true;
+    private String original;
 
-    @Getter
-    private boolean fileChanged = true;
+    public FileStatus fileStatus =  FileStatus.NEW;
 
     @Inject
     protected PersistenceHandler(TaskBus taskBus) {
@@ -58,63 +61,67 @@ public class PersistenceHandler extends LazyService {
     @Override
     @SneakyThrows
     protected void init() {
-        currentFile = Files.createTempFile("poet-write-temp", ".poem" );
+        currentFile = Files.createTempFile("poet-write-temp", ".poem");
         this.content = "";
-        this.newFile = true;
+        this.original = "";
+        fileStatus = FileStatus.NEW;
     }
 
-    public boolean check() {
-        boolean b = newFile;
-        return b;
-    }
-
-    public boolean changed() {
-        return fileChanged;
+    public FileStatus status() {
+        return fileStatus;
     }
 
     @SneakyThrows
     public void create() {
-        this.newFile = true;
         currentFile = Files.createTempFile("poet-write-temp", ".poem" );
         this.content = "";
-        this.fileChanged = true;
+        this.original = "";
+        fileStatus = FileStatus.NEW;
     }
 
     public void update(String text) {
         this.content = text;
-        this.fileChanged = true;
+        if (content.equals(original) == false) {
+            fileStatus = FileStatus.CHANGED;
+        } else {
+            fileStatus = FileStatus.UNCHANGED;
+        }
     }
 
     @SneakyThrows
     public void save(File file) {
-        if (newFile) {
+        if (fileStatus == FileStatus.NEW) {
             this.currentFile = file.toPath();
-            newFile = false;
         }
         Files.writeString(currentFile, content);
+        this.original = content;
+        fileStatus = FileStatus.SAVED;
     }
 
     @SneakyThrows
     public void open(File file) {
-        this.newFile = false;
         String content = Files.readString(file.toPath());
         this.currentFile = file.toPath();
         this.content = content;
+        this.original = content;
+        this.fileStatus = FileStatus.OPENED;
     }
 
-    @SneakyThrows
-    public void saveAs(File file) {
-        if (file.exists()) {
-            this.newFile = false;
-        } else {
-            this.newFile = true;
-        }
-        this.currentFile = file.toPath();
-        Files.writeString(currentFile, content);
-    }
+//    @SneakyThrows
+//    public void saveAs(File file) {
+//        if (file.exists()) {
+//            this.newFile = false;
+//        } else {
+//            this.newFile = true;
+//        }
+//        this.currentFile = file.toPath();
+//        Files.writeString(currentFile, content);
+//    }
 
     @SneakyThrows
     public void save() {
         Files.writeString(currentFile, content);
+        this.original = content;
+        this.fileStatus = FileStatus.SAVED;
     }
 }

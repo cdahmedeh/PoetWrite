@@ -21,9 +21,14 @@ package net.cdahmedeh.poetwrite.ui.event;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 public class SaveEvent extends FileEvent {
+    public SaveEvent() {
+        System.out.println("Save Event Created");
+    }
+
     @Getter
     @Setter
     private String file;
@@ -31,4 +36,9 @@ public class SaveEvent extends FileEvent {
     @Getter
     @Setter
     private String exists;
+
+    @Override
+    public PersistenceHandler.FileStatus getFileStatus() {
+        return PersistenceHandler.FileStatus.SAVED;
+    }
 }

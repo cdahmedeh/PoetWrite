@@ -22,6 +22,8 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
@@ -29,12 +31,12 @@ import net.cdahmedeh.poetwrite.ui.async.AppTask;
 public class MainViewModel extends ViewModel {
     private BehaviorSubject<String> text = BehaviorSubject.createDefault("");
 
-    private BehaviorSubject<Boolean> dialogNeeded = BehaviorSubject.createDefault(false);
+    private PublishSubject<Boolean> dialogNeeded = PublishSubject.create();
 
 
     private BehaviorSubject<String> fileName = BehaviorSubject.createDefault("");
 
-    private BehaviorSubject<Boolean> fileChanged = BehaviorSubject.createDefault(true);
+    private BehaviorSubject<PersistenceHandler.FileStatus> fileStatus = BehaviorSubject.createDefault(PersistenceHandler.FileStatus.UNKNOWN);
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -50,31 +52,32 @@ public class MainViewModel extends ViewModel {
     protected void listen(AppTask task, AppEvent event) {
         if (event instanceof ContentChangedEvent contentChangedEvent) {
             String text = contentChangedEvent.getContent();
-            this.fileChanged.onNext(contentChangedEvent.isChanged());
+            this.fileStatus.onNext(contentChangedEvent.getStatus());
         }
 
         if (event instanceof SaveEvent saveEvent) {
-            this.fileChanged.onNext(false);
-
+            this.fileStatus.onNext(saveEvent.getFileStatus());
         }
 
         if (event instanceof NewFileEvent newFileEvent) {
             this.fileName.onNext(newFileEvent.getFile());
             this.text.onNext("");
-            this.fileChanged.onNext(true);
-        }
-
-        if (event instanceof FileOpenedEvent fileOpenedEvent) {
-            this.fileName.onNext(fileOpenedEvent.getFile());
-            this.text.onNext(fileOpenedEvent.getContent());
+            this.fileStatus.onNext(newFileEvent.getFileStatus());
         }
 
         if (event instanceof FileDialogNeededEvent dialogNeededEvent) {
             this.dialogNeeded.onNext(dialogNeededEvent.isNeeded());
         }
 
+        if (event instanceof FileOpenedEvent fileOpenedEvent) {
+            this.fileName.onNext(fileOpenedEvent.getFile());
+            this.text.onNext(fileOpenedEvent.getContent());
+            this.fileStatus.onNext(fileOpenedEvent.getFileStatus());
+        }
+
         if (event instanceof FileEvent) {
             this.fileName.onNext(((FileEvent) event).getFile());
+            this.fileStatus.onNext(((FileEvent) event).getFileStatus());
         }
     }
 
@@ -86,8 +89,8 @@ public class MainViewModel extends ViewModel {
         return this.dialogNeeded.hide();
     }
 
-    public Observable<Boolean> streamFileChanged() {
-        return this.fileChanged.hide();
+    public Observable<PersistenceHandler.FileStatus> streamFileStatus() {
+        return this.fileStatus.hide();
     }
 
     public Observable<String> streamFileName() {

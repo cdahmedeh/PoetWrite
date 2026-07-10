@@ -50,9 +50,7 @@ public class MainViewController extends ViewController<MainViewModel> {
             @Override
             public void run() {
                 persistenceHandler.update(content);
-                if (persistenceHandler.check()) {
-                    event.setChanged(persistenceHandler.changed());
-                }
+                event.setStatus(persistenceHandler.status());
             }
         });
     }
@@ -60,7 +58,7 @@ public class MainViewController extends ViewController<MainViewModel> {
     public void ask(File selectedFile) {
         FileDialogNeededEvent event = new FileDialogNeededEvent();
         taskBus.submit("Checking If File Dialog Needed", event, () -> {
-            boolean check = persistenceHandler.check();
+//            boolean check = persistenceHandler.check();
             event.setNeeded(true);
         });
     }

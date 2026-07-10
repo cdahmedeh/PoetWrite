@@ -20,12 +20,12 @@ package net.cdahmedeh.poetwrite.ui.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.component.PoetWriteTextArea;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.controller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -47,7 +47,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private RSyntaxTextArea textArea;
 
     private String currentFile = "none";
-    private boolean changed = false;
+    private PersistenceHandler.FileStatus status = PersistenceHandler.FileStatus.UNKNOWN;
 
     public MainView(MainViewModel viewModel, MainViewController viewController) {
         super(viewModel, viewController);
@@ -122,7 +122,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (changed) {
+                if (status == PersistenceHandler.FileStatus.CHANGED) {
                     int confirm = JOptionPane.showConfirmDialog(frame, "The file has changes. Do you want to discard");
                     if (confirm == JOptionPane.NO_OPTION) {
                         return;
@@ -160,7 +160,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         Disposable dialogNeededSubscriber =  viewModel.streamDialogNeeded()
                 .subscribe(dialogNeeded -> {
-
+                    System.out.println("Dialog Needed Called");
 
                     if (dialogNeeded) {
                         JFileChooser chooser = new JFileChooser();
@@ -200,17 +200,21 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         disposable.add(dialogNeededSubscriber);
 
-        Disposable fileChangedDisposable = viewModel.streamFileChanged()
+        Disposable fileChangedDisposable = viewModel.streamFileStatus()
                 .subscribe(fileChanged -> {
-                    changed = fileChanged;
-                    frame.setTitle("PoetWrite - " + currentFile + " " + changed);
+                    status = fileChanged;
+                    String changedText = status == PersistenceHandler.FileStatus.CHANGED ? " (unsaved changes)" : "";
+                    System.out.println(status);
+                    frame.setTitle("PoetWrite - " + currentFile + changedText);
                 });
         disposable.add(fileChangedDisposable);
 
         Disposable fileNameDisposable = viewModel.streamFileName()
                 .subscribe(fileName -> {
                     currentFile = fileName;
-                    frame.setTitle("PoetWrite - " + currentFile + " " + changed);
+                    String changedText = status == PersistenceHandler.FileStatus.CHANGED ? " (unsaved changes)" : "";
+                    System.out.println(status);
+                    frame.setTitle("PoetWrite - " + currentFile + " " + changedText);
                 });
         disposable.add(fileNameDisposable);
     }

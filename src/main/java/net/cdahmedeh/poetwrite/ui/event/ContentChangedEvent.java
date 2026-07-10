@@ -21,12 +21,27 @@ package net.cdahmedeh.poetwrite.ui.event;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 public class ContentChangedEvent extends AppEvent {
     @Getter @Setter
     private String content = "";
 
     @Getter @Setter
     private boolean changed = true;
+
+    public ContentChangedEvent(){
+        System.out.println("ContentChangedEvent");
+    }
+
+    private PersistenceHandler.FileStatus status = PersistenceHandler.FileStatus.UNKNOWN;
+
+    public PersistenceHandler.FileStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PersistenceHandler.FileStatus status) {
+        this.status = status;
+    }
 }

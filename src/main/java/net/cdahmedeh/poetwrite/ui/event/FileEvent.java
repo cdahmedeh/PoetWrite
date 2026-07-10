@@ -21,12 +21,15 @@ package net.cdahmedeh.poetwrite.ui.event;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 
 @NoArgsConstructor
-public class FileEvent extends AppEvent {
+public abstract class FileEvent extends AppEvent {
     @Getter @Setter
     private String file = null;
 
     @Getter @Setter
     private String content = "";
+
+    public abstract PersistenceHandler.FileStatus getFileStatus();
 }

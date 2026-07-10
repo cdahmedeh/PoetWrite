@@ -21,8 +21,13 @@ package net.cdahmedeh.poetwrite.ui.event;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 
 @NoArgsConstructor
 public class FileOpenedEvent extends FileEvent {
 
+    @Override
+    public PersistenceHandler.FileStatus getFileStatus() {
+        return PersistenceHandler.FileStatus.OPENED;
+    }
 }
