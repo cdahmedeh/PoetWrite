@@ -122,6 +122,13 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                if (changed) {
+                    int confirm = JOptionPane.showConfirmDialog(frame, "The file has changes. Do you want to discard");
+                    if (confirm == JOptionPane.NO_OPTION) {
+                        return;
+                    }
+                }
+
                 viewController.closeApp();
             }
         });
@@ -149,11 +156,17 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         disposable.add(textSubscriber);
 
+
+
         Disposable dialogNeededSubscriber =  viewModel.streamDialogNeeded()
                 .subscribe(dialogNeeded -> {
+
+
                     if (dialogNeeded) {
                         JFileChooser chooser = new JFileChooser();
                         chooser.setFileFilter(new FileNameExtensionFilter("Poem Files (*.poem)", "poem"));
+
+
 
                         while (true) {
                             if (chooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {

@@ -1,7 +1,9 @@
 package net.cdahmedeh.poetwrite.ui.view;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.controller.MenuViewController;
 import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
@@ -135,6 +137,8 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         menuBar.add(toolsMenu);
     }
 
+    private boolean confirmationNeeded;
+
     @Override
     protected void listen() {
         FileNameExtensionFilter poemFilter = new FileNameExtensionFilter("Poem Files (*.poem)", "poem");
@@ -142,6 +146,13 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         newMenuItem.addActionListener(e -> viewController.create());
 
         openMenuItem.addActionListener(e-> {
+            if (confirmationNeeded) {
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "The file has changes. Do you want to discard");
+                if (confirm == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
             JFileChooser chooser = new JFileChooser();
             chooser.setFileFilter(poemFilter);
             if (chooser.showOpenDialog(menuBar) == JFileChooser.APPROVE_OPTION) {
@@ -167,6 +178,11 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
+        Disposable coomfirmationNeededSubscriber = viewModel.streamConfirmationNeeded()
+                .subscribe(confirmation -> {
+            confirmationNeeded = confirmation;
+        });
 
+        disposable.add(coomfirmationNeededSubscriber);
     }
 }

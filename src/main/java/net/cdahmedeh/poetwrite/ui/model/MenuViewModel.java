@@ -20,14 +20,24 @@ package net.cdahmedeh.poetwrite.ui.model;
 
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
-import net.cdahmedeh.poetwrite.ui.event.AppEvent;
+import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 public class MenuViewModel extends ViewModel {
+    private BehaviorSubject<Boolean> confirmationNeeded = BehaviorSubject.createDefault(true);
+
+
     @AssistedInject
     public MenuViewModel(TaskBus taskBus) {
         super(taskBus);
+    }
+
+    public Observable<Boolean> streamConfirmationNeeded() {
+        return confirmationNeeded.hide();
     }
 
     @AssistedFactory
@@ -37,5 +47,22 @@ public class MenuViewModel extends ViewModel {
 
     @Override
     protected void listen(AppTask task, AppEvent event) {
+        if (event instanceof ContentChangedEvent contentChangedEvent) {
+            String text = contentChangedEvent.getContent();
+            this.confirmationNeeded.onNext(true);
+        }
+
+        if (event instanceof SaveEvent saveEvent) {
+            this.confirmationNeeded.onNext(false);
+
+        }
+
+        if (event instanceof NewFileEvent newFileEvent) {
+            this.confirmationNeeded.onNext(false);
+        }
+
+        if (event instanceof FileOpenedEvent fileOpenedEvent) {
+            this.confirmationNeeded.onNext(false);
+        }
     }
 }

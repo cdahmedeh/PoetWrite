@@ -31,6 +31,7 @@ public class MainViewModel extends ViewModel {
 
     private BehaviorSubject<Boolean> dialogNeeded = BehaviorSubject.createDefault(false);
 
+
     private BehaviorSubject<String> fileName = BehaviorSubject.createDefault("");
 
     private BehaviorSubject<Boolean> fileChanged = BehaviorSubject.createDefault(true);
@@ -54,6 +55,7 @@ public class MainViewModel extends ViewModel {
 
         if (event instanceof SaveEvent saveEvent) {
             this.fileChanged.onNext(false);
+
         }
 
         if (event instanceof NewFileEvent newFileEvent) {

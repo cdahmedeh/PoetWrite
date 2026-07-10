@@ -32,6 +32,10 @@ import static java.lang.String.format;
 public class StatusViewModel extends ViewModel {
     private BehaviorSubject<TaskBusStatus> taskHandlerStatus = BehaviorSubject.createDefault(TaskBusStatus.empty());
 
+    private BehaviorSubject<Boolean> confirmationNeeded = BehaviorSubject.createDefault(true);
+
+
+
     @AssistedInject
     public StatusViewModel(TaskBus taskBus) {
         super(taskBus);
