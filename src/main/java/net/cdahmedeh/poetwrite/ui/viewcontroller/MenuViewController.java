@@ -67,7 +67,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
 
     public void save() {
         FileDialogNeededEvent event = new FileDialogNeededEvent();
-        taskBus.submit("Checking If File Dialog Needed", event, () -> {
+        taskBus.submit("Saving Poem", event, () -> {
             boolean check = persistenceHandler.fileStatus == PersistenceHandler.FileStatus.CHANGED || persistenceHandler.fileStatus == PersistenceHandler.FileStatus.NEW;
             event.setNeeded(check);
         });
@@ -92,7 +92,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
 
     public void saveAs() {
         FileDialogNeededEvent event = new FileDialogNeededEvent();
-        taskBus.submit("Checking If File Dialog Needed", event, () -> {
+        taskBus.submit("Saving Poem", event, () -> {
             event.setNeeded(true);
         });
     }

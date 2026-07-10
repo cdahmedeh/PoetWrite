@@ -57,7 +57,7 @@ public class MainViewController extends ViewController<MainViewModel> {
 
     public void ask(File selectedFile) {
         FileDialogNeededEvent event = new FileDialogNeededEvent();
-        taskBus.submit("Checking If File Dialog Needed", event, () -> {
+        taskBus.submit("Saving Poem", event, () -> {
 //            boolean check = persistenceHandler.check();
             event.setNeeded(true);
         });

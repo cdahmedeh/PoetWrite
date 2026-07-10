@@ -34,7 +34,7 @@ public class UIConstants {
     public static final String STRING_STATUS_COMPLETE = "Done";
 
     public static final String MESSAGE_OVERWRITE_PROMPT =
-            "This file already exists. Would you like to overwrite?";
+            "The poem (%s) already exists. Are you sure you want to overwrite it?";
 
     public static final String APP_ICON_PATH = "/icons/appicon.png";
 

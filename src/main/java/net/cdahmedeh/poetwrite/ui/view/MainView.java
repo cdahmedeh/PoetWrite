@@ -18,6 +18,7 @@
 
 package net.cdahmedeh.poetwrite.ui.view;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
@@ -123,7 +124,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (status == PersistenceHandler.FileStatus.CHANGED) {
-                    int confirm = JOptionPane.showConfirmDialog(frame, "The file has changes. Do you want to discard");
+                    FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(UIConstants.EXIT_ICON_PATH));
+                    int confirm = JOptionPane.showConfirmDialog(frame, "Your poem has some unsaved changes. Are you sure you want to quit PoetWrite and lose your changes?", "Quit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (confirm == JOptionPane.NO_OPTION) {
                         return;
                     }
@@ -176,7 +178,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                             File selectedFile = chooser.getSelectedFile();
 
                             if (selectedFile.exists()) {
-                                int confirm = JOptionPane.showConfirmDialog(frame, UIConstants.MESSAGE_OVERWRITE_PROMPT);
+                                int confirm = JOptionPane.showConfirmDialog(frame, String.format(UIConstants.MESSAGE_OVERWRITE_PROMPT, selectedFile.getName()), "Overwrite Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                                 if (confirm == JOptionPane.NO_OPTION) {
                                     viewController.ask(selectedFile);
                                     return;

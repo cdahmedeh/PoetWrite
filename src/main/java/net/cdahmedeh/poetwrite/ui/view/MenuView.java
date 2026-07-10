@@ -144,7 +144,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         newMenuItem.addActionListener(e -> {
             if (confirmationNeeded) {
-                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "The file has changes. Do you want to discard");
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "Your poem has some unsaved changes. Are you sure you want to create a new poem and lose your changes?", "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.NO_OPTION) {
                     return;
                 }
@@ -155,7 +155,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         openMenuItem.addActionListener(e-> {
             if (confirmationNeeded) {
-                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "The file has changes. Do you want to discard");
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "Your poem has some unsaved changes. Are you sure you want to open a new poem and lose your changes?", "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.NO_OPTION) {
                     return;
                 }
