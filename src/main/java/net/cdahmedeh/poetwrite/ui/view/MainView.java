@@ -90,6 +90,12 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         RTextScrollPane textAresScrollPane = new RTextScrollPane(textArea);
         frame.add(textAresScrollPane, BorderLayout.CENTER);
 
+        textAresScrollPane.putClientProperty("FlatLaf.style", "focusWidth: 0");
+        textAresScrollPane.putClientProperty("FlatLaf.style",
+                "focusWidth: 0; focusColor: $ScrollPane.borderColor");
+        textAresScrollPane.setBorder(BorderFactory.createLineBorder(
+                UIManager.getColor("Component.borderColor"), 0));
+
         Gutter gutter = textAresScrollPane.getGutter();
         gutter.setLineNumberFont(new Font(UIConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, UIConstants.DEFAULT_EDITOR_FONT_SIZE));
     }
