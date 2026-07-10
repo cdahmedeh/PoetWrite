@@ -26,6 +26,7 @@ import net.cdahmedeh.poetwrite.ui.controller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
@@ -80,11 +81,17 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textArea.setForeground(new Color(65, 65, 65));
         textArea.setLineWrap(true);
         textArea.setFont(new Font(UIConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, UIConstants.DEFAULT_EDITOR_FONT_SIZE));
+
+
+
         textArea.setCurrentLineHighlightColor(new Color(250, 245, 250));
         textArea.setCaretColor(new Color(80, 80, 80));
 
-        RTextScrollPane textAresSrollPane = new RTextScrollPane(textArea);
-        frame.add(textAresSrollPane, BorderLayout.CENTER);
+        RTextScrollPane textAresScrollPane = new RTextScrollPane(textArea);
+        frame.add(textAresScrollPane, BorderLayout.CENTER);
+
+        Gutter gutter = textAresScrollPane.getGutter();
+        gutter.setLineNumberFont(new Font(UIConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, UIConstants.DEFAULT_EDITOR_FONT_SIZE));
     }
 
     @Override
