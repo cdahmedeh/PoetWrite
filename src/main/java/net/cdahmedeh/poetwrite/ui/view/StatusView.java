@@ -62,7 +62,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
         currentTaskNameLabel = new JLabel(UIConstants.STRING_STATUS_DEFAULT);
         currentTaskNameLabel.setFont(currentTaskNameLabel.getFont().deriveFont(Font.PLAIN));
-        currentTaskNameLabel.setForeground(new Color(155, 155, 155));
+        currentTaskNameLabel.setForeground(new Color(125, 125, 125));
         pane.add(currentTaskNameLabel, "cell 1 0, w 235!, aligny center");
 
         taskActivityStatusIcon = new JLabel();
@@ -99,7 +99,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
     @Override
     protected void subscribe(CompositeDisposable disposable) {
         FlatSVGIcon stoppedIcon = new FlatSVGIcon(getClass().getResource("/icons/done.svg"));
-        stoppedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color ->  new Color(225, 225, 225)));
+        stoppedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color ->  new Color(210, 210, 210)));
         FlatSVGIcon baseIcon = new FlatSVGIcon("icons/busy.svg", 16, 16);
         baseIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(200, 200, 200)));
         SpinningIcon spinnerIcon = new SpinningIcon(baseIcon, taskActivityStatusIcon);

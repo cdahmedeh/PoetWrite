@@ -60,6 +60,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     }
 
     private void initWindow() {
+
+
         frame = new JFrame(UIConstants.APP_NAME);
         frame.setSize(UIConstants.DEFAULT_WINDOW_WIDTH, UIConstants.DEFAULT_WINDOW_HEIGHT);
         frame.setIconImage(new ImageIcon(getClass().getResource(UIConstants.APP_ICON_PATH)).getImage());

@@ -32,6 +32,7 @@ import net.cdahmedeh.poetwrite.ui.view.MenuView;
 import net.cdahmedeh.poetwrite.ui.view.StatusView;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Once we get all the business logic stuff working, this will be the starter of
@@ -84,6 +85,9 @@ public class MainApp {
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
+
+        UIManager.put("TitlePane.buttonSize", new Dimension(44, 34));
+        UIManager.put("MenuItem.margin", new Insets(6, 8, 6, 8));
     }
 
     public static void main(String[] args) {

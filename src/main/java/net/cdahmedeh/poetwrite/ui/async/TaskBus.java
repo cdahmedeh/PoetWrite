@@ -60,7 +60,7 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class TaskBus {
     // Artificial delay to keep short-running tasks visible in the UI for a bit.
-    private static final long STATUS_DELAY_MILLIS = 80;
+    private static final long STATUS_DELAY_MILLIS = 160;
 
     // Force everything to run on the main thread and keeps everything linear
     // and instant. Used for unit tests.
