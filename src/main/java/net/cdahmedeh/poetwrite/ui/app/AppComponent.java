@@ -20,12 +20,12 @@ package net.cdahmedeh.poetwrite.ui.app;
 
 import dagger.Component;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.controller.MainViewController;
-import net.cdahmedeh.poetwrite.ui.controller.MenuViewController;
-import net.cdahmedeh.poetwrite.ui.controller.StatusViewController;
-import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
-import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
-import net.cdahmedeh.poetwrite.ui.model.StatusViewModel;
+import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
+import net.cdahmedeh.poetwrite.ui.viewcontroller.MenuViewController;
+import net.cdahmedeh.poetwrite.ui.viewcontroller.StatusViewController;
+import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
+import net.cdahmedeh.poetwrite.ui.viewmodel.MenuViewModel;
+import net.cdahmedeh.poetwrite.ui.viewmodel.StatusViewModel;
 
 import javax.inject.Singleton;
 

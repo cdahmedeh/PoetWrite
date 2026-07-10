@@ -19,8 +19,8 @@
 package net.cdahmedeh.poetwrite.ui.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import net.cdahmedeh.poetwrite.ui.controller.ViewController;
-import net.cdahmedeh.poetwrite.ui.model.ViewModel;
+import net.cdahmedeh.poetwrite.ui.viewcontroller.ViewController;
+import net.cdahmedeh.poetwrite.ui.viewmodel.ViewModel;
 
 import java.awt.*;
 

@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.controller;
+package net.cdahmedeh.poetwrite.ui.viewcontroller;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
@@ -25,11 +25,10 @@ import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
 import net.cdahmedeh.poetwrite.service.generator.TextGenerator;
-import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
+import net.cdahmedeh.poetwrite.ui.viewmodel.MenuViewModel;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 import java.io.File;
-import java.util.Random;
 
 public class MenuViewController extends ViewController<MenuViewModel> {
     private final TextGenerator textGenerator;

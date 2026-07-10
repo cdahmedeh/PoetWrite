@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.controller;
+package net.cdahmedeh.poetwrite.ui.viewcontroller;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
@@ -27,7 +27,7 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.ContentChangedEvent;
 import net.cdahmedeh.poetwrite.ui.event.FileDialogNeededEvent;
 import net.cdahmedeh.poetwrite.ui.event.SaveEvent;
-import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
+import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 
 import java.io.File;
 

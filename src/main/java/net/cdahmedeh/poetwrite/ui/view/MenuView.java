@@ -1,12 +1,11 @@
 package net.cdahmedeh.poetwrite.ui.view;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
-import net.cdahmedeh.poetwrite.ui.controller.MenuViewController;
-import net.cdahmedeh.poetwrite.ui.model.MenuViewModel;
+import net.cdahmedeh.poetwrite.ui.viewcontroller.MenuViewController;
+import net.cdahmedeh.poetwrite.ui.viewmodel.MenuViewModel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

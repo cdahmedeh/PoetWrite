@@ -16,13 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.controller;
+package net.cdahmedeh.poetwrite.ui.viewcontroller;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.model.StatusViewModel;
+import net.cdahmedeh.poetwrite.ui.viewmodel.StatusViewModel;
 
 public class StatusViewController extends ViewController<StatusViewModel> {
     @AssistedInject

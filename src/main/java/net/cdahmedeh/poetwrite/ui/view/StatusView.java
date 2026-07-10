@@ -23,8 +23,8 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.ui.component.SpinningIcon;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
-import net.cdahmedeh.poetwrite.ui.controller.StatusViewController;
-import net.cdahmedeh.poetwrite.ui.model.StatusViewModel;
+import net.cdahmedeh.poetwrite.ui.viewcontroller.StatusViewController;
+import net.cdahmedeh.poetwrite.ui.viewmodel.StatusViewModel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

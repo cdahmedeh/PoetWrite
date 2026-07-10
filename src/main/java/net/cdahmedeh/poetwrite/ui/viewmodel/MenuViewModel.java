@@ -16,11 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.model;
+package net.cdahmedeh.poetwrite.ui.viewmodel;
 
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;

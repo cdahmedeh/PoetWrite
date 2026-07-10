@@ -16,10 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.controller;
+package net.cdahmedeh.poetwrite.ui.viewcontroller;
 
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.model.ViewModel;
+import net.cdahmedeh.poetwrite.ui.viewmodel.ViewModel;
 
 /**
  * See ./docs/ui-architecture.md for design overview.

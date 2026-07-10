@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.model;
+package net.cdahmedeh.poetwrite.ui.viewmodel;
 
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
