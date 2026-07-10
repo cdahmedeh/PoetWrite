@@ -28,7 +28,7 @@ public class AppTask {
          */
         public static <E extends AppEvent> AppTask empty() {
             return new AppTask(
-                    "Ready",
+                    "",
                     new TaskBusStartedEvent(),
                     () -> {
                     });

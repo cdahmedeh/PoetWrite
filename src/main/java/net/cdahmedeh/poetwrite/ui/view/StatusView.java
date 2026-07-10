@@ -18,8 +18,10 @@
 
 package net.cdahmedeh.poetwrite.ui.view;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.ui.component.SpinningIcon;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.controller.StatusViewController;
 import net.cdahmedeh.poetwrite.ui.model.StatusViewModel;
@@ -55,24 +57,18 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
         pane.setLayout(new MigLayout(
                 "insets dialog",
-                "[grow, fill] [20!] [200!] [120!]",
+                "[grow, fill] [235!] [20!]",
                 "[min!]"));
 
         currentTaskNameLabel = new JLabel(UIConstants.STRING_STATUS_DEFAULT);
-        currentTaskNameLabel.setFont(currentTaskNameLabel.getFont().deriveFont(Font.BOLD));
-        currentTaskNameLabel.setForeground(Color.GRAY);
-        pane.add(currentTaskNameLabel, "cell 2 0, w 200!, aligny center");
-
-        tasksRunningProgressBar = new JProgressBar();
-        pane.add(tasksRunningProgressBar, "cell 3 0, w 120!, aligny center");
-        tasksRunningProgressBar.setStringPainted(true);
-        tasksRunningProgressBar.setFont(tasksRunningProgressBar.getFont().deriveFont(13f));
-        tasksRunningProgressBar.setForeground(Color.GRAY);
+        currentTaskNameLabel.setFont(currentTaskNameLabel.getFont().deriveFont(Font.PLAIN));
+        currentTaskNameLabel.setForeground(new Color(155, 155, 155));
+        pane.add(currentTaskNameLabel, "cell 1 0, w 235!, aligny center");
 
         taskActivityStatusIcon = new JLabel();
         taskActivityStatusIcon.setPreferredSize(new Dimension(16, 16));
         taskActivityStatusIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        pane.add(taskActivityStatusIcon, "cell 1 0, w 20!, aligny center");
+        pane.add(taskActivityStatusIcon, "cell 2 0, w 20!, aligny center");
     }
 
     @Override
@@ -89,29 +85,43 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
     int current = 0;
     String name = "";
 
+    private final Timer ellipsisTimer = new Timer(350, null); // 500ms per dot
+    private int dotCount = 0;
+    private String currentBaseText = "";
+
+    {
+        ellipsisTimer.addActionListener(e -> {
+            dotCount = (dotCount % 3) + 1; // cycles 1 -> 2 -> 3 -> 1...
+            currentTaskNameLabel.setText(currentBaseText + ".".repeat(dotCount));
+        });
+    }
+
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        ImageIcon stoppedIcon = new ImageIcon(getClass().getResource("/icons/stopped.png"));
-        ImageIcon spinnerIcon = new ImageIcon(getClass().getResource("/icons/spinner.gif"));
+        FlatSVGIcon stoppedIcon = new FlatSVGIcon(getClass().getResource("/icons/done.svg"));
+        stoppedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color ->  new Color(225, 225, 225)));
+        FlatSVGIcon baseIcon = new FlatSVGIcon("icons/busy.svg", 16, 16);
+        baseIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(200, 200, 200)));
+        SpinningIcon spinnerIcon = new SpinningIcon(baseIcon, taskActivityStatusIcon);
 
         Disposable taskSubscriber = viewModel.stream().subscribe(status -> {
 
-        SwingUtilities.invokeLater(() -> {
-            tasksRunningProgressBar.setStringPainted(true);
-                    tasksRunningProgressBar.setString(String.format("%d/%d", status.getProgress(), status.getQueued()));
-                    if (status.isBusy() == false) {
-                        tasksRunningProgressBar.setString(UIConstants.STRING_STATUS_COMPLETE);
-                        currentTaskNameLabel.setText(UIConstants.STRING_STATUS_DEFAULT + "...");
-                        tasksRunningProgressBar.setMaximum(10);
-                        tasksRunningProgressBar.setValue(10);
-                        taskActivityStatusIcon.setIcon(stoppedIcon);
-                    } else {
-                        taskActivityStatusIcon.setIcon(spinnerIcon);
-                        currentTaskNameLabel.setText(status.getTask().getName());
-                        tasksRunningProgressBar.setMaximum(status.getQueued());
-                        tasksRunningProgressBar.setValue(status.getProgress());
-                    }
-                });
+            SwingUtilities.invokeLater(() -> {
+                if (!status.isBusy()) {
+                    ellipsisTimer.stop();
+//                    currentTaskNameLabel.setText(UIConstants.STRING_STATUS_DEFAULT + "...");
+                    currentTaskNameLabel.setText("");
+                    taskActivityStatusIcon.setIcon(stoppedIcon);
+                } else {
+                    taskActivityStatusIcon.setIcon(spinnerIcon);
+                    spinnerIcon.start();
+
+                    currentBaseText = status.getTask().getName();
+                    dotCount = 0;
+                    currentTaskNameLabel.setText(currentBaseText);
+                    ellipsisTimer.start();
+                }
+            });
             });
 
         disposable.add(taskSubscriber);

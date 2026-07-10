@@ -45,7 +45,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     private void setupFileMenu() {
         JMenu fileMenu = new JMenu(UIConstants.STRING_FILE);
 
-        FlatSVGIcon fileMenuIcon = new FlatSVGIcon(getClass().getResource(UIConstants.NEW_ICON_PATH));
+        FlatSVGIcon fileMenuIcon = new FlatSVGIcon(getClass().getResource(UIConstants.FILE_ICON_PATH));
         fileMenu.setIcon(fileMenuIcon);
 
         // New
@@ -124,6 +124,10 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         generateRandomTextMenuItem = new JMenuItem(UIConstants.STRING_GENERATE);
         toolsMenu.add(generateRandomTextMenuItem);
+
+        generateRandomTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_R,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | InputEvent.ALT_DOWN_MASK));
 
         FlatSVGIcon generateRandomTextIcon = new FlatSVGIcon(getClass().getResource(UIConstants.GENERATE_ICON_PATH));
         generateRandomTextMenuItem.setIcon(generateRandomTextIcon);

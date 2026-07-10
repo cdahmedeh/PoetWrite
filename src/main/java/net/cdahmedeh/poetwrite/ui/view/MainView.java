@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.ui.view;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.ui.component.PoetWriteTextArea;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.controller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.model.MainViewModel;
@@ -71,11 +72,15 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     }
 
     private void setupEditor() {
-        textArea = new RSyntaxTextArea(20, 60);
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+        textArea = new PoetWriteTextArea(20, 60);
+//        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
         textArea.setCodeFoldingEnabled(true);
+        textArea.setForeground(new Color(65, 65, 65));
         textArea.setLineWrap(true);
         textArea.setFont(new Font(UIConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, UIConstants.DEFAULT_EDITOR_FONT_SIZE));
+        textArea.setCurrentLineHighlightColor(new Color(250, 245, 250));
+        textArea.setCaretColor(new Color(80, 80, 80));
+
         RTextScrollPane textAresSrollPane = new RTextScrollPane(textArea);
         frame.add(textAresSrollPane, BorderLayout.CENTER);
     }

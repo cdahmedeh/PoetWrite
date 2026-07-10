@@ -21,7 +21,7 @@ package net.cdahmedeh.poetwrite.ui.constant;
 public class UIConstants {
     public static final String APP_NAME = "PoetWrite";
 
-    public static final String STRING_FILE = "File";
+    public static final String STRING_FILE = "Poem";
     public static final String STRING_NEW = "New";
     public static final String STRING_OPEN = "Open";
     public static final String STRING_SAVE = "Save";
@@ -48,8 +48,8 @@ public class UIConstants {
     public static final String TOOLS_ICON_PATH = "/icons/tools.svg";
     public static final String GENERATE_ICON_PATH = "/icons/generate.svg";
 
-    public static final String DEFAULT_EDITOR_FONT = "Aptos";
-    public static final int DEFAULT_EDITOR_FONT_SIZE = 15;
+    public static final String DEFAULT_EDITOR_FONT = "Noto Sans";
+    public static final int DEFAULT_EDITOR_FONT_SIZE = 14;
 
     public static final int DEFAULT_WINDOW_WIDTH = 1280;
     public static final int DEFAULT_WINDOW_HEIGHT = 800;
