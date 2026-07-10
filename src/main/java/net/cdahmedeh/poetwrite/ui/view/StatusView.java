@@ -52,7 +52,8 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
         setupProgressBar();
 
-//        pane.setBackground(Color.WHITE);
+        pane.setBackground(Color.WHITE);
+        pane.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(221, 221, 221)));
     }
 
     private void setupProgressBar() {
