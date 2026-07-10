@@ -143,7 +143,16 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     protected void listen() {
         FileNameExtensionFilter poemFilter = new FileNameExtensionFilter("Poem Files (*.poem)", "poem");
 
-        newMenuItem.addActionListener(e -> viewController.create());
+        newMenuItem.addActionListener(e -> {
+            if (confirmationNeeded) {
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "The file has changes. Do you want to discard");
+                if (confirm == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
+            viewController.create();
+        });
 
         openMenuItem.addActionListener(e-> {
             if (confirmationNeeded) {
