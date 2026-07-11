@@ -22,7 +22,7 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
@@ -48,7 +48,7 @@ public class MenuViewModel extends ViewModel {
     @Override
     protected void listen(AppTask task, AppEvent event) {
         if (event instanceof ContentChangedEvent contentChangedEvent) {
-            boolean changed = contentChangedEvent.getStatus() == PersistenceHandler.FileStatus.CHANGED;
+            boolean changed = contentChangedEvent.getStatus() == PersistenceManager.FileStatus.CHANGED;
             this.confirmationNeeded.onNext(changed);
         }
 

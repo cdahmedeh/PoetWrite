@@ -22,7 +22,7 @@ import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.ContentChangedEvent;
 import net.cdahmedeh.poetwrite.ui.event.FileDialogNeededEvent;
@@ -34,14 +34,14 @@ import java.io.File;
 
 public class MainViewController extends ViewController<MainViewModel> {
     private final ApplicationHandler applicationHandler;
-    private final PersistenceHandler persistenceHandler;
+    private final PersistenceManager persistenceManager;
 
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceHandler persistenceHandler) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
-        this.persistenceHandler = persistenceHandler;
+        this.persistenceManager = persistenceManager;
     }
 
     public void update(String content) {
@@ -49,8 +49,8 @@ public class MainViewController extends ViewController<MainViewModel> {
         taskBus.submit("Updating Content", event, new Runnable() {
             @Override
             public void run() {
-                persistenceHandler.update(content);
-                event.setStatus(persistenceHandler.status());
+                persistenceManager.update(content);
+                event.setStatus(persistenceManager.status());
             }
         });
     }
@@ -72,8 +72,8 @@ public class MainViewController extends ViewController<MainViewModel> {
         SaveEvent event = new SaveEvent();
 
         taskBus.submit("Saving Poem", event, () -> {
-            persistenceHandler.save();
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+            persistenceManager.save();
+            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
         });
     }
 
@@ -81,8 +81,8 @@ public class MainViewController extends ViewController<MainViewModel> {
         SaveEvent event = new SaveEvent();
 
         taskBus.submit("Saving Poem", event, () -> {
-            persistenceHandler.save(selectedFile);
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+            persistenceManager.save(selectedFile);
+            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
         });
     }
 

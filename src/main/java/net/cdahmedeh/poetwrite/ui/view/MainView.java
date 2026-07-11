@@ -21,7 +21,7 @@ package net.cdahmedeh.poetwrite.ui.view;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
@@ -48,7 +48,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private RSyntaxTextArea textArea;
 
     private String currentFile = "none";
-    private PersistenceHandler.FileStatus status = PersistenceHandler.FileStatus.UNKNOWN;
+    private PersistenceManager.FileStatus status = PersistenceManager.FileStatus.UNKNOWN;
 
     public MainView(MainViewModel viewModel, MainViewController viewController) {
         super(viewModel, viewController);
@@ -123,7 +123,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (status == PersistenceHandler.FileStatus.CHANGED) {
+                if (status == PersistenceManager.FileStatus.CHANGED) {
                     FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(UIConstants.EXIT_ICON_PATH));
                     int confirm = JOptionPane.showConfirmDialog(frame, "Your poem has some unsaved changes. Are you sure you want to quit PoetWrite and lose your changes?", "Quit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (confirm == JOptionPane.NO_OPTION) {
@@ -205,7 +205,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         Disposable fileChangedDisposable = viewModel.streamFileStatus()
                 .subscribe(fileChanged -> {
                     status = fileChanged;
-                    String changedText = status == PersistenceHandler.FileStatus.CHANGED ? " (unsaved changes)" : "";
+                    String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
                     System.out.println(status);
                     frame.setTitle("PoetWrite - " + currentFile + changedText);
                 });
@@ -214,7 +214,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         Disposable fileNameDisposable = viewModel.streamFileName()
                 .subscribe(fileName -> {
                     currentFile = fileName;
-                    String changedText = status == PersistenceHandler.FileStatus.CHANGED ? " (unsaved changes)" : "";
+                    String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
                     System.out.println(status);
                     frame.setTitle("PoetWrite - " + currentFile + " " + changedText);
                 });

@@ -19,9 +19,8 @@
 package net.cdahmedeh.poetwrite.ui.event;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 
 //@NoArgsConstructor
 public class ContentChangedEvent extends AppEvent {
@@ -35,13 +34,13 @@ public class ContentChangedEvent extends AppEvent {
         System.out.println("ContentChangedEvent");
     }
 
-    private PersistenceHandler.FileStatus status = PersistenceHandler.FileStatus.UNKNOWN;
+    private PersistenceManager.FileStatus status = PersistenceManager.FileStatus.UNKNOWN;
 
-    public PersistenceHandler.FileStatus getStatus() {
+    public PersistenceManager.FileStatus getStatus() {
         return status;
     }
 
-    public void setStatus(PersistenceHandler.FileStatus status) {
+    public void setStatus(PersistenceManager.FileStatus status) {
         this.status = status;
     }
 }

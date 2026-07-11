@@ -23,7 +23,7 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
@@ -36,7 +36,7 @@ public class MainViewModel extends ViewModel {
 
     private BehaviorSubject<String> fileName = BehaviorSubject.createDefault("");
 
-    private BehaviorSubject<PersistenceHandler.FileStatus> fileStatus = BehaviorSubject.createDefault(PersistenceHandler.FileStatus.UNKNOWN);
+    private BehaviorSubject<PersistenceManager.FileStatus> fileStatus = BehaviorSubject.createDefault(PersistenceManager.FileStatus.UNKNOWN);
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -89,7 +89,7 @@ public class MainViewModel extends ViewModel {
         return this.dialogNeeded.hide();
     }
 
-    public Observable<PersistenceHandler.FileStatus> streamFileStatus() {
+    public Observable<PersistenceManager.FileStatus> streamFileStatus() {
         return this.fileStatus.hide();
     }
 

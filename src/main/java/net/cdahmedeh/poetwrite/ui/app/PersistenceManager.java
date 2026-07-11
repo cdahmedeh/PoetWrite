@@ -30,7 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Singleton
-public class PersistenceHandler extends LazyService {
+public class PersistenceManager extends LazyService {
     public static final String DEFAULT_FILE_EXTENSION = "poem";
 
     public static enum FileStatus {
@@ -49,7 +49,7 @@ public class PersistenceHandler extends LazyService {
     public FileStatus fileStatus =  FileStatus.NEW;
 
     @Inject
-    protected PersistenceHandler(TaskBus taskBus) {
+    protected PersistenceManager(TaskBus taskBus) {
         super(taskBus);
     }
 

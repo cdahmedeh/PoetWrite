@@ -19,9 +19,8 @@
 package net.cdahmedeh.poetwrite.ui.event;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 
 //@NoArgsConstructor
 public class SaveEvent extends FileEvent {
@@ -38,7 +37,7 @@ public class SaveEvent extends FileEvent {
     private String exists;
 
     @Override
-    public PersistenceHandler.FileStatus getFileStatus() {
-        return PersistenceHandler.FileStatus.SAVED;
+    public PersistenceManager.FileStatus getFileStatus() {
+        return PersistenceManager.FileStatus.SAVED;
     }
 }

@@ -21,7 +21,7 @@ package net.cdahmedeh.poetwrite.ui.viewcontroller;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceHandler;
+import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
 import net.cdahmedeh.poetwrite.service.generator.TextGenerator;
@@ -33,14 +33,14 @@ import java.io.File;
 public class MenuViewController extends ViewController<MenuViewModel> {
     private final TextGenerator textGenerator;
     private final ApplicationHandler applicationHandler;
-    private final PersistenceHandler persistenceHandler;
+    private final PersistenceManager persistenceManager;
 
     @AssistedInject
-    protected MenuViewController(@Assisted MenuViewModel viewModel, TaskBus taskBus, TextGenerator textGenerator, ApplicationHandler applicationHandler, PersistenceHandler persistenceHandler) {
+    protected MenuViewController(@Assisted MenuViewModel viewModel, TaskBus taskBus, TextGenerator textGenerator, ApplicationHandler applicationHandler, PersistenceManager persistenceManager) {
         super(viewModel, taskBus);
         this.textGenerator = textGenerator;
         this.applicationHandler = applicationHandler;
-        this.persistenceHandler = persistenceHandler;
+        this.persistenceManager = persistenceManager;
     }
 
 
@@ -68,7 +68,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     public void save() {
         FileDialogNeededEvent event = new FileDialogNeededEvent();
         taskBus.submit("Saving Poem", event, () -> {
-            boolean check = persistenceHandler.fileStatus == PersistenceHandler.FileStatus.CHANGED || persistenceHandler.fileStatus == PersistenceHandler.FileStatus.NEW;
+            boolean check = persistenceManager.fileStatus == PersistenceManager.FileStatus.CHANGED || persistenceManager.fileStatus == PersistenceManager.FileStatus.NEW;
             event.setNeeded(check);
         });
     }
@@ -76,17 +76,17 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     public void create() {
         NewFileEvent event = new NewFileEvent();
         taskBus.submit("Creating New Poem", event, () -> {
-            persistenceHandler.create();
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+            persistenceManager.create();
+            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
         });
     }
 
     public void open(File file) {
         FileOpenedEvent event = new FileOpenedEvent();
         taskBus.submit("Opening File", event, () -> {
-            persistenceHandler.open(file);
-            event.setContent(persistenceHandler.getContent());
-            event.setFile(persistenceHandler.getCurrentFile().getFileName().toString());
+            persistenceManager.open(file);
+            event.setContent(persistenceManager.getContent());
+            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
         });
     }
 
