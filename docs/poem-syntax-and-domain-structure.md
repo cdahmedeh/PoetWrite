@@ -53,6 +53,8 @@ I'm currently just using [_ANTLR_](https://www.antlr.org/) to do the parsing wit
 
 # Complete Preview
 
+![Syntax Hightlighting Demo](../assets/syntax-highlight-demo.png)
+
 ```
 [Title - Fixated]
 
