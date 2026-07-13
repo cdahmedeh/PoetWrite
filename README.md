@@ -33,7 +33,7 @@ As a technical writer, I believe that good documentation is part of the developm
 
 ## Screenshots
 
-As the first iteration of PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! Look at the next section below to get an idea on how it will evovle further.
+As the first iteration of early PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! Look at the next section (with the wireframes) below to get an idea on how it will evolve further.
 
 ![PoetWrite Initial Screenshot](./assets/initial-screenshot.png)
 
