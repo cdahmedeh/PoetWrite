@@ -40,7 +40,9 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
     private JPanel pane;
 
     private JLabel currentTaskNameLabel;
+    private JLabel dotsLabel;
     private JLabel taskActivityStatusIcon;
+
 
     public StatusView(StatusViewModel viewModel, StatusViewController viewController) {
         super(viewModel, viewController);
@@ -59,14 +61,21 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
     private void setupProgressBar() {
 
         pane.setLayout(new MigLayout(
-                "insets dialog",
-                "[grow, fill] [235!] [20!]",
-                "[min!]"));
+                "insets 6 6 6 6, gapx 0",
+                "[grow, fill] [24!] [20!]",
+                "[20!]"));
 
         currentTaskNameLabel = new JLabel(StringConstants.STRING_STATUS_DEFAULT);
         currentTaskNameLabel.setFont(currentTaskNameLabel.getFont().deriveFont(Font.PLAIN));
         currentTaskNameLabel.setForeground(new Color(125, 125, 125));
-        pane.add(currentTaskNameLabel, "cell 1 0, w 235!, aligny center");
+        currentTaskNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        pane.add(currentTaskNameLabel, "cell 0 0, growx, aligny center");
+
+        dotsLabel = new JLabel();
+        dotsLabel.setFont(dotsLabel.getFont().deriveFont(Font.PLAIN));
+        dotsLabel.setForeground(new Color(125, 125, 125));
+        dotsLabel.setHorizontalAlignment(SwingConstants.LEFT);   // dots grow rightward into reserved space
+        pane.add(dotsLabel, "cell 1 0, w 24!, gapleft 0, gapright 4, aligny center");
 
         taskActivityStatusIcon = new JLabel();
         taskActivityStatusIcon.setPreferredSize(new Dimension(16, 16));
@@ -94,8 +103,8 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
 
     {
         ellipsisTimer.addActionListener(e -> {
-            dotCount = (dotCount % 3) + 1; // cycles 1 -> 2 -> 3 -> 1...
-            currentTaskNameLabel.setText(currentBaseText + ".".repeat(dotCount));
+            dotCount = (dotCount % 3) + 1;   // cycles 1 -> 2 -> 3 -> 1...
+            dotsLabel.setText(".".repeat(dotCount));
         });
     }
 
@@ -113,6 +122,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
                 if (!status.isBusy()) {
                     ellipsisTimer.stop();
                     currentTaskNameLabel.setText("");
+                    dotsLabel.setText("");
                     taskActivityStatusIcon.setIcon(stoppedIcon);
                 } else {
                     taskActivityStatusIcon.setIcon(spinnerIcon);
@@ -121,6 +131,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
                     currentBaseText = status.getTask().getName();
                     dotCount = 0;
                     currentTaskNameLabel.setText(currentBaseText);
+                    dotsLabel.setText("");
                     ellipsisTimer.start();
                 }
             });
