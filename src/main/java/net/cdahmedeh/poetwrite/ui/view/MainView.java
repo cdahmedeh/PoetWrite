@@ -151,7 +151,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable textSubscriber = viewModel.streamText()
+        Disposable textSubscriber = viewModel.editorContent()
                 .subscribe(text -> {
                     SwingUtilities.invokeLater(() -> textArea.setText(text));
                 });
@@ -160,7 +160,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
 
 
-        Disposable dialogNeededSubscriber =  viewModel.streamDialogNeeded()
+        Disposable dialogNeededSubscriber =  viewModel.dialogNeeded()
                 .subscribe(dialogNeeded -> {
                     System.out.println("Dialog Needed Called");
 
@@ -202,7 +202,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         disposable.add(dialogNeededSubscriber);
 
-        Disposable fileChangedDisposable = viewModel.streamFileStatus()
+        Disposable fileChangedDisposable = viewModel.fileStatus()
                 .subscribe(fileChanged -> {
                     status = fileChanged;
                     String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
@@ -211,7 +211,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 });
         disposable.add(fileChangedDisposable);
 
-        Disposable fileNameDisposable = viewModel.streamFileName()
+        Disposable fileNameDisposable = viewModel.fileName()
                 .subscribe(fileName -> {
                     currentFile = fileName;
                     String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";

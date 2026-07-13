@@ -186,7 +186,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable coomfirmationNeededSubscriber = viewModel.streamConfirmationNeeded()
+        Disposable coomfirmationNeededSubscriber = viewModel.confirmationNeeded()
                 .subscribe(confirmation -> {
             confirmationNeeded = confirmation;
         });

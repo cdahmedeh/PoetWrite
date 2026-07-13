@@ -28,16 +28,14 @@ import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 public class MenuViewModel extends ViewModel {
+    // Determines if a confirmation dialog is needed to prompt the user if they
+    // want to replace an existing file.
     private BehaviorSubject<Boolean> confirmationNeeded = BehaviorSubject.createDefault(false);
-
+    public Observable<Boolean> confirmationNeeded() {return confirmationNeeded.hide();}
 
     @AssistedInject
     public MenuViewModel(TaskBus taskBus) {
         super(taskBus);
-    }
-
-    public Observable<Boolean> streamConfirmationNeeded() {
-        return confirmationNeeded.hide();
     }
 
     @AssistedFactory
@@ -47,10 +45,17 @@ public class MenuViewModel extends ViewModel {
 
     @Override
     protected void listen(AppTask task, AppEvent event) {
+        // If the content changes, it means that confirmation dialogue is
+        // needed.
         if (event instanceof ContentChangedEvent contentChangedEvent) {
             boolean changed = contentChangedEvent.getStatus() == PersistenceManager.FileStatus.CHANGED;
             this.confirmationNeeded.onNext(changed);
         }
+
+        // TODO: Cleanup
+        // TODO: Revisit
+        // These Might be redundant right now because ContentChangedEvent gets
+        // calls when anything changes.
 
         if (event instanceof SaveEvent saveEvent) {
             this.confirmationNeeded.onNext(false);

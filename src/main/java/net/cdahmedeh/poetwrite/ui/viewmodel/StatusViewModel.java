@@ -29,12 +29,22 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
 
 import static java.lang.String.format;
 
+/**
+ * The component that displays the current task bus status lies here. It streams
+ * directly from TaskBus.
+ *
+ * A bit confusing bit because the convention lifecycle isn't followed
+ * properly.
+ *
+ * View -> ViewController -> TaskBus -> Event -> ViewModel -> View
+ *
+ * The issue is that the StatusViewModel is also listening to the TaskBus.
+ *
+ * TODO: Revisit lifecycle.
+ * TODO: Consider if the Model can listen to taskbus directly.
+ */
 public class StatusViewModel extends ViewModel {
     private BehaviorSubject<TaskBusStatus> taskHandlerStatus = BehaviorSubject.createDefault(TaskBusStatus.empty());
-
-    private BehaviorSubject<Boolean> confirmationNeeded = BehaviorSubject.createDefault(true);
-
-
 
     @AssistedInject
     public StatusViewModel(TaskBus taskBus) {
@@ -50,10 +60,18 @@ public class StatusViewModel extends ViewModel {
     protected void listen(AppTask task, AppEvent event) {
     }
 
+    /**
+     * Called by the controller when the taskbus notifies the controller
+     * which in turn is listening to the TaskBus stream.
+     */
     public void setTaskHandlerStatus(TaskBusStatus taskHandlerStatus) {
         this.taskHandlerStatus.onNext(taskHandlerStatus);
     }
 
+    /**
+     * Just the subscriber/listener from when the status changes. The StatusView
+     * listens to this.
+     */
     public Observable<TaskBusStatus> stream() {
         return taskHandlerStatus.hide();
     }
