@@ -21,6 +21,8 @@ PoetWrite is still in an early stage of development with the beginnings of eleme
 
 [Rhetorical Analysis Basics](/docs/rhetoric-analysis-basics.md) - Introductory topics for basic rhetorical analysis features such as syllable counting and rhyme detection.
 
+[PoetWrite .poem Native File Format](/docs/file-format.md) - A lengthy introduction to the highly sophisticated PoetWrite .poem native file format. Designed with universal compatbility with various text editor and cross-platform cross-editor compatbility. Version control sysytem friendly and lightweight handling for file syncing systems.
+
 ## Development
 
 PoetWrite is an open-source project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
