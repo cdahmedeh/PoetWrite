@@ -18,7 +18,7 @@
 
 package net.cdahmedeh.poetwrite.ui.component;
 
-import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
+import net.cdahmedeh.poetwrite.ui.constant.AppearanceConstants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,19 +36,19 @@ import java.awt.*;
  */
 public class SpinningIcon implements Icon {
     private final Icon delegate;
-    private double angle = UIConstants.SPINNER_STARTING_ANGLE;
+    private double angle = AppearanceConstants.SPINNER_STARTING_ANGLE;
     private final Timer timer;
 
     public SpinningIcon(Icon delegate, JComponent host) {
         this.delegate = delegate;
-        this.timer = new Timer(UIConstants.SPINNER_ANIMATION_INTERVAL, e -> {
-            angle = (angle + UIConstants.SPINNER_ROTATE_INCREMENTS) % 360;
+        this.timer = new Timer(AppearanceConstants.SPINNER_ANIMATION_INTERVAL, e -> {
+            angle = (angle + AppearanceConstants.SPINNER_ROTATE_INCREMENTS) % 360;
             host.repaint();
         });
     }
 
     public void start() { timer.start(); }
-    public void stop()  { timer.stop(); angle = UIConstants.SPINNER_STARTING_ANGLE; }
+    public void stop()  { timer.stop(); angle = AppearanceConstants.SPINNER_STARTING_ANGLE; }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {

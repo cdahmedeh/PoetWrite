@@ -18,7 +18,7 @@
 
 package net.cdahmedeh.poetwrite.ui.component;
 
-import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
+import net.cdahmedeh.poetwrite.ui.constant.EditorConstants;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 /**
@@ -33,7 +33,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
  *   a few things.
  */
 public class PoemTextArea extends RSyntaxTextArea {
-    private float lineSpacingFactor = UIConstants.DEFAULT_LINE_SPACING;
+    private float lineSpacingFactor = EditorConstants.DEFAULT_LINE_SPACING;
 
     /**
      * RSyntaxTextArea asks for the number of rows and columns of the text area.

@@ -22,7 +22,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.ui.component.SpinningIcon;
-import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
+import net.cdahmedeh.poetwrite.ui.constant.StringConstants;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.StatusViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.StatusViewModel;
 import net.miginfocom.swing.MigLayout;
@@ -63,7 +63,7 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
                 "[grow, fill] [235!] [20!]",
                 "[min!]"));
 
-        currentTaskNameLabel = new JLabel(UIConstants.STRING_STATUS_DEFAULT);
+        currentTaskNameLabel = new JLabel(StringConstants.STRING_STATUS_DEFAULT);
         currentTaskNameLabel.setFont(currentTaskNameLabel.getFont().deriveFont(Font.PLAIN));
         currentTaskNameLabel.setForeground(new Color(125, 125, 125));
         pane.add(currentTaskNameLabel, "cell 1 0, w 235!, aligny center");
@@ -112,7 +112,6 @@ public class StatusView extends View<StatusViewModel, StatusViewController, JPan
             SwingUtilities.invokeLater(() -> {
                 if (!status.isBusy()) {
                     ellipsisTimer.stop();
-//                    currentTaskNameLabel.setText(UIConstants.STRING_STATUS_DEFAULT + "...");
                     currentTaskNameLabel.setText("");
                     taskActivityStatusIcon.setIcon(stoppedIcon);
                 } else {

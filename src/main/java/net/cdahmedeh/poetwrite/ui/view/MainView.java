@@ -22,9 +22,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
+import net.cdahmedeh.poetwrite.ui.constant.*;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
-import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -70,9 +70,9 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private void initWindow() {
 
 
-        frame = new JFrame(UIConstants.APP_NAME);
-        frame.setSize(UIConstants.DEFAULT_WINDOW_WIDTH, UIConstants.DEFAULT_WINDOW_HEIGHT);
-        frame.setIconImage(new ImageIcon(getClass().getResource(UIConstants.APP_ICON_PATH)).getImage());
+        frame = new JFrame(AppConstants.APP_NAME);
+        frame.setSize(AppearanceConstants.DEFAULT_WINDOW_WIDTH, AppearanceConstants.DEFAULT_WINDOW_HEIGHT);
+        frame.setIconImage(new ImageIcon(getClass().getResource(IconConstants.APP_ICON_PATH)).getImage());
         frame.setLayout(new BorderLayout());
     }
 
@@ -85,14 +85,12 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textArea = new PoemTextArea(20, 60);
 //        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
         textArea.setCodeFoldingEnabled(true);
-        textArea.setForeground(new Color(65, 65, 65));
+        textArea.setForeground(new Color(EditorConstants.TEXT_EDITOR_FONT_COLOUR, EditorConstants.TEXT_EDITOR_FONT_COLOUR, EditorConstants.TEXT_EDITOR_FONT_COLOUR));
         textArea.setLineWrap(true);
-        textArea.setFont(new Font(UIConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, UIConstants.DEFAULT_EDITOR_FONT_SIZE));
+        textArea.setFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, EditorConstants.DEFAULT_EDITOR_FONT_SIZE));
 
-
-
-        textArea.setCurrentLineHighlightColor(new Color(250, 245, 250));
-        textArea.setCaretColor(new Color(80, 80, 80));
+        textArea.setCurrentLineHighlightColor(EditorConstants.CURRENT_LINE_HIGHLIGHT_COLOUR);
+        textArea.setCaretColor(EditorConstants.CARET_COLOR);
 
         RTextScrollPane textAresScrollPane = new RTextScrollPane(textArea);
         frame.add(textAresScrollPane, BorderLayout.CENTER);
@@ -104,7 +102,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 UIManager.getColor("Component.borderColor"), 0));
 
         Gutter gutter = textAresScrollPane.getGutter();
-        gutter.setLineNumberFont(new Font(UIConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, UIConstants.DEFAULT_EDITOR_FONT_SIZE));
+        gutter.setLineNumberFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, EditorConstants.DEFAULT_EDITOR_FONT_SIZE));
     }
 
     @Override
@@ -130,8 +128,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (status == PersistenceManager.FileStatus.CHANGED) {
-                    FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(UIConstants.EXIT_ICON_PATH));
-                    int confirm = JOptionPane.showConfirmDialog(frame, UIConstants.PROMPT_UNSAVED_CHANGED_FOR_QUIT, UIConstants.TITLE_QUIT, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(IconConstants.EXIT_ICON_PATH));
+                    int confirm = JOptionPane.showConfirmDialog(frame, PromptConstants.PROMPT_UNSAVED_CHANGED_FOR_QUIT, PromptConstants.TITLE_QUIT, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (confirm == JOptionPane.NO_OPTION) {
                         return;
                     }
@@ -176,7 +174,10 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 .subscribe(fileChanged -> {
                     status = fileChanged;
                     String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
-                    frame.setTitle("PoetWrite - " + currentFile + changedText);
+                    frame.setTitle(AppConstants.APP_NAME+  " - " + currentFile + changedText);
+                    if (currentFile == "") {
+                        frame.setTitle(AppConstants.APP_NAME);
+                    }
                 });
         disposable.add(fileChangedDisposable);
 
@@ -184,7 +185,10 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 .subscribe(fileName -> {
                     currentFile = fileName;
                     String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
-                    frame.setTitle("PoetWrite - " + currentFile + " " + changedText);
+                    frame.setTitle(AppConstants.APP_NAME+  " - " + currentFile + changedText);
+                    if (currentFile == "") {
+                        frame.setTitle(AppConstants.APP_NAME);
+                    }
                 });
         disposable.add(fileNameDisposable);
     }
@@ -202,7 +206,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 File selectedFile = chooser.getSelectedFile();
 
                 if (selectedFile.exists()) {
-                    int confirm = JOptionPane.showConfirmDialog(frame, String.format(UIConstants.MESSAGE_OVERWRITE_PROMPT, selectedFile.getName()), UIConstants.TITLE_OVERWITE, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    int confirm = JOptionPane.showConfirmDialog(frame, String.format(PromptConstants.PROMPT_MESSAGE_OVERWRITE, selectedFile.getName()), PromptConstants.TITLE_OVERWRITE, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (confirm == JOptionPane.NO_OPTION) {
                         viewController.ask(selectedFile);
                         return;

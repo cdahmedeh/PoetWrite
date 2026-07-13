@@ -19,7 +19,8 @@
 package net.cdahmedeh.poetwrite.ui.app;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
+import net.cdahmedeh.poetwrite.ui.constant.AppearanceConstants;
+import net.cdahmedeh.poetwrite.ui.constant.LogConstants;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MenuViewController;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.StatusViewController;
@@ -56,7 +57,7 @@ import java.awt.*;
 
 public class MainApp {
     public static void main(String[] args) {
-        System.out.println(UIConstants.LOG_WELCOME);
+        System.out.println(LogConstants.LOG_WELCOME);
 
         new MainApp().build();
     }
@@ -127,14 +128,14 @@ public class MainApp {
         // The titlebar is just way too thin by default. Makes it taller.
         UIManager.put("TitlePane.buttonSize",
                 new Dimension(
-                        UIConstants.UI_TITLE_PANE_BUTTON_SIZE_WIDTH, UIConstants.UI_TITLE_PANE_BUTTON_SIZE_HEIGHT));
+                        AppearanceConstants.UI_TITLE_PANE_BUTTON_SIZE_WIDTH, AppearanceConstants.UI_TITLE_PANE_BUTTON_SIZE_HEIGHT));
 
         // Menu items are also too small. This adds some panning. Keep in mind
         // this doesn't change the icon size of the menu items.
         UIManager.put("MenuItem.margin",
                 new Insets(
-                        UIConstants.UI_MENU_ITEM_MARGIN_VERTICAL, UIConstants.UI_MENU_ITEM_MARGIN_HORIZONTAL,
-                        UIConstants.UI_MENU_ITEM_MARGIN_VERTICAL, UIConstants.UI_MENU_ITEM_MARGIN_HORIZONTAL));
+                        AppearanceConstants.UI_MENU_ITEM_MARGIN_VERTICAL, AppearanceConstants.UI_MENU_ITEM_MARGIN_HORIZONTAL,
+                        AppearanceConstants.UI_MENU_ITEM_MARGIN_VERTICAL, AppearanceConstants.UI_MENU_ITEM_MARGIN_HORIZONTAL));
     }
 
 

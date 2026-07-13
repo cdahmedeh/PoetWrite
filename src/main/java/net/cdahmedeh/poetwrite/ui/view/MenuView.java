@@ -4,7 +4,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
-import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
+import net.cdahmedeh.poetwrite.ui.constant.IconConstants;
+import net.cdahmedeh.poetwrite.ui.constant.PromptConstants;
+import net.cdahmedeh.poetwrite.ui.constant.StringConstants;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MenuViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MenuViewModel;
@@ -55,16 +57,16 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     }
 
     private void setupFileMenu() {
-        JMenu fileMenu = new JMenu(UIConstants.STRING_FILE);
+        JMenu fileMenu = new JMenu(StringConstants.STRING_FILE);
 
-        FlatSVGIcon fileMenuIcon = new FlatSVGIcon(getClass().getResource(UIConstants.FILE_ICON_PATH));
+        FlatSVGIcon fileMenuIcon = new FlatSVGIcon(getClass().getResource(IconConstants.FILE_ICON_PATH));
         fileMenu.setIcon(fileMenuIcon);
 
         // New
-        newMenuItem = new JMenuItem(UIConstants.STRING_NEW);
+        newMenuItem = new JMenuItem(StringConstants.STRING_NEW);
         fileMenu.add(newMenuItem);
 
-        FlatSVGIcon newIcon = new FlatSVGIcon(getClass().getResource(UIConstants.NEW_ICON_PATH));
+        FlatSVGIcon newIcon = new FlatSVGIcon(getClass().getResource(IconConstants.NEW_ICON_PATH));
         fileMenu.add(newMenuItem);
 
         newMenuItem.setAccelerator(KeyStroke.getKeyStroke(
@@ -73,10 +75,10 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         newMenuItem.setIcon(newIcon);
 
         // Open
-        openMenuItem = new JMenuItem(UIConstants.STRING_OPEN);
+        openMenuItem = new JMenuItem(StringConstants.STRING_OPEN);
         fileMenu.add(openMenuItem);
 
-        FlatSVGIcon openIcon = new FlatSVGIcon(getClass().getResource(UIConstants.OPEN_ICON_PATH));
+        FlatSVGIcon openIcon = new FlatSVGIcon(getClass().getResource(IconConstants.OPEN_ICON_PATH));
         fileMenu.add(openMenuItem);
 
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(
@@ -85,10 +87,10 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         openMenuItem.setIcon(openIcon);
 
         // Save
-        saveMenuItem = new JMenuItem(UIConstants.STRING_SAVE);
+        saveMenuItem = new JMenuItem(StringConstants.STRING_SAVE);
         fileMenu.add(saveMenuItem);
 
-        FlatSVGIcon saveIcon = new FlatSVGIcon(getClass().getResource(UIConstants.SAVE_ICON_PATH));
+        FlatSVGIcon saveIcon = new FlatSVGIcon(getClass().getResource(IconConstants.SAVE_ICON_PATH));
         fileMenu.add(saveMenuItem);
 
         saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
@@ -97,10 +99,10 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         saveMenuItem.setIcon(saveIcon);
 
         // Save As
-        saveAsMenuItem = new JMenuItem(UIConstants.STRING_SAVE_AS);
+        saveAsMenuItem = new JMenuItem(StringConstants.STRING_SAVE_AS);
         fileMenu.add(saveAsMenuItem);
 
-        FlatSVGIcon saveAsIcon = new FlatSVGIcon(getClass().getResource(UIConstants.SAVE_AS_ICON_PATH));
+        FlatSVGIcon saveAsIcon = new FlatSVGIcon(getClass().getResource(IconConstants.SAVE_AS_ICON_PATH));
         fileMenu.add(saveAsMenuItem);
 
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(
@@ -113,10 +115,10 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         fileMenu.addSeparator();
 
         // Exit
-        exitMenuItem = new JMenuItem(UIConstants.STRING_EXIT);
+        exitMenuItem = new JMenuItem(StringConstants.STRING_EXIT);
         fileMenu.add(exitMenuItem);
 
-        FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(UIConstants.EXIT_ICON_PATH));
+        FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(IconConstants.EXIT_ICON_PATH));
         fileMenu.add(exitMenuItem);
 
         exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(
@@ -129,19 +131,19 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     }
 
     private void setupToolsMenu() {
-        JMenu toolsMenu = new JMenu(UIConstants.STRING_TOOLS);
+        JMenu toolsMenu = new JMenu(StringConstants.STRING_TOOLS);
 
-        FlatSVGIcon toolsMenuIcon = new FlatSVGIcon(getClass().getResource(UIConstants.TOOLS_ICON_PATH));
+        FlatSVGIcon toolsMenuIcon = new FlatSVGIcon(getClass().getResource(IconConstants.TOOLS_ICON_PATH));
         toolsMenu.setIcon(toolsMenuIcon);
 
-        generateRandomTextMenuItem = new JMenuItem(UIConstants.STRING_GENERATE);
+        generateRandomTextMenuItem = new JMenuItem(StringConstants.STRING_GENERATE);
         toolsMenu.add(generateRandomTextMenuItem);
 
         generateRandomTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_R,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | InputEvent.ALT_DOWN_MASK));
 
-        FlatSVGIcon generateRandomTextIcon = new FlatSVGIcon(getClass().getResource(UIConstants.GENERATE_ICON_PATH));
+        FlatSVGIcon generateRandomTextIcon = new FlatSVGIcon(getClass().getResource(IconConstants.GENERATE_ICON_PATH));
         generateRandomTextMenuItem.setIcon(generateRandomTextIcon);
 
         menuBar.add(toolsMenu);
@@ -154,7 +156,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         newMenuItem.addActionListener(e -> {
             if (confirmationNeeded) {
-                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), UIConstants.PROMPT_UNSAVED_CHANGES_FOR_NEW, UIConstants.UNSAVED_CHANGES, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), PromptConstants.PROMPT_UNSAVED_CHANGES_FOR_NEW, PromptConstants.TITLE_UNSAVED_CHANGES, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.NO_OPTION) {
                     return;
                 }
@@ -165,7 +167,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         openMenuItem.addActionListener(e-> {
             if (confirmationNeeded) {
-                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), UIConstants.PROMPT_UNSAVED_CHANGED_FOR_OPEN, UIConstants.UNSAVED_CHANGES, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), PromptConstants.PROMPT_UNSAVED_CHANGED_FOR_OPEN, PromptConstants.TITLE_UNSAVED_CHANGES, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.NO_OPTION) {
                     return;
                 }
