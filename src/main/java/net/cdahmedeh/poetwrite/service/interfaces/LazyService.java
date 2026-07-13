@@ -64,7 +64,7 @@ public abstract class LazyService {
     public void ensure() {
         if (initialized) return;
 
-        taskBus.submit(String.format("Starting %s ",name()), new ServiceStartingEvent(), () -> {
+        taskBus.submit(String.format("Starting %s",name()), new ServiceStartingEvent(), () -> {
             init();
             initialized = true;
         });
