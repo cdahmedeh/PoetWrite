@@ -31,4 +31,9 @@ public class EditorConstants {
     public static final int TEXT_EDITOR_FONT_COLOUR = 65;
     public static final Color CURRENT_LINE_HIGHLIGHT_COLOUR = new Color(250, 245, 250);
     public static final Color CARET_COLOR = new Color(80, 80, 80);
+
+    public static final Color SYNTAX_PUNCTUATION_COLOUR = new Color(0x856161);
+    public static final Color SYNTAX_NOTE_COLOUR = new Color(0x6a7ba3);
+    public static final Color SYNTAX_ASIDE_COLOUR = new Color(0x5d7a5e);
+    public static final Color SYNTAX_BRACKET_COLOUR = new Color(0x9E9E9E);
 }

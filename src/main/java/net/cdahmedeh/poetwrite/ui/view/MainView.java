@@ -21,13 +21,14 @@ package net.cdahmedeh.poetwrite.ui.view;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.ui.constant.*;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -38,7 +39,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.font.TextAttribute;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the core part of PoetWrite, the text editor.
@@ -81,6 +85,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
     }
 
+    @SneakyThrows
     private void setupEditor() {
         textArea = new PoemTextArea(20, 60);
 //        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
@@ -103,6 +108,38 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         Gutter gutter = textAresScrollPane.getGutter();
         gutter.setLineNumberFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, EditorConstants.DEFAULT_EDITOR_FONT_SIZE));
+
+        textArea.setAnimateBracketMatching(false);
+        textArea.setBracketMatchingEnabled(false);
+
+        setupSyntaxHighlighting();
+    }
+
+    private void setupSyntaxHighlighting() {
+        AbstractTokenMakerFactory factory =
+                (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+        factory.putMapping("text/poem", "net.cdahmedeh.poetwrite.ui.syntax.PoemTokenMaker");
+
+        Font base = textArea.getFont();
+        SyntaxScheme scheme = textArea.getSyntaxScheme();
+        Style note = scheme.getStyle(Token.COMMENT_MULTILINE);
+        note.foreground = EditorConstants.SYNTAX_NOTE_COLOUR ;
+        Map<TextAttribute, Object> attrs = new HashMap<>(base.getAttributes());
+        attrs.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD);
+        note.font = base.deriveFont(attrs);
+
+        scheme.getStyle(Token.OPERATOR).foreground = EditorConstants.SYNTAX_PUNCTUATION_COLOUR;
+
+        Style aside = scheme.getStyle(Token.LITERAL_STRING_DOUBLE_QUOTE);
+        aside.foreground = EditorConstants.SYNTAX_ASIDE_COLOUR;
+
+        scheme.getStyle(Token.SEPARATOR).foreground = EditorConstants.SYNTAX_BRACKET_COLOUR;
+
+        textArea.repaint();
+        textArea.revalidate();
+        textArea.repaint();
+
+        textArea.setSyntaxEditingStyle("text/poem");
     }
 
     @Override
