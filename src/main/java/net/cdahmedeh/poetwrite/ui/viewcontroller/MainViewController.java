@@ -21,6 +21,7 @@ package net.cdahmedeh.poetwrite.ui.viewcontroller;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
+import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
@@ -36,7 +37,6 @@ public class MainViewController extends ViewController<MainViewModel> {
     private final ApplicationHandler applicationHandler;
     private final PersistenceManager persistenceManager;
 
-
     @AssistedInject
     public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager) {
         super(viewModel, taskBus);
@@ -44,6 +44,14 @@ public class MainViewController extends ViewController<MainViewModel> {
         this.persistenceManager = persistenceManager;
     }
 
+    @AssistedFactory
+    public interface MainViewControllerFactory {
+        MainViewController create(MainViewModel mainViewModel);
+    }
+
+    /**
+     * Content in the text editor has changed. Notify the persistence manager.
+     */
     public void update(String content) {
         ContentChangedEvent event = new ContentChangedEvent();
         taskBus.submit("Updating Content", event, new Runnable() {
@@ -55,19 +63,19 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    /**
+     * Request a save. Check if the save selection dialog is needed.
+     */
     public void ask(File selectedFile) {
         SaveRequestedEvent event = new SaveRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
-//            boolean check = persistenceHandler.check();
             event.setDialogNeeded(true);
         });
     }
 
-    @AssistedFactory
-    public interface MainViewControllerFactory {
-        MainViewController create(MainViewModel mainViewModel);
-    }
-
+    /**
+     * Save the loaded file onto disk.
+     */
     public void save() {
         SaveEvent event = new SaveEvent();
 
@@ -77,6 +85,9 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    /**
+     * Save a selected file onto the disk.
+     */
     public void save(File selectedFile) {
         SaveEvent event = new SaveEvent();
 
@@ -86,6 +97,11 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    /**
+     * Request to have the application closed. Application handler will kindly
+     * wait until all taskbus tasks are done.
+     */
+    @Duplicated("MenuViewController.closeApp()")
     public void closeApp() {
         applicationHandler.close();
     }

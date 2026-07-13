@@ -176,7 +176,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         exitMenuItem.addActionListener(e -> viewController.closeApp());
 
-        generateRandomTextMenuItem.addActionListener(e -> viewController.generateRandomText());
+//        generateRandomTextMenuItem.addActionListener(e -> viewController.generateRandomText());
     }
 
     @Override

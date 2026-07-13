@@ -38,6 +38,12 @@ public class StatusViewController extends ViewController<StatusViewModel> {
     }
 
     public void listen() {
+        // Wait for notifications from the TaskBus and pass them on to the
+        // Model as an event.
+        //
+        // TODO: Like I mentioned in StatusViewModel, I'm not that happy that
+        //       the listening is done in here. But at the same time, I don't
+        //       want the model to have access to the TaskBus.
         taskBus.monitor()
                 .subscribe(status -> {
                     viewModel.setTaskHandlerStatus(status);

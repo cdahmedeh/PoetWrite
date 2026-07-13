@@ -91,7 +91,8 @@ public class PersistenceManager extends LazyService {
     private String original;
 
     // See comment above the FileStatus enum.
-    public FileStatus status =  FileStatus.NEW;
+    @Getter
+    private FileStatus status =  FileStatus.NEW;
 
     @Inject
     protected PersistenceManager(TaskBus taskBus) {
