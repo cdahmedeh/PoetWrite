@@ -3,7 +3,9 @@ package net.cdahmedeh.poetwrite.ui.view;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MenuViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MenuViewModel;
 
@@ -12,10 +14,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 /**
+ * This is the main menu bar which has menu actions, and displays the
+ * application name along with the open file and changed status.
+ *
+ * It attaches to the MainView
+ *
  * TODO: This is a huge mess. For whoever is reading this, please don't judge
+ *       me. Views are changing a lot, so I can't tempt myself to do premature
+ *       refactoring.
  * TODO: Hate that Swing doesn't have some kind of Markup. Even WPF has XAML.
  */
 public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> {
@@ -29,11 +37,14 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
     private JMenuItem exitMenuItem;
 
     private JMenuItem generateRandomTextMenuItem;
-    private File selectedFile;
+
+    // If the user needs to get a prompt if they want to lose their changes.
+    private boolean confirmationNeeded;
 
     public MenuView(MenuViewModel viewModel, MenuViewController viewController) {
         super(viewModel, viewController);
     }
+
 
     @Override
     protected void setup() {
@@ -136,15 +147,14 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
         menuBar.add(toolsMenu);
     }
 
-    private boolean confirmationNeeded;
-
+    @Duplicated("MainView")
     @Override
     protected void listen() {
-        FileNameExtensionFilter poemFilter = new FileNameExtensionFilter("Poem Files (*.poem)", "poem");
+        FileNameExtensionFilter poemFilter = new FileNameExtensionFilter("Poem Files (*.poem)", PersistenceManager.DEFAULT_FILE_EXTENSION);
 
         newMenuItem.addActionListener(e -> {
             if (confirmationNeeded) {
-                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "Your poem has some unsaved changes. Are you sure you want to create a new poem and lose your changes?", "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), UIConstants.PROMPT_UNSAVED_CHANGES_FOR_NEW, UIConstants.UNSAVED_CHANGES, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.NO_OPTION) {
                     return;
                 }
@@ -155,7 +165,7 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 
         openMenuItem.addActionListener(e-> {
             if (confirmationNeeded) {
-                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), "Your poem has some unsaved changes. Are you sure you want to open a new poem and lose your changes?", "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(menuBar.getParent(), UIConstants.PROMPT_UNSAVED_CHANGED_FOR_OPEN, UIConstants.UNSAVED_CHANGES, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.NO_OPTION) {
                     return;
                 }
@@ -179,18 +189,20 @@ public class MenuView extends View<MenuViewModel, MenuViewController, JMenuBar> 
 //        generateRandomTextMenuItem.addActionListener(e -> viewController.generateRandomText());
     }
 
-    @Override
-    public JMenuBar root() {
-        return menuBar;
-    }
+
 
     @Override
     protected void subscribe(CompositeDisposable disposable) {
-        Disposable coomfirmationNeededSubscriber = viewModel.confirmationNeeded()
+        Disposable confirmationNeededSubscriber = viewModel.confirmationNeeded()
                 .subscribe(confirmation -> {
             confirmationNeeded = confirmation;
         });
 
-        disposable.add(coomfirmationNeededSubscriber);
+        disposable.add(confirmationNeededSubscriber);
+    }
+
+    @Override
+    public JMenuBar root() {
+        return menuBar;
     }
 }

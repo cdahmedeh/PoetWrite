@@ -21,6 +21,7 @@ package net.cdahmedeh.poetwrite.ui.view;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
@@ -40,14 +41,19 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 /**
+ * This is the core part of PoetWrite, the text editor.
+ *
  * TODO: This is a huge mess. For whoever is reading this, please don't judge
+ *       me. Views are changing a lot, so I can't tempt myself to do premature
+ *       refactoring.
+ *
  * TODO: Hate that Swing doesn't have some kind of Markup. Even WPF has XAML.
  */
 public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private JFrame frame;
     private RSyntaxTextArea textArea;
 
-    private String currentFile = "none";
+    private String currentFile = "";
     private PersistenceManager.FileStatus status = PersistenceManager.FileStatus.UNKNOWN;
 
     public MainView(MainViewModel viewModel, MainViewController viewController) {
@@ -125,7 +131,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
             public void windowClosing(WindowEvent e) {
                 if (status == PersistenceManager.FileStatus.CHANGED) {
                     FlatSVGIcon exitIcon = new FlatSVGIcon(getClass().getResource(UIConstants.EXIT_ICON_PATH));
-                    int confirm = JOptionPane.showConfirmDialog(frame, "Your poem has some unsaved changes. Are you sure you want to quit PoetWrite and lose your changes?", "Quit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    int confirm = JOptionPane.showConfirmDialog(frame, UIConstants.PROMPT_UNSAVED_CHANGED_FOR_QUIT, UIConstants.TITLE_QUIT, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (confirm == JOptionPane.NO_OPTION) {
                         return;
                     }
@@ -149,6 +155,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         return frame;
     }
 
+    @Duplicated("MenuView")
     @Override
     protected void subscribe(CompositeDisposable disposable) {
         Disposable textSubscriber = viewModel.editorContent()
@@ -158,46 +165,9 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         disposable.add(textSubscriber);
 
-
-
         Disposable dialogNeededSubscriber =  viewModel.dialogNeeded()
                 .subscribe(dialogNeeded -> {
-                    System.out.println("Dialog Needed Called");
-
-                    if (dialogNeeded) {
-                        JFileChooser chooser = new JFileChooser();
-                        chooser.setFileFilter(new FileNameExtensionFilter("Poem Files (*.poem)", "poem"));
-
-
-
-                        while (true) {
-                            if (chooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
-                                return;
-                            }
-
-                            File selectedFile = chooser.getSelectedFile();
-
-                            if (selectedFile.exists()) {
-                                int confirm = JOptionPane.showConfirmDialog(frame, String.format(UIConstants.MESSAGE_OVERWRITE_PROMPT, selectedFile.getName()), "Overwrite Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                                if (confirm == JOptionPane.NO_OPTION) {
-                                    viewController.ask(selectedFile);
-                                    return;
-                                }
-                                if (confirm == JOptionPane.CANCEL_OPTION) {
-                                    return;
-                                }
-                                if (confirm != JOptionPane.YES_OPTION) {
-                                    continue;
-                                }
-                            }
-
-                            viewController.save(selectedFile);
-                            return;
-                        }
-                    } else {
-                        viewController.save();
-                        return;
-                    }
+                    requestSave(dialogNeeded);
                 });
 
         disposable.add(dialogNeededSubscriber);
@@ -206,7 +176,6 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 .subscribe(fileChanged -> {
                     status = fileChanged;
                     String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
-                    System.out.println(status);
                     frame.setTitle("PoetWrite - " + currentFile + changedText);
                 });
         disposable.add(fileChangedDisposable);
@@ -215,10 +184,44 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 .subscribe(fileName -> {
                     currentFile = fileName;
                     String changedText = status == PersistenceManager.FileStatus.CHANGED ? " (unsaved changes)" : "";
-                    System.out.println(status);
                     frame.setTitle("PoetWrite - " + currentFile + " " + changedText);
                 });
         disposable.add(fileNameDisposable);
+    }
+
+    private void requestSave(Boolean dialogNeeded) {
+        if (dialogNeeded) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Poem Files (*.poem)", "poem"));
+
+            while (true) {
+                if (chooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
+                    return;
+                }
+
+                File selectedFile = chooser.getSelectedFile();
+
+                if (selectedFile.exists()) {
+                    int confirm = JOptionPane.showConfirmDialog(frame, String.format(UIConstants.MESSAGE_OVERWRITE_PROMPT, selectedFile.getName()), UIConstants.TITLE_OVERWITE, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (confirm == JOptionPane.NO_OPTION) {
+                        viewController.ask(selectedFile);
+                        return;
+                    }
+                    if (confirm == JOptionPane.CANCEL_OPTION) {
+                        return;
+                    }
+                    if (confirm != JOptionPane.YES_OPTION) {
+                        continue;
+                    }
+                }
+
+                viewController.save(selectedFile);
+                return;
+            }
+        } else {
+            viewController.save();
+            return;
+        }
     }
 
     public void show() {

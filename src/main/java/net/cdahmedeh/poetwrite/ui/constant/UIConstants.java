@@ -71,4 +71,10 @@ public class UIConstants {
     public static final int SPINNER_STARTING_ANGLE = 0;
     public static final int SPINNER_ANIMATION_INTERVAL = 100;
     public static final int SPINNER_ROTATE_INCREMENTS = 20;
+    public static final String PROMPT_UNSAVED_CHANGES_FOR_NEW = "Your poem has some unsaved changes. Are you sure you want to create a new poem and lose your changes?";
+    public static final String UNSAVED_CHANGES = "Unsaved Changes";
+    public static final String PROMPT_UNSAVED_CHANGED_FOR_OPEN = "Your poem has some unsaved changes. Are you sure you want to open a new poem and lose your changes?";
+    public static final String PROMPT_UNSAVED_CHANGED_FOR_QUIT = "Your poem has some unsaved changes. Are you sure you want to quit PoetWrite and lose your changes?";
+    public static final String TITLE_QUIT = "Quit Confirmation";
+    public static final String TITLE_OVERWITE = "Overwrite Confirmation";
 }
