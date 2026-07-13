@@ -31,6 +31,12 @@ The design is UX first, meaning that the user-experience dictates the design and
 
 As a technical writer, I believe that good documentation is part of the development process. Feel free to explore the ever-growing collection in the [documentation](/docs/) folder.
 
+## Screenshots
+
+As the first iteration of PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! Look at the next section below to get an idea on how it will evovle further.
+
+![PoetWrite Initial Screenshot](./assets/initial-screenshot.png)
+
 ## Wireframe Prototype
 This is how the PoetWrite idea was born.
 
