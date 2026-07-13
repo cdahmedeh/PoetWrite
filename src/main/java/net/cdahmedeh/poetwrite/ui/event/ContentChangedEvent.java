@@ -19,10 +19,26 @@
 package net.cdahmedeh.poetwrite.ui.event;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
-//@NoArgsConstructor
+/**
+ * Very important event. This is used to notify that the contents have been
+ * updated. So someone wrote something in the text editor.
+ *
+ * It's mostly to make the PersistenceHandler aware that changes were made to
+ * the text, and update its own cache so saving is done without ever needing
+ * to access the review. It also eventually gets absorbed by the MainViewModel
+ * that contains the editor.
+ *
+ * TODO: I'm planning to have some kind of debounce algorithm for that. I don't
+ *       know yet if this would need another kind of event. The issue right now,
+ *       is that pretty much any change to the text, even a letter inserted
+ *       gets whole round trip from View to TaskBus back to Model.
+ * TODO: Also, this could trigger the analysis.
+ */
+@NoArgsConstructor
 public class ContentChangedEvent extends AppEvent {
     @Getter @Setter
     private String content = "";
@@ -30,17 +46,6 @@ public class ContentChangedEvent extends AppEvent {
     @Getter @Setter
     private boolean changed = true;
 
-    public ContentChangedEvent(){
-        System.out.println("ContentChangedEvent");
-    }
-
+    @Getter @Setter
     private PersistenceManager.FileStatus status = PersistenceManager.FileStatus.UNKNOWN;
-
-    public PersistenceManager.FileStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PersistenceManager.FileStatus status) {
-        this.status = status;
-    }
 }

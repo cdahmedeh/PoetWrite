@@ -21,9 +21,9 @@ package net.cdahmedeh.poetwrite.ui.viewcontroller;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.event.*;
-import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
+import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.service.generator.TextGenerator;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MenuViewModel;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
@@ -66,10 +66,10 @@ public class MenuViewController extends ViewController<MenuViewModel> {
     }
 
     public void save() {
-        FileDialogNeededEvent event = new FileDialogNeededEvent();
+        SaveRequestedEvent event = new SaveRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
-            boolean check = persistenceManager.fileStatus == PersistenceManager.FileStatus.CHANGED || persistenceManager.fileStatus == PersistenceManager.FileStatus.NEW;
-            event.setNeeded(check);
+            boolean check = persistenceManager.status == PersistenceManager.FileStatus.CHANGED || persistenceManager.status == PersistenceManager.FileStatus.NEW;
+            event.setDialogNeeded(check);
         });
     }
 
@@ -77,7 +77,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
         NewFileEvent event = new NewFileEvent();
         taskBus.submit("Creating New Poem", event, () -> {
             persistenceManager.create();
-            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
+            event.setFile(persistenceManager.getFile().getFileName().toString());
         });
     }
 
@@ -86,14 +86,14 @@ public class MenuViewController extends ViewController<MenuViewModel> {
         taskBus.submit("Opening File", event, () -> {
             persistenceManager.open(file);
             event.setContent(persistenceManager.getContent());
-            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
+            event.setFile(persistenceManager.getFile().getFileName().toString());
         });
     }
 
     public void saveAs() {
-        FileDialogNeededEvent event = new FileDialogNeededEvent();
+        SaveRequestedEvent event = new SaveRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
-            event.setNeeded(true);
+            event.setDialogNeeded(true);
         });
     }
 

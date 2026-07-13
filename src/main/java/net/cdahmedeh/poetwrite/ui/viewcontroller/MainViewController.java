@@ -21,11 +21,11 @@ package net.cdahmedeh.poetwrite.ui.viewcontroller;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
-import net.cdahmedeh.poetwrite.ui.app.ApplicationHandler;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.ContentChangedEvent;
-import net.cdahmedeh.poetwrite.ui.event.FileDialogNeededEvent;
+import net.cdahmedeh.poetwrite.ui.event.SaveRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.event.SaveEvent;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 
@@ -56,10 +56,10 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void ask(File selectedFile) {
-        FileDialogNeededEvent event = new FileDialogNeededEvent();
+        SaveRequestedEvent event = new SaveRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
 //            boolean check = persistenceHandler.check();
-            event.setNeeded(true);
+            event.setDialogNeeded(true);
         });
     }
 
@@ -73,7 +73,7 @@ public class MainViewController extends ViewController<MainViewModel> {
 
         taskBus.submit("Saving Poem", event, () -> {
             persistenceManager.save();
-            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
+            event.setFile(persistenceManager.getFile().getFileName().toString());
         });
     }
 
@@ -82,7 +82,7 @@ public class MainViewController extends ViewController<MainViewModel> {
 
         taskBus.submit("Saving Poem", event, () -> {
             persistenceManager.save(selectedFile);
-            event.setFile(persistenceManager.getCurrentFile().getFileName().toString());
+            event.setFile(persistenceManager.getFile().getFileName().toString());
         });
     }
 

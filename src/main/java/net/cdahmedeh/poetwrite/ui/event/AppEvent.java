@@ -25,6 +25,9 @@ package net.cdahmedeh.poetwrite.ui.event;
  * computation is complete and get its result. AppEvent contains no
  * special features of any kind. Extended classes contain the results in any
  * way that is appropriate for the computation.
+ *
+ * Keep in mind that both the ViewController and services within the tasks can
+ * have a say of what it's in it.
  */
 public abstract class AppEvent {
 }

@@ -18,5 +18,16 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+/**
+ * Not in use yet. Currently, application handler has a close() method that
+ * waits until the task bus is done doing all of its work.
+ *
+ * I tried putting this into the TaskBus, but it's casuing a cycling problem.
+ *
+ * TODO: Try to move into TaskBus.
+ * TODO: See if it can be used to show some kind of indication that a close was
+ *       requested so the user isn't confused about why the application didn't
+ *       close instantly.
+ */
 public class ApplicationClosedEvent extends AppEvent {
 }

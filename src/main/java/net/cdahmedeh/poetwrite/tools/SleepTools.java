@@ -16,24 +16,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.tools;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
-
-/**
- * All file operations inhirent this. Simplifies listening in Model, since these
- * kind of events guarantee that the text will change.
- */
-@NoArgsConstructor
-public abstract class FileEvent extends AppEvent {
-    @Getter @Setter
-    private String file = null;
-
-    @Getter @Setter
-    private String content = "";
-
-    public abstract PersistenceManager.FileStatus getFileStatus();
+public class SleepTools {
+    /**
+     * Sleep without the forced checked exception.
+     *
+     * We're doing some sleep for some artifical delays as proof-of-concept.
+     */
+    public static void safeSleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -16,11 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.app;
+package net.cdahmedeh.poetwrite.ui.services;
 
+import net.cdahmedeh.poetwrite.tools.SleepTools;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.ApplicationClosedEvent;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
+import net.cdahmedeh.poetwrite.ui.event.ServiceStartingEvent;
+import net.cdahmedeh.poetwrite.ui.event.WelcomeEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -68,5 +70,19 @@ public class ApplicationHandler extends LazyService {
             hold();
             System.exit(0);
         }).start();
+    }
+
+    /**
+     * Just puts a welcome message in the cue. Simply as a thing to add a bit
+     * of soul to the application while it starts. It doesn't actually do
+     * anything.
+     *
+     * TODO: I can see it in the future to be used to hold off intiting the UI
+     *       so that the window shows up as soon as possible.
+     */
+    public void sendWelcomeMessage() {
+        taskBus.submit(WelcomeEvent.TASK_WELCOME_MESSAGE, new WelcomeEvent(), () -> {
+            SleepTools.safeSleep(2000);
+        });
     }
 }

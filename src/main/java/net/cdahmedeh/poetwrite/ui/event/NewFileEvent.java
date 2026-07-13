@@ -19,7 +19,7 @@
 package net.cdahmedeh.poetwrite.ui.event;
 
 import lombok.NoArgsConstructor;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
 @NoArgsConstructor
 public class NewFileEvent extends FileEvent {

@@ -18,5 +18,9 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+/**
+ * Just to give a friendly started message when the app launches.
+ */
 public class WelcomeEvent extends AppEvent {
+    public static final String TASK_WELCOME_MESSAGE = "Welcome to the world of PoetWrite!";
 }

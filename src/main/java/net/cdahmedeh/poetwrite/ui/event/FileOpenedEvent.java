@@ -19,8 +19,11 @@
 package net.cdahmedeh.poetwrite.ui.event;
 
 import lombok.NoArgsConstructor;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
+/**
+ * After the user opens a new file. Or when the UI opens one.
+ */
 @NoArgsConstructor
 public class FileOpenedEvent extends FileEvent {
 

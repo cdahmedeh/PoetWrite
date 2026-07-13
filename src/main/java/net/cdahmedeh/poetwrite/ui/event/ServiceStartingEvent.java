@@ -18,5 +18,9 @@
 
 package net.cdahmedeh.poetwrite.ui.event;
 
+/**
+ * All tasks that inherit LazyService will use this task to start lazy-loading
+ * of the service.
+ */
 public class ServiceStartingEvent extends AppEvent {
 }

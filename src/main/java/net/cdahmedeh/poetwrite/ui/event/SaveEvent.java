@@ -19,15 +19,18 @@
 package net.cdahmedeh.poetwrite.ui.event;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
-//@NoArgsConstructor
+/**
+ * This happens after checking for user prompt in SaveRequestedEvent, and comes
+ * back after successfully saving a file.
+ *
+ * TODO: There's no robust checking yet.
+ */
+@NoArgsConstructor
 public class SaveEvent extends FileEvent {
-    public SaveEvent() {
-        System.out.println("Save Event Created");
-    }
-
     @Getter
     @Setter
     private String file;

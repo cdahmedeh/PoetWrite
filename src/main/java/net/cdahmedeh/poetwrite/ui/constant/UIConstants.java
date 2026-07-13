@@ -16,6 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Constants for various UI components, mainly for controlling sizes and
+ * margins.
+ */
 package net.cdahmedeh.poetwrite.ui.constant;
 
 public class UIConstants {
@@ -36,6 +40,8 @@ public class UIConstants {
     public static final String MESSAGE_OVERWRITE_PROMPT =
             "The poem (%s) already exists. Are you sure you want to overwrite it?";
 
+    public static final String LOG_WELCOME = "Welcome to the world of PoetWrite!";
+
     public static final String APP_ICON_PATH = "/icons/appicon.png";
 
     public static final String FILE_ICON_PATH = "/icons/file.svg";
@@ -53,4 +59,16 @@ public class UIConstants {
 
     public static final int DEFAULT_WINDOW_WIDTH = 1280;
     public static final int DEFAULT_WINDOW_HEIGHT = 800;
+
+    public static final int UI_TITLE_PANE_BUTTON_SIZE_WIDTH = 44;
+    public static final int UI_TITLE_PANE_BUTTON_SIZE_HEIGHT = 34;
+
+    public static final int UI_MENU_ITEM_MARGIN_VERTICAL = 6;
+    public static final int UI_MENU_ITEM_MARGIN_HORIZONTAL = 8;
+
+    public static final float DEFAULT_LINE_SPACING =  1.10f;
+
+    public static final int SPINNER_STARTING_ANGLE = 0;
+    public static final int SPINNER_ANIMATION_INTERVAL = 100;
+    public static final int SPINNER_ROTATE_INCREMENTS = 20;
 }

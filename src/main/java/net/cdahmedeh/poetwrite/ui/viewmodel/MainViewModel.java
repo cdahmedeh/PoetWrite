@@ -23,7 +23,7 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
@@ -65,8 +65,8 @@ public class MainViewModel extends ViewModel {
             this.fileStatus.onNext(newFileEvent.getFileStatus());
         }
 
-        if (event instanceof FileDialogNeededEvent dialogNeededEvent) {
-            this.dialogNeeded.onNext(dialogNeededEvent.isNeeded());
+        if (event instanceof SaveRequestedEvent dialogNeededEvent) {
+            this.dialogNeeded.onNext(dialogNeededEvent.isDialogNeeded());
         }
 
         if (event instanceof FileOpenedEvent fileOpenedEvent) {

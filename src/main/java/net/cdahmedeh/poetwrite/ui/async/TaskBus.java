@@ -46,13 +46,6 @@ import java.util.concurrent.TimeUnit;
  * delay so that the user can see all the tasks that are being run.
  *
  * TODO: Single-threaded only.
- * TODO: (Very badly) Explain the really complicated notification system from
- *       the following methods:
- *          queue()
- *          set()
- *          progress()
- *          publish()
- *          announce()
  * TODO: TaskBus should know if it's running on the EDT, and perhaps switch it
  *       out.
  */

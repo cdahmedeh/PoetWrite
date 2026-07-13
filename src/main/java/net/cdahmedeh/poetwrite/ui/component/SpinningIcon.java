@@ -1,23 +1,54 @@
+/**
+ * PoetWrite - A Poetry Writing Application
+ * Copyright (C) 2026 Ahmed El-Hajjar
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.cdahmedeh.poetwrite.ui.component;
+
+import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A custom icon that spins like a throbber. Quick and dirty code. Basically
+ *  a throwaway.
+ *
+ * In a previous prototype, the spinner was just a GIF. But it's not scalable,
+ * and have no control on how it behaves.
+ *
+ * Support FlatSVGIcon so we can use SVG as we're in the days of HiDPI displays.
+ *
+ * Used for the loading throbber in the status bar.
+ */
 public class SpinningIcon implements Icon {
     private final Icon delegate;
-    private double angle = 0;
+    private double angle = UIConstants.SPINNER_STARTING_ANGLE;
     private final Timer timer;
 
     public SpinningIcon(Icon delegate, JComponent host) {
         this.delegate = delegate;
-        this.timer = new Timer(100, e -> {
-            angle = (angle + 20) % 360; // degrees per tick
+        this.timer = new Timer(UIConstants.SPINNER_ANIMATION_INTERVAL, e -> {
+            angle = (angle + UIConstants.SPINNER_ROTATE_INCREMENTS) % 360;
             host.repaint();
         });
     }
 
     public void start() { timer.start(); }
-    public void stop()  { timer.stop(); angle = 0; }
+    public void stop()  { timer.stop(); angle = UIConstants.SPINNER_STARTING_ANGLE; }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {

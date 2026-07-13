@@ -9,6 +9,9 @@ import lombok.Setter;
  * Used to get the status of the TaskBus. Backend mostly uses it just to know
  * when there's no more task to run, for a clean exit. Really useful for the
  * progress bar in the UI.
+ *
+ * I'm not actually sure how useful some of these are. The progress numbers
+ * were used when we had a progress bar in the UI. But that's gone.
  */
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -33,17 +36,26 @@ public class TaskBusStatus {
         return remaining > 0;
     }
 
+    /**
+     * Increment the total number of pending tasks.
+     */
     public void queue() {
         this.queued = this.queued + 1;
         this.remaining = this.remaining + 1;
     }
 
+    /**
+     * When all tasks are done, call this.
+     */
     public void reset() {
         this.progress = 0;
         this.queued = 0;
         this.task = AppTask.empty();
     }
 
+    /**
+     * Increments the number of tasks completed.
+     */
     public void forward() {
         this.progress = this.progress + 1;
         this.remaining = this.remaining - 1;

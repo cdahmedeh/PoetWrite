@@ -21,7 +21,7 @@ package net.cdahmedeh.poetwrite.ui.view;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import net.cdahmedeh.poetwrite.ui.app.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.constant.UIConstants;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
