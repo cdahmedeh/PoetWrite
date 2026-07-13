@@ -53,5 +53,13 @@ public abstract class ViewModel {
         });
     }
 
+    /**
+     * Since the ViewController should not access the model directly and go
+     * through the TaskBus instead. Once a task is complete, an AppEvent will
+     * be available to listen to.
+     *
+     * Peek into the event, check its type, and pull any data available in the
+     * event. Then notify the listener using onNext(..) in the *Sujbect.
+     */
     protected abstract void listen(AppTask task, AppEvent event);
 }

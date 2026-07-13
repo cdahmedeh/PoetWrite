@@ -41,11 +41,16 @@ import java.awt.*;
  *
  * - You can call the ViewController upon user interaction to run some logic.
  * - You can call the ViewModel to subscribe to the observables.
+ *
+ * TODO: Consider a way to make the component load before it's done all the
+ *       layouting, subscriptions and listening.
  */
 public abstract class View<VM extends ViewModel, VC extends ViewController, RC extends Component> {
     protected final VM viewModel;
     protected final VC viewController;
 
+    // This handles notifications from *Subject variables in the model.
+    // See subscribe(..) method for details.
     private CompositeDisposable disposable = new CompositeDisposable();
 
     protected View(VM viewModel, VC viewController) {
@@ -57,12 +62,41 @@ public abstract class View<VM extends ViewModel, VC extends ViewController, RC e
         listen();
     }
 
+    /**
+     * This is where you create and place your UI components.
+     */
     protected abstract void setup();
 
+    /**
+     * Set up your component listeners to make calls to the ViewController.
+     *
+     * Often something like this
+     * component.addActionListener(() -> {viewController.doSomething()}
+     *
+     * Many would do this during the UI layout and setup process, but this is
+     * just to make things a bit cleaner.
+     *
+     * Keep in mind, this is not enforced in any way. So exercise some
+     * discipline.
+     */
     protected abstract void listen();
 
+    /**
+     * This is where you'll subscribe to model notifications.
+     *
+     * When a change is made to *Subject variables in the model, this is where
+     * you'll implement what kind of actions they will do.
+     *
+     * For example, a value changes, the model typically calls onNext(..) and
+     * this will pick it up for the view to use and perform an action on the
+     * model notification.
+     */
     protected abstract void subscribe(CompositeDisposable disposable);
 
+    /**
+     * Just the main UI component of the View. This can be used for when one
+     * view is part of another. Use it to attach them together.
+     */
     public abstract RC root();
 
 }

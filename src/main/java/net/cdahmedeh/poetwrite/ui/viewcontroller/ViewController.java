@@ -27,10 +27,14 @@ import net.cdahmedeh.poetwrite.ui.viewmodel.ViewModel;
  * The ViewController is invoked by the View to perform some business logic.
  *
  * Implementation Guide:
+ * - Inject the services you want to use.
  * - Create methods corresponding to tasks.
  * - These methods should send the business logic on a separate thread by
  *   submitting their code to the TaskBus
  * - Never refer to the ViewModel. Any updated data must come from an AppEvent.
+ *
+ * In almost all cases, the controller methods should look like this:
+ * public action() {taskBus.submit(*your business logic here*)}
  */
 public abstract class ViewController<VM extends ViewModel> {
     protected final VM viewModel;
