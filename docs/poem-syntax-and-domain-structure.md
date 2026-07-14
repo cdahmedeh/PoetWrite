@@ -45,7 +45,7 @@ Using the example above, this is the outcome.
 
 # Parsing
 
-I'm currently just using [_ANTLR_](https://www.antlr.org/) to do the parsing with a simple grammar in the [Poem.g4](/src/main/antlr/net/cdahmedeh/poetwrite/parser/Poem.g4) markup.
+I'm currently just using [_ANTLR_](https://www.antlr.org/) to do the parsing with a simple grammar in the [Poem.g4](/src/main/antlr/net/cdahmedeh/poetwrite/lib/parser/Poem.g4) markup.
 
 📩 [RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea) is what I'm planning to use for syntax-highlighting. It has its own token system that I will have to write specifically for.
 
