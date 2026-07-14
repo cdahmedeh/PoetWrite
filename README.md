@@ -6,6 +6,8 @@ At the heart of PoetWrite, is an advanced rhetorical and lexical analysis engine
 
 I know artificial intelligence is the hot new trend, but, all the power of PoetWrite will be AI-free. That means that all the analyses and assistance are blistering fast and completely offline. The majority of the algorithms are written from scratch with the help of cleverly designed heuristics, some publicly available dictionaries and databases.
 
+And maybe another trend that I hate. PoetWrite is not a web app of any kind. Not an SPA wrapped in an embedded browser. Something more old-school that actually runs and feels like it belongs on your desktop.
+
 ## Status
 PoetWrite is still in an early stage of development with the beginnings of elementary analysis features. If you want to see what PoetWrite is already capable of, start with the included [unit tests](/src/test/java/net/cdahmedeh/poetwrite/test/).
 
@@ -31,7 +33,7 @@ The design is UX first, meaning that the user-experience dictates the design and
 
 As a technical writer, I believe that good documentation is part of the development process. Feel free to explore the ever-growing collection in the [documentation](/docs/) folder.
 
-## Screenshots
+## Very First Screenshots
 
 As the first iteration of early PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! Look at the next section (with the wireframes) below to get an idea on how it will evolve further.
 
