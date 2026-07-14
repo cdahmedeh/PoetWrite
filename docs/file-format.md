@@ -1,1 +1,1 @@
-The .poem file is just a plain-text file. That's it, I'm sorry.
+The .poem format is just a plain-text file. That's it, I'm sorry.
