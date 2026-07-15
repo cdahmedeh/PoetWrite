@@ -11,6 +11,8 @@ And maybe another trend that irks me a bit. PoetWrite is not a web app of any ki
 ## Status
 PoetWrite is still in an early stage of development with the beginnings of elementary analysis features. If you want to see what PoetWrite is already capable of, start with the included [unit tests](/src/test/java/net/cdahmedeh/poetwrite/test/).
 
+The current focus is on architecture and design, which is nearing completion. I spent almost a year designing it. The result was very rewarding and totally worth it, as implementing features is easy as inheriting a few interfaces. What's already done is the MVVM UI architecture, the asynchronous TaskBus system, subscribe-publish event style communication, inspired by micro-kernels. What's left is gutter display for the basic analyses, word hover for definitions and parts of speech, and the auto-complete system. There's some documentation below showing off how these parts are designed.
+
 ## Documentation
 
 [Poem Analysis Implementation and Cache Design](/docs/entity-architecture.md) - An extensive deep-dive into how PoetWrite handles, stores and caches rhetorical analyses and other features. With detailed overview of the actual 'fool-proof' architecture and implementation through code examples and diagrams.
