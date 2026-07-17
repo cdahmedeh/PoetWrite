@@ -23,6 +23,9 @@ import net.cdahmedeh.poetwrite.lib.domain.*;
 import net.cdahmedeh.poetwrite.lib.parser.PoemParser.AsideContext;
 import net.cdahmedeh.poetwrite.lib.parser.PoemParser.NoteContext;
 import net.cdahmedeh.poetwrite.lib.parser.PoemParser.WordsContext;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 
 /**
@@ -62,7 +65,7 @@ public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
 
     @Override
     public Object visitLine(PoemParser.LineContext ctx) {
-        Line line = new Line(ctx.getText());
+        Line line = new Line(sourceText(ctx));
 
         for (var child : ctx.children) {
             Object result = child.accept(this);
@@ -116,5 +119,23 @@ public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
     @Override
     public Object visitErrorNode(ErrorNode node) {
         return super.visitErrorNode(node);
+    }
+
+    /**
+     * Swallows error messages to allow graceful failure handling.
+     *
+     * For example, it could return in text something like this:
+     * <missing ')'>
+     *
+     * We don't want that.
+     */
+    private static String sourceText(ParserRuleContext ctx) {
+        Token start = ctx.getStart();
+        Token stop = ctx.getStop();
+        if (start == null || stop == null || stop.getStopIndex() < start.getStartIndex()) {
+            return "";
+        }
+        return start.getInputStream().getText(
+                Interval.of(start.getStartIndex(), stop.getStopIndex()));
     }
 }
