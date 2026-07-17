@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Counts how many syllables are in the line for an entire poem.
  *
- * TODO: Several notes sprinkley about whether line per line analysis or for
+ * TODO: Several notes sprinkled about whether line per line analysis or for
  *       the whole poem. Has been pretty fast already.
  */
 @Singleton

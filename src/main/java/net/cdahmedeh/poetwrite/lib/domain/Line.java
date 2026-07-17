@@ -54,4 +54,23 @@ public class Line implements Entity {
 
     @Getter
     private final List<Node> nodes = Lists.newArrayList();
+
+    /**
+     * Gets the last word of a line.
+     *
+     * Ignores notes and asides. As often mentioned that they are ignored for
+     * the analysis.
+     *
+     * TODO: Catastrophically returns null if it doesn't find a last word.
+     *       Maybe I should have considered Kotlin...
+     */
+    public Word getLastWord() {
+        Word lastWord = null;
+        for (Node node : nodes) {
+            if (node instanceof Words words && !words.getWords().isEmpty()) {
+                lastWord = words.getWords().get(words.getWords().size() - 1);
+            }
+        }
+        return lastWord;
+    }
 }
