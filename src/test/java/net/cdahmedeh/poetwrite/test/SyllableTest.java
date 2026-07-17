@@ -65,7 +65,7 @@ public class SyllableTest {
         taskBus = component.getTaskBus();
         taskBus.enableTestMode();
 
-        syllableAnalyzer = component.getWordAnalyzer();
+        syllableAnalyzer = component.getSyllableAnalyzer();
     }
 
     @Test
