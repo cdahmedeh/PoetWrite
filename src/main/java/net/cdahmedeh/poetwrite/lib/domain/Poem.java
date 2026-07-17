@@ -33,7 +33,7 @@ import java.util.List;
  * You can find how this is all designed in the following documentation.
  * Poem Syntax and Domain Structure - /docs/poem-syntax-and-domain-structure.md
  */
-public class Poem {
+public class Poem implements Entity {
     @Getter
     private final List<Line> lines = Lists.newArrayList();
 }

@@ -48,7 +48,7 @@ import java.util.List;
  * See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
  */
 @RequiredArgsConstructor
-public class Line {
+public class Line implements Entity {
     @Getter
     private final String text;
 
