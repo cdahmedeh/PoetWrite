@@ -36,4 +36,8 @@ public class EditorConstants {
     public static final Color SYNTAX_NOTE_COLOUR = new Color(0x6a7ba3);
     public static final Color SYNTAX_ASIDE_COLOUR = new Color(0x5d7a5e);
     public static final Color SYNTAX_BRACKET_COLOUR = new Color(0x9E9E9E);
+
+    public static final Color GUTTER_LINE_NUMBER_COLOUR = new Color(0xC0C0C0);
+    public static final Color GUTTER_CURRENT_LINE_NUMBER_COLOUR = new Color(0x808080);
+    public static final Color GUTTER_SYLLABLE_COLOUR = new Color(0x8A8A8A);
 }

@@ -23,14 +23,14 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
+import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.ui.component.PoemGutter;
 import net.cdahmedeh.poetwrite.ui.constant.*;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.*;
-import org.fife.ui.rtextarea.Gutter;
-import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -41,8 +41,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 /**
  * This is the core part of PoetWrite, the text editor.
@@ -59,6 +59,9 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
     private String currentFile = "";
     private PersistenceManager.FileStatus status = PersistenceManager.FileStatus.UNKNOWN;
+    private JScrollPane textAreaScrollPane;
+
+    private PoemGutter poemGutter;
 
     public MainView(MainViewModel viewModel, MainViewController viewController) {
         super(viewModel, viewController);
@@ -97,20 +100,26 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textArea.setCurrentLineHighlightColor(EditorConstants.CURRENT_LINE_HIGHLIGHT_COLOUR);
         textArea.setCaretColor(EditorConstants.CARET_COLOR);
 
-        RTextScrollPane textAresScrollPane = new RTextScrollPane(textArea);
-        frame.add(textAresScrollPane, BorderLayout.CENTER);
+        // Plain JScrollPane instead of RTextScrollPane: RSTA's Gutter
+        // ignores LineNumberFormatter when line wrap is on, so PoemGutter
+        // paints the whole gutter (numbers + syllables) itself as the
+        // scroll pane's row header.
+        textAreaScrollPane = new JScrollPane(textArea);
+        poemGutter = new PoemGutter(textArea);
+        textAreaScrollPane.setRowHeaderView(poemGutter);
+        frame.add(textAreaScrollPane, BorderLayout.CENTER);
 
-        textAresScrollPane.putClientProperty("FlatLaf.style", "focusWidth: 0");
-        textAresScrollPane.putClientProperty("FlatLaf.style",
+        textAreaScrollPane.putClientProperty("FlatLaf.style", "focusWidth: 0");
+        textAreaScrollPane.putClientProperty("FlatLaf.style",
                 "focusWidth: 0; focusColor: $ScrollPane.borderColor");
-        textAresScrollPane.setBorder(BorderFactory.createLineBorder(
+        textAreaScrollPane.setBorder(BorderFactory.createLineBorder(
                 UIManager.getColor("Component.borderColor"), 0));
-
-        Gutter gutter = textAresScrollPane.getGutter();
-        gutter.setLineNumberFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, EditorConstants.DEFAULT_EDITOR_FONT_SIZE));
 
         textArea.setAnimateBracketMatching(false);
         textArea.setBracketMatchingEnabled(false);
+
+        textAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        textAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         setupSyntaxHighlighting();
     }
@@ -142,17 +151,31 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textArea.setSyntaxEditingStyle("text/poem");
     }
 
+    private void setupGutter(PoemSyllablesAnalysis analysis) {
+        // Still hard-coded to 10 per line, just to see the layout. The
+        // real counts will come from LineAnalyzer via the view model.
+        List<Integer> counts = new ArrayList<>();
+        for (Integer syllableCount: analysis.getSyllables()) {
+            counts.add(syllableCount);
+        }
+        // Poem events arrive on TaskBus threads; PoemGutter is a Swing
+        // component, so hop to the EDT.
+        SwingUtilities.invokeLater(() -> poemGutter.setSyllableCounts(counts));
+    }
+
     @Override
     protected void listen() {
         textArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 viewController.update(textArea.getText());
+                viewController.parse(textArea.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 viewController.update(textArea.getText());
+                viewController.parse(textArea.getText());
             }
 
             @Override
@@ -199,6 +222,20 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 });
 
         disposable.add(textSubscriber);
+
+        Disposable poemSubscriber = viewModel.poem().subscribe(
+                poem -> {
+                    viewController.analyze(poem);
+                }
+        );
+        disposable.add(poemSubscriber);
+
+        Disposable poemSyllableAnalysisSubscriber = viewModel.poemSyllablesAnalysis().subscribe(
+                poemSyllableAnalysis -> {
+                    setupGutter(poemSyllableAnalysis);
+                }
+        );
+        disposable.add(poemSyllableAnalysisSubscriber);
 
         Disposable dialogNeededSubscriber =  viewModel.dialogNeeded()
                 .subscribe(dialogNeeded -> {

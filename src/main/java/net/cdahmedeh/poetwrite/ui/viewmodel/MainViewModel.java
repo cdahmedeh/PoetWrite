@@ -23,12 +23,28 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 
 public class MainViewModel extends ViewModel {
+    // This holds the actual Poem as constructed by the parser.
+    // It may seem crude to parse every time, but it's proven to be so fast
+    // that it doesn't justify something like a diff system.
+    // See "Poem Analysis Implementation and Cache Design" for the motive.
+    private BehaviorSubject<Poem> poem = BehaviorSubject.createDefault(new Poem());
+    public Observable<Poem> poem() { return this.poem.hide(); }
+
+    // Holds the syllable counts for the poem, namely each line inside the Poem
+    // entity.
+    // TODO: Will eventually need to seperate long running analysis and ones
+    //       that are quicker.
+    private BehaviorSubject<PoemSyllablesAnalysis>  poemSyllablesAnalysis = BehaviorSubject.createDefault(new PoemSyllablesAnalysis(new Poem()));
+    public Observable<PoemSyllablesAnalysis> poemSyllablesAnalysis() { return this.poemSyllablesAnalysis.hide(); }
+
     // What is in the content editor. Mostly to modify the content editor
     // when something changes. Not really intended to be updated if user
     // makes a change to it.
@@ -88,6 +104,25 @@ public class MainViewModel extends ViewModel {
         if (event instanceof ContentChangedEvent contentChangedEvent) {
             String text = contentChangedEvent.getContent();
             this.fileStatus.onNext(contentChangedEvent.getStatus());
+        }
+
+        // Upon succesful parsing of a Poem, sent it to the View. Right now,
+        // the view just uses to send it to the controller for analysis.
+        //
+        // TODO: Will eventually need this for when we have analysis that only
+        //       show on hover. Like definitions or part of speech.
+        if (event instanceof ParsePoemEvent parsePoemEvent) {
+            if (parsePoemEvent.getPoem() != null) {
+                this.poem.onNext(parsePoemEvent.getPoem());
+            }
+        }
+
+        // When the syllables per line has been calculated. Right now this is
+        // lightning quick.
+        //
+        // TODO: Implement debouncing.
+        if (event instanceof LineSyllablesAnalyzedEvent lineSyllablesAnalyzedEvent) {
+            this.poemSyllablesAnalysis.onNext(lineSyllablesAnalyzedEvent.getAnalysis());
         }
 
         // Upon a file successfully saved.

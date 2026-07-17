@@ -22,26 +22,62 @@ import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
+import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.lib.constructor.PoemConstructor;
+import net.cdahmedeh.poetwrite.lib.domain.Line;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
+import net.cdahmedeh.poetwrite.service.analyzer.LineAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
+import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.ContentChangedEvent;
-import net.cdahmedeh.poetwrite.ui.event.SaveRequestedEvent;
-import net.cdahmedeh.poetwrite.ui.event.SaveEvent;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
     private final ApplicationHandler applicationHandler;
     private final PersistenceManager persistenceManager;
 
+    private final PoemSyllablesAnalyzer poemSyllablesAnalyzer;
+
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
+        this.poemSyllablesAnalyzer = poemSyllablesAnalyzer;
+    }
+
+    /**
+     * Parsers the entire poem into the Poem entity structure.
+     * @param content
+     */
+    public void parse(String content) {
+        ParsePoemEvent event = new ParsePoemEvent();
+        taskBus.submit("Parsing Poem", event, () -> {
+            Poem poem = PoemConstructor.fromText(content);
+            event.setPoem(poem);
+        });
+    }
+
+    /**
+     * Analyzes the poem.
+     *
+     * TODO: Only does syllables for now.
+     * TODO: Might need unique methods for each type of analyses.
+     * @param poem
+     */
+    public void analyze(Poem poem) {
+        LineSyllablesAnalyzedEvent event = new LineSyllablesAnalyzedEvent();
+        taskBus.submit("Analyze Poem Syllables", event, () -> {
+            PoemSyllablesAnalysis poemSyllablesAnalysis = poemSyllablesAnalyzer.get(poem);
+            event.setAnalysis(poemSyllablesAnalysis);
+        });
     }
 
     @AssistedFactory
