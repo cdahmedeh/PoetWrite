@@ -22,8 +22,8 @@ package net.cdahmedeh.poetwrite.ui.constant;
  * Constants for general theming.
  */
 public class AppearanceConstants {
-    public static final int DEFAULT_WINDOW_WIDTH = 1280;
-    public static final int DEFAULT_WINDOW_HEIGHT = 800;
+    public static final int DEFAULT_WINDOW_WIDTH = 800;
+    public static final int DEFAULT_WINDOW_HEIGHT = 1024;
 
     public static final int UI_TITLE_PANE_BUTTON_SIZE_WIDTH = 44;
     public static final int UI_TITLE_PANE_BUTTON_SIZE_HEIGHT = 34;
