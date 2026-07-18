@@ -22,11 +22,11 @@ import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
+import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.constructor.PoemConstructor;
-import net.cdahmedeh.poetwrite.lib.domain.Line;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
-import net.cdahmedeh.poetwrite.service.analyzer.LineAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
@@ -35,8 +35,6 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
@@ -44,13 +42,15 @@ public class MainViewController extends ViewController<MainViewModel> {
     private final PersistenceManager persistenceManager;
 
     private final PoemSyllablesAnalyzer poemSyllablesAnalyzer;
+    private final PatternAnalyzer patternAnalyzer;
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
         this.poemSyllablesAnalyzer = poemSyllablesAnalyzer;
+        this.patternAnalyzer = patternAnalyzer;
     }
 
     /**
@@ -66,17 +66,21 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     /**
-     * Analyzes the poem.
-     *
-     * TODO: Only does syllables for now.
-     * TODO: Might need unique methods for each type of analyses.
-     * @param poem
+     * Analyzes the syllable lengths per line in the poem.
      */
-    public void analyze(Poem poem) {
+    public void analyzeSyllables(Poem poem) {
         LineSyllablesAnalyzedEvent event = new LineSyllablesAnalyzedEvent();
         taskBus.submit("Analyze Poem Syllables", event, () -> {
             PoemSyllablesAnalysis poemSyllablesAnalysis = poemSyllablesAnalyzer.get(poem);
             event.setAnalysis(poemSyllablesAnalysis);
+        });
+    }
+
+    public void analyzePattern(Poem poem) {
+        PoemPatternAnalyzedEvent event = new PoemPatternAnalyzedEvent();
+        taskBus.submit("Analyze Poem Pattern", event, () -> {
+            PatternAnalysis patternAnalysis = patternAnalyzer.get(poem);
+            event.setPatternAnalysis(patternAnalysis);
         });
     }
 

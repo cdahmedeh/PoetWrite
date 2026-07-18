@@ -33,11 +33,29 @@ public class EditorConstants {
     public static final Color CARET_COLOR = new Color(80, 80, 80);
 
     public static final Color SYNTAX_PUNCTUATION_COLOUR = new Color(0x856161);
-    public static final Color SYNTAX_NOTE_COLOUR = new Color(0x6a7ba3);
+    public static final Color SYNTAX_NOTE_COLOUR = new Color(0x7F8C99);
     public static final Color SYNTAX_ASIDE_COLOUR = new Color(0x5d7a5e);
     public static final Color SYNTAX_BRACKET_COLOUR = new Color(0x9E9E9E);
 
-    public static final Color GUTTER_LINE_NUMBER_COLOUR = new Color(0xC0C0C0);
-    public static final Color GUTTER_CURRENT_LINE_NUMBER_COLOUR = new Color(0x808080);
+    public static final Color GUTTER_LINE_NUMBER_COLOUR = new Color(0xE0E0E0);
+    public static final Color GUTTER_CURRENT_LINE_NUMBER_COLOUR = new Color(0x909090);
     public static final Color GUTTER_SYLLABLE_COLOUR = new Color(0x8A8A8A);
+
+    public static final Color GUTTER_HEADER_COLOUR =new Color(0x8A8A8A);
+
+
+    public static final Color[] GUTTER_PATTERN_COLOURS = {
+            new Color(0xa599b8),   // lavender
+            new Color(0xb6a78a),   // sand
+            new Color(0x759595),   // teal
+            new Color(0xb68aa7),   // mauve
+            new Color(0x93a377),   // moss
+            new Color(0x8295b0),   // slate blue
+            new Color(0xb78a8e),   // dusty rose
+            new Color(0xafa679),   // olive gold
+            new Color(0x799f8d),   // sea green
+            new Color(0xb89989),   // terracotta
+            new Color(0xa78eb3),   // plum
+            new Color(0x7fa2a9),   // steel cyan
+    };
 }

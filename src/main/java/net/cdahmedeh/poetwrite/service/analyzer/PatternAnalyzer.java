@@ -30,10 +30,7 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Holds the rhyming pattern of a poem. It's basically a list of letters.
@@ -77,6 +74,11 @@ public class PatternAnalyzer extends FeatureAnalyzer<Poem, PatternAnalysis> {
         // Since we are using the rhyme group as the key, to prevent chaining.
         Map<String, Word> groups = new LinkedHashMap<>();
 
+        // The scheme before singleton groups are dropped. Every group gets a
+        // letter here; only groups with two or more lines survive into the
+        // real scheme below.
+        List<String> provisional = new ArrayList<>();
+
         // Last time I did this, I just went through each line, and for each
         // line gone through them again. And got something that was O(n^2).
         //
@@ -92,7 +94,7 @@ public class PatternAnalyzer extends FeatureAnalyzer<Poem, PatternAnalysis> {
             Word lastWord = line.getLastWord();
 
             if (lastWord == null) {
-                scheme.add("");
+                provisional.add("");
                 continue;
             }
 
@@ -109,7 +111,35 @@ public class PatternAnalyzer extends FeatureAnalyzer<Poem, PatternAnalysis> {
                 groups.put(letter, lastWord);
             }
 
-            scheme.add(letter);
+            provisional.add(letter);
+        }
+
+        // A group with only one line isn't a rhyme, so it doesn't get shown.
+        Map<String, Integer> groupSizes = new HashMap<>();
+        for (String letter : provisional) {
+            if (letter.isEmpty() == false) {
+                groupSizes.merge(letter, 1, Integer::sum);
+            }
+        }
+
+        // Surviving groups are relettered in order of first appearance, so
+        // the scheme still reads A, B, C without gaps where the singletons
+        // used to be.
+        Map<String, String> relettered = new LinkedHashMap<>();
+
+        for (String letter : provisional) {
+            if (letter.isEmpty() || groupSizes.get(letter) < 2) {
+                scheme.add("");
+                continue;
+            }
+
+            String newLetter = relettered.get(letter);
+            if (newLetter == null) {
+                newLetter = letterFor(relettered.size());
+                relettered.put(letter, newLetter);
+            }
+
+            scheme.add(newLetter);
         }
     }
 

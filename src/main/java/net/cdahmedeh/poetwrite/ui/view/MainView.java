@@ -23,6 +23,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
+import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.ui.component.PoemGutter;
 import net.cdahmedeh.poetwrite.ui.constant.*;
@@ -109,6 +110,9 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textAreaScrollPane.setRowHeaderView(poemGutter);
         frame.add(textAreaScrollPane, BorderLayout.CENTER);
 
+        textAreaScrollPane.setColumnHeaderView(poemGutter.createTextHeader());
+        textAreaScrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, poemGutter.createHeader());
+
         textAreaScrollPane.putClientProperty("FlatLaf.style", "focusWidth: 0");
         textAreaScrollPane.putClientProperty("FlatLaf.style",
                 "focusWidth: 0; focusColor: $ScrollPane.borderColor");
@@ -152,8 +156,6 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     }
 
     private void setupGutter(PoemSyllablesAnalysis analysis) {
-        // Still hard-coded to 10 per line, just to see the layout. The
-        // real counts will come from LineAnalyzer via the view model.
         List<Integer> counts = new ArrayList<>();
         for (Integer syllableCount: analysis.getSyllables()) {
             counts.add(syllableCount);
@@ -161,6 +163,14 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         // Poem events arrive on TaskBus threads; PoemGutter is a Swing
         // component, so hop to the EDT.
         SwingUtilities.invokeLater(() -> poemGutter.setSyllableCounts(counts));
+    }
+
+    private void setupGutter(PatternAnalysis patternAnalysis) {
+        List<String> pattern = new ArrayList<>(patternAnalysis.getPattern());
+
+        // Poem events arrive on TaskBus threads; PoemGutter is a Swing
+        // component, so hop to the EDT.
+        SwingUtilities.invokeLater(() -> poemGutter.setPattern(pattern));
     }
 
     @Override
@@ -225,7 +235,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         Disposable poemSubscriber = viewModel.poem().subscribe(
                 poem -> {
-                    viewController.analyze(poem);
+                    viewController.analyzeSyllables(poem);
+                    viewController.analyzePattern(poem);
                 }
         );
         disposable.add(poemSubscriber);
@@ -236,6 +247,13 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 }
         );
         disposable.add(poemSyllableAnalysisSubscriber);
+
+        Disposable patternAnalysisSubscriber = viewModel.patternAnalysis().subscribe(
+                patternAnalysis -> {
+                    setupGutter(patternAnalysis);
+                }
+        );
+        disposable.add(patternAnalysisSubscriber);
 
         Disposable dialogNeededSubscriber =  viewModel.dialogNeeded()
                 .subscribe(dialogNeeded -> {
@@ -266,6 +284,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 });
         disposable.add(fileNameDisposable);
     }
+
+
 
     private void requestSave(Boolean dialogNeeded) {
         if (dialogNeeded) {

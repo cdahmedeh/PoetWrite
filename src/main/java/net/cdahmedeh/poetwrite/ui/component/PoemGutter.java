@@ -55,10 +55,14 @@ import java.util.Map;
  * matching what RSTA's gutter did.
  *
  * Columns, from left: line number (right-aligned), syllable count
- * (right-aligned). Rhyme scheme indicators can become a third column here.
+ * (right-aligned), rhyme pattern letter (left-aligned, coloured per rhyme
+ * group in the editor's pastel palette). A fixed header strip above the
+ * gutter labels the columns (sigma for syllables, a note for rhyme
+ * groups); see createHeader() and createTextHeader() for how it plugs
+ * into the scroll pane.
  */
 public class PoemGutter extends JComponent {
-    // Space on the outer edges of the gutter, and between the two columns.
+    // Space on the outer edges of the gutter, and between the columns.
     private static final int HORIZONTAL_PADDING = 8;
     private static final int COLUMN_GAP = 12;
 
@@ -74,11 +78,29 @@ public class PoemGutter extends JComponent {
     // poem crosses 10 lines. Both still grow beyond this if needed.
     private static final int MIN_LINE_NUMBER_DIGITS = 2;
     private static final int MIN_SYLLABLE_DIGITS = 2;
+
+    // Minimum letters the pattern column is sized for. Schemes past 'Z'
+    // produce two-letter groups (AA, AB...), which the column grows for.
+    private static final int MIN_PATTERN_LETTERS = 1;
+
+    // Header labels: a sum over the syllable column, a musical note over
+    // the rhyme column. Kept as strings so font fallback is easy to check.
+    private static final String SYLLABLE_HEADER_SYMBOL = "\u03a3";
+    private static final String PATTERN_HEADER_SYMBOL = "\u266a";
+
     private final RSyntaxTextArea textArea;
 
     // Syllable count per line. Index 0 = line 1. Only read/written on the
     // EDT.
     private List<Integer> syllableCounts = List.of();
+
+    // Rhyme scheme letter per line ("" for lines without one). Index 0 =
+    // line 1. Only read/written on the EDT.
+    private List<String> pattern = List.of();
+
+    // The column-label strip from createHeader(), if one was made. Kept
+    // so refresh() can repaint it when column positions move.
+    private JComponent header;
 
     public PoemGutter(RSyntaxTextArea textArea) {
         this.textArea = textArea;
@@ -127,15 +149,31 @@ public class PoemGutter extends JComponent {
         refresh();
     }
 
+    /**
+     * Replaces the rhyme pattern letters and refreshes. Must be called on
+     * the EDT.
+     */
+    public void setPattern(List<String> pattern) {
+        this.pattern = pattern;
+        refresh();
+    }
+
     private void refresh() {
         revalidate();
         repaint();
+
+        // Column positions may have moved even when this component's
+        // total width didn't, which wouldn't trigger a corner repaint on
+        // its own.
+        if (header != null) {
+            header.repaint();
+        }
     }
 
     /**
-     * Width fits the widest line number plus the widest syllable count.
-     * Height mirrors the text area so the shared viewport scrolling covers
-     * the whole document.
+     * Width fits the widest line number, syllable count and pattern
+     * letter. Height mirrors the text area so the shared viewport
+     * scrolling covers the whole document.
      */
     @Override
     public Dimension getPreferredSize() {
@@ -144,6 +182,7 @@ public class PoemGutter extends JComponent {
         int width = HORIZONTAL_PADDING
                 + lineNumberColumnWidth(metrics)
                 + syllableColumnWidth(metrics)
+                + patternColumnWidth(metrics)
                 + HORIZONTAL_PADDING
                 + DIVIDER_TEXT_GAP;
 
@@ -198,9 +237,13 @@ public class PoemGutter extends JComponent {
         g2.setFont(getFont());
         FontMetrics metrics = g2.getFontMetrics();
 
-        // Right edge of each column; both columns are right-aligned.
+        // Right edge of the right-aligned columns. The pattern column is
+        // left-aligned at patternColumnLeft: letters of a rhyme group
+        // should line up vertically down the poem, which right-alignment
+        // would break once two-letter groups (AA...) appear.
         int numberColumnRight = HORIZONTAL_PADDING + lineNumberColumnWidth(metrics);
         int syllableColumnRight = numberColumnRight + syllableColumnWidth(metrics);
+        int patternColumnLeft = syllableColumnRight + COLUMN_GAP;
 
         Element root = textArea.getDocument().getDefaultRootElement();
         int caretLine = textArea.getCaretLineNumber();
@@ -240,7 +283,131 @@ public class PoemGutter extends JComponent {
                 g2.setColor(EditorConstants.GUTTER_SYLLABLE_COLOUR);
                 g2.drawString(syllables, syllableColumnRight - metrics.stringWidth(syllables), baseline);
             }
+
+            // Rhyme scheme letter, tinted per group so matching lines can
+            // be spotted by colour alone.
+            if (line < pattern.size() && pattern.get(line).isEmpty() == false) {
+                String letter = pattern.get(line);
+                g2.setColor(patternColour(letter));
+                g2.drawString(letter, patternColumnLeft, baseline);
+            }
         }
+    }
+
+    /**
+     * The fixed strip above the gutter labelling the columns: a sigma
+     * over the syllable counts and a note over the rhyme groups. Install
+     * as the scroll pane's UPPER_LEFT_CORNER. The corner inherits its
+     * width from the row header and its height from the column header,
+     * so createTextHeader() must be installed too - JScrollPane only
+     * shows a corner when both neighbouring headers exist.
+     */
+    public JComponent createHeader() {
+        header = new JComponent() {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(0, headerHeight());
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+
+                g2.setColor(textArea.getBackground());
+                g2.fillRect(0, 0, getWidth(), getHeight());
+
+                // Continue the gutter's divider through the header.
+                g2.setColor(new Color(221, 221, 221));
+                int dividerX = getWidth() - 1 - DIVIDER_TEXT_GAP;
+                g2.drawLine(dividerX, 0, dividerX, getHeight());
+
+                Map<?, ?> desktopHints = (Map<?, ?>)
+                        Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+                if (desktopHints != null) {
+                    g2.addRenderingHints(desktopHints);
+                } else {
+                    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                }
+
+                // Same geometry the rows use, so the labels track their
+                // columns as widths change.
+                FontMetrics metrics = getFontMetrics(PoemGutter.this.getFont());
+                int numberColumnRight = HORIZONTAL_PADDING + lineNumberColumnWidth(metrics);
+                int syllableColumnRight = numberColumnRight + syllableColumnWidth(metrics);
+                int patternColumnLeft = syllableColumnRight + COLUMN_GAP;
+
+                g2.setColor(EditorConstants.GUTTER_HEADER_COLOUR);
+                drawHeaderSymbol(g2, SYLLABLE_HEADER_SYMBOL, syllableColumnRight, true, getHeight());
+                drawHeaderSymbol(g2, PATTERN_HEADER_SYMBOL, patternColumnLeft, false, getHeight());
+            }
+        };
+
+        return header;
+    }
+
+    /**
+     * The empty strip above the editor text. It pushes the first line of
+     * the poem down by the same blank line as the header, and its
+     * presence is what makes JScrollPane display the corner at all.
+     */
+    public JComponent createTextHeader() {
+        return new JComponent() {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(0, headerHeight());
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                g.setColor(textArea.getBackground());
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+    }
+
+    // One blank editor line, so the poem starts exactly one row lower.
+    private int headerHeight() {
+        return textArea.getLineHeight();
+    }
+
+    /**
+     * Draws a header symbol aligned to its column (right-aligned symbols
+     * get x as their right edge, left-aligned as their left), vertically
+     * centred. Noto Sans is missing some symbol glyphs (the musical note
+     * in particular), so fall back to the logical Dialog font - which has
+     * a proper fallback chain - when the gutter font can't display one.
+     */
+    private void drawHeaderSymbol(Graphics2D g2, String symbol, int x, boolean rightAligned, int height) {
+        Font gutterFont = getFont();
+        Font symbolFont = gutterFont.canDisplayUpTo(symbol) == -1
+                ? gutterFont
+                : new Font(Font.DIALOG, Font.PLAIN, gutterFont.getSize());
+
+        g2.setFont(symbolFont);
+        FontMetrics metrics = g2.getFontMetrics();
+
+        int drawX = rightAligned ? x - metrics.stringWidth(symbol) : x;
+        int baseline = (height + metrics.getAscent() - metrics.getDescent()) / 2;
+
+        g2.drawString(symbol, drawX, baseline);
+    }
+
+    /**
+     * The colour for a rhyme group's letter: the editor's pastel palette,
+     * cycled by group index. Derived from the letter itself (A=0, B=1...,
+     * AA=26...) rather than list position, so a group keeps its colour
+     * even when earlier groups change.
+     */
+    private Color patternColour(String letter) {
+        int index = 0;
+        for (int i = 0; i < letter.length(); i++) {
+            index = index * 26 + (letter.charAt(i) - 'A' + 1);
+        }
+        index--;
+
+        Color[] palette = EditorConstants.GUTTER_PATTERN_COLOURS;
+        return palette[Math.floorMod(index, palette.length)];
     }
 
     private int lineNumberColumnWidth(FontMetrics metrics) {
@@ -263,10 +430,31 @@ public class PoemGutter extends JComponent {
         return COLUMN_GAP + digits * widestDigit(metrics);
     }
 
+    /**
+     * Sized for the longest letter currently in the scheme, and always
+     * reserved so the gutter width is stable before analysis lands.
+     */
+    private int patternColumnWidth(FontMetrics metrics) {
+        int letters = MIN_PATTERN_LETTERS;
+        for (String group : pattern) {
+            letters = Math.max(letters, group.length());
+        }
+
+        return COLUMN_GAP + letters * widestLetter(metrics);
+    }
+
     private int widestDigit(FontMetrics metrics) {
         int widest = 0;
         for (char digit = '0'; digit <= '9'; digit++) {
             widest = Math.max(widest, metrics.charWidth(digit));
+        }
+        return widest;
+    }
+
+    private int widestLetter(FontMetrics metrics) {
+        int widest = 0;
+        for (char letter = 'A'; letter <= 'Z'; letter++) {
+            widest = Math.max(widest, metrics.charWidth(letter));
         }
         return widest;
     }

@@ -23,6 +23,7 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
@@ -44,6 +45,11 @@ public class MainViewModel extends ViewModel {
     //       that are quicker.
     private BehaviorSubject<PoemSyllablesAnalysis>  poemSyllablesAnalysis = BehaviorSubject.createDefault(new PoemSyllablesAnalysis(new Poem()));
     public Observable<PoemSyllablesAnalysis> poemSyllablesAnalysis() { return this.poemSyllablesAnalysis.hide(); }
+
+    // Holds the pattern groups for the poem. Essentially, a letter for each
+    // group.
+    private BehaviorSubject<PatternAnalysis> patternAnalysis = BehaviorSubject.create();
+    public Observable<PatternAnalysis> patternAnalysis() { return this.patternAnalysis.hide(); }
 
     // What is in the content editor. Mostly to modify the content editor
     // when something changes. Not really intended to be updated if user
@@ -123,6 +129,14 @@ public class MainViewModel extends ViewModel {
         // TODO: Implement debouncing.
         if (event instanceof LineSyllablesAnalyzedEvent lineSyllablesAnalyzedEvent) {
             this.poemSyllablesAnalysis.onNext(lineSyllablesAnalyzedEvent.getAnalysis());
+        }
+
+        // When the pattern groups have been calculated/detected. This seems
+        // pretty quick too. But once rhyming detection gets more sophisticated
+        // this may get much slower.
+        // TODO: Performance considerations.
+        if (event instanceof PoemPatternAnalyzedEvent poemPatternAnalyzedEvent) {
+            this.patternAnalysis.onNext(poemPatternAnalyzedEvent.getPatternAnalysis());
         }
 
         // Upon a file successfully saved.
