@@ -54,9 +54,9 @@ import java.util.Map;
  * wrap free: a wrapped line gets its label on its first visual row only,
  * matching what RSTA's gutter did.
  *
- * Columns, from left: line number (right-aligned), syllable count
- * (right-aligned), rhyme pattern letter (left-aligned, coloured per rhyme
- * group in the editor's pastel palette). A fixed header strip above the
+ * Columns, from left: line number (right-aligned), rhyme pattern letter
+ * (left-aligned, coloured per rhyme group in the editor's pastel
+ * palette), syllable count (right-aligned). A fixed header strip above the
  * gutter labels the columns (sigma for syllables, a note for rhyme
  * groups); see createHeader() and createTextHeader() for how it plugs
  * into the scroll pane.
@@ -237,13 +237,15 @@ public class PoemGutter extends JComponent {
         g2.setFont(getFont());
         FontMetrics metrics = g2.getFontMetrics();
 
-        // Right edge of the right-aligned columns. The pattern column is
-        // left-aligned at patternColumnLeft: letters of a rhyme group
-        // should line up vertically down the poem, which right-alignment
-        // would break once two-letter groups (AA...) appear.
+        // The pattern column sits between the line numbers and the
+        // syllable counts. It is left-aligned at patternColumnLeft:
+        // letters of a rhyme group should line up vertically down the
+        // poem, which right-alignment would break once two-letter groups
+        // (AA...) appear. The other two columns stay right-aligned at
+        // their respective ...Right coordinates.
         int numberColumnRight = HORIZONTAL_PADDING + lineNumberColumnWidth(metrics);
-        int syllableColumnRight = numberColumnRight + syllableColumnWidth(metrics);
-        int patternColumnLeft = syllableColumnRight + COLUMN_GAP;
+        int patternColumnLeft = numberColumnRight + COLUMN_GAP;
+        int syllableColumnRight = numberColumnRight + patternColumnWidth(metrics) + syllableColumnWidth(metrics);
 
         Element root = textArea.getDocument().getDefaultRootElement();
         int caretLine = textArea.getCaretLineNumber();
@@ -334,8 +336,8 @@ public class PoemGutter extends JComponent {
                 // columns as widths change.
                 FontMetrics metrics = getFontMetrics(PoemGutter.this.getFont());
                 int numberColumnRight = HORIZONTAL_PADDING + lineNumberColumnWidth(metrics);
-                int syllableColumnRight = numberColumnRight + syllableColumnWidth(metrics);
-                int patternColumnLeft = syllableColumnRight + COLUMN_GAP;
+                int patternColumnLeft = numberColumnRight + COLUMN_GAP;
+                int syllableColumnRight = numberColumnRight + patternColumnWidth(metrics) + syllableColumnWidth(metrics);
 
                 g2.setColor(EditorConstants.GUTTER_HEADER_COLOUR);
                 drawHeaderSymbol(g2, SYLLABLE_HEADER_SYMBOL, syllableColumnRight, true, getHeight());
