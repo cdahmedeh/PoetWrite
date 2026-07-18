@@ -54,9 +54,9 @@ import java.util.Map;
  * wrap free: a wrapped line gets its label on its first visual row only,
  * matching what RSTA's gutter did.
  *
- * Columns, from left: line number (right-aligned), rhyme pattern letter
- * (left-aligned, coloured per rhyme group in the editor's pastel
- * palette), syllable count (right-aligned). A fixed header strip above the
+ * Columns, from left: line number, rhyme pattern letter (coloured per
+ * rhyme group in the editor's pastel palette), syllable count. All
+ * right-aligned. A fixed header strip above the
  * gutter labels the columns (sigma for syllables, a note for rhyme
  * groups); see createHeader() and createTextHeader() for how it plugs
  * into the scroll pane.
@@ -82,6 +82,11 @@ public class PoemGutter extends JComponent {
     // Minimum letters the pattern column is sized for. Schemes past 'Z'
     // produce two-letter groups (AA, AB...), which the column grows for.
     private static final int MIN_PATTERN_LETTERS = 1;
+
+    // Nudges the pattern letters past their column edge, into the gap
+    // before the syllable column, without changing the gutter's width.
+    // Keep it below COLUMN_GAP or the letters start kissing the counts.
+    private static final int PATTERN_LETTER_NUDGE = 4;
 
     // Header labels: a sum over the syllable column, a musical note over
     // the rhyme column. Kept as strings so font fallback is easy to check.
@@ -238,14 +243,13 @@ public class PoemGutter extends JComponent {
         FontMetrics metrics = g2.getFontMetrics();
 
         // The pattern column sits between the line numbers and the
-        // syllable counts. It is left-aligned at patternColumnLeft:
-        // letters of a rhyme group should line up vertically down the
-        // poem, which right-alignment would break once two-letter groups
-        // (AA...) appear. The other two columns stay right-aligned at
-        // their respective ...Right coordinates.
+        // syllable counts. All columns are right-aligned at their
+        // ...Right coordinate; for the pattern letters that keeps them
+        // snug against the syllable column, and two-letter groups
+        // (AA...) grow leftward into the column's slack.
         int numberColumnRight = HORIZONTAL_PADDING + lineNumberColumnWidth(metrics);
-        int patternColumnLeft = numberColumnRight + COLUMN_GAP;
-        int syllableColumnRight = numberColumnRight + patternColumnWidth(metrics) + syllableColumnWidth(metrics);
+        int patternColumnRight = numberColumnRight + patternColumnWidth(metrics);
+        int syllableColumnRight = patternColumnRight + syllableColumnWidth(metrics);
 
         Element root = textArea.getDocument().getDefaultRootElement();
         int caretLine = textArea.getCaretLineNumber();
@@ -291,7 +295,7 @@ public class PoemGutter extends JComponent {
             if (line < pattern.size() && pattern.get(line).isEmpty() == false) {
                 String letter = pattern.get(line);
                 g2.setColor(patternColour(letter));
-                g2.drawString(letter, patternColumnLeft, baseline);
+                g2.drawString(letter, patternColumnRight + PATTERN_LETTER_NUDGE - metrics.stringWidth(letter), baseline);
             }
         }
     }
@@ -336,12 +340,12 @@ public class PoemGutter extends JComponent {
                 // columns as widths change.
                 FontMetrics metrics = getFontMetrics(PoemGutter.this.getFont());
                 int numberColumnRight = HORIZONTAL_PADDING + lineNumberColumnWidth(metrics);
-                int patternColumnLeft = numberColumnRight + COLUMN_GAP;
-                int syllableColumnRight = numberColumnRight + patternColumnWidth(metrics) + syllableColumnWidth(metrics);
+                int patternColumnRight = numberColumnRight + patternColumnWidth(metrics);
+                int syllableColumnRight = patternColumnRight + syllableColumnWidth(metrics);
 
                 g2.setColor(EditorConstants.GUTTER_HEADER_COLOUR);
                 drawHeaderSymbol(g2, SYLLABLE_HEADER_SYMBOL, syllableColumnRight, true, getHeight());
-                drawHeaderSymbol(g2, PATTERN_HEADER_SYMBOL, patternColumnLeft, false, getHeight());
+                drawHeaderSymbol(g2, PATTERN_HEADER_SYMBOL, patternColumnRight + PATTERN_LETTER_NUDGE, true, getHeight());
             }
         };
 
