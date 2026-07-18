@@ -84,7 +84,14 @@ public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
         for (PoemParser.TokenContext tokenCtx : ctx.token()) {
             if (tokenCtx.getStart().getType() == PoemLexer.WORD) {
                 String text = tokenCtx.getText();
-                wordsNode.getWords().add(new Word(text));
+
+                // This lets use know where the actual word is found in the
+                // text. Used for hover tooltip which takes in the poem content
+                // and used to find the appropriate word.
+                int start = tokenCtx.getStart().getStartIndex();
+                int end = tokenCtx.getStop().getStopIndex();
+
+                wordsNode.getWords().add(new Word(text, start, end));
             }
         }
 

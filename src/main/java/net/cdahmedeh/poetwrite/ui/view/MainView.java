@@ -19,12 +19,14 @@
 package net.cdahmedeh.poetwrite.ui.view;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.ui.component.PoemGutter;
 import net.cdahmedeh.poetwrite.ui.constant.*;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
@@ -173,6 +175,38 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         SwingUtilities.invokeLater(() -> poemGutter.setPattern(pattern));
     }
 
+    private void setupHover(NavigableMap<Integer, Word> index) {
+        textArea.setUseFocusableTips(false);
+        // Colour + rounded border (arc = 8 rounds the corners of the border paint)
+        UIManager.put("ToolTip.background", new Color(0xFAF8F4));   // warm off-white; tune to your palette
+        UIManager.put("ToolTip.foreground", new Color(0x3A3A3A));
+        UIManager.put("ToolTip.border", new FlatLineBorder(
+                new Insets(6, 10, 6, 10), new Color(0xD6D2C9), 1, 8));
+
+        // Noto Sans
+        UIManager.put("ToolTip.font", new Font("Noto Sans", Font.PLAIN, 13));
+
+        // Native rounded window corners + OS drop shadow (Windows 11 / macOS)
+        UIManager.put("Popup.borderCornerRadius", 8);
+        UIManager.put("Popup.forceHeavyWeight", true);
+
+        textArea.setToolTipSupplier((rsta, e) -> {
+            int offset = rsta.viewToModel2D(e.getPoint());
+            Map.Entry<Integer, Word> entry = index.floorEntry(offset);
+            if (entry == null || !entry.getValue().contains(offset)) {
+                ((PoemTextArea) rsta).setHoveredWord(null);
+                return null;
+            }
+            Word w = entry.getValue();
+            ((PoemTextArea) rsta).setHoveredWord(w);
+            Font ef = rsta.getFont();
+            return "<html><b>" + w.getWord() + "</b><br>Random stuff for now</html>";
+        });
+        ToolTipManager.sharedInstance().registerComponent(textArea);
+
+        ToolTipManager.sharedInstance().setLightWeightPopupEnabled(true);
+    }
+
     @Override
     protected void listen() {
         textArea.getDocument().addDocumentListener(new DocumentListener() {
@@ -237,6 +271,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 poem -> {
                     viewController.analyzeSyllables(poem);
                     viewController.analyzePattern(poem);
+                    viewController.indexPoem(poem);
                 }
         );
         disposable.add(poemSubscriber);
@@ -254,6 +289,13 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 }
         );
         disposable.add(patternAnalysisSubscriber);
+
+        Disposable poemIndexSubscriber = viewModel.poemIndex().subscribe(
+                poemIndex -> {
+                    setupHover(poemIndex);
+                }
+               );
+        disposable.add(poemIndexSubscriber);
 
         Disposable dialogNeededSubscriber =  viewModel.dialogNeeded()
                 .subscribe(dialogNeeded -> {

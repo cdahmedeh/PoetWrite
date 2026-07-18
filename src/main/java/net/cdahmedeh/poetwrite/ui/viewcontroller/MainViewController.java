@@ -26,8 +26,10 @@ import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.constructor.PoemConstructor;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
+import net.cdahmedeh.poetwrite.service.indexer.PoemLookupIndexer;
 import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
@@ -35,6 +37,7 @@ import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 
 import java.io.File;
+import java.util.NavigableMap;
 
 
 public class MainViewController extends ViewController<MainViewModel> {
@@ -43,14 +46,16 @@ public class MainViewController extends ViewController<MainViewModel> {
 
     private final PoemSyllablesAnalyzer poemSyllablesAnalyzer;
     private final PatternAnalyzer patternAnalyzer;
+    private final PoemLookupIndexer poemLookupIndexer;
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
         this.poemSyllablesAnalyzer = poemSyllablesAnalyzer;
         this.patternAnalyzer = patternAnalyzer;
+        this.poemLookupIndexer = poemLookupIndexer;
     }
 
     /**
@@ -81,6 +86,14 @@ public class MainViewController extends ViewController<MainViewModel> {
         taskBus.submit("Analyze Poem Pattern", event, () -> {
             PatternAnalysis patternAnalysis = patternAnalyzer.get(poem);
             event.setPatternAnalysis(patternAnalysis);
+        });
+    }
+
+    public void indexPoem(Poem poem) {
+        IndexedPoemEvent event = new IndexedPoemEvent();
+        taskBus.submit("Index Poem", event, () -> {
+            NavigableMap<Integer, Word> index = poemLookupIndexer.index(poem);
+            event.setIndex(index);
         });
     }
 

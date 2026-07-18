@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,5 +73,20 @@ public class Line implements Entity {
             }
         }
         return lastWord;
+    }
+
+    /**
+     * Gives a list of all the words in the line. Ignores notes and asides.
+     */
+    public List<Word> getAllWords() {
+        List<Word> allWords = new ArrayList<>();
+        for (Node node : nodes) {
+            if (node instanceof Words words && !words.getWords().isEmpty()) {
+                for (Word word: words.getWords()) {
+                    allWords.add(word);
+                }
+            }
+        }
+        return allWords;
     }
 }

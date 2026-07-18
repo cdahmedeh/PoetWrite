@@ -19,6 +19,7 @@
 package net.cdahmedeh.poetwrite.lib.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -38,8 +39,16 @@ public class Word implements Entity {
     @Getter
     private final String word;
 
-    public Word(String word) {
+    @Getter @Setter
+    private final int start;
+
+    @Getter @Setter
+    private final int end;
+
+    public Word(String word, int start, int end) {
         this.word = normalize(word);
+        this.start = start;
+        this.end = end;
     }
 
     @Override
@@ -58,4 +67,7 @@ public class Word implements Entity {
     private String normalize(String word) {
         return word.trim().toLowerCase();
     }
+
+    public boolean contains(int offset) { return offset >= start && offset <= end; }
+
 }

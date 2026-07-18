@@ -18,8 +18,17 @@
 
 package net.cdahmedeh.poetwrite.ui.component;
 
+import lombok.Setter;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.ui.constant.EditorConstants;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Extension of RSyntaxTextArea because we're going to be overriding quite a fwe
@@ -34,6 +43,10 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
  */
 public class PoemTextArea extends RSyntaxTextArea {
     private float lineSpacingFactor = EditorConstants.DEFAULT_LINE_SPACING;
+
+    // Set by the tooltip supplier on each hover; null when nothing matched.
+    @Setter
+    private Word hoveredWord;
 
     /**
      * RSyntaxTextArea asks for the number of rows and columns of the text area.
@@ -52,5 +65,37 @@ public class PoemTextArea extends RSyntaxTextArea {
     @Override
     public int getLineHeight() {
         return Math.round(super.getLineHeight() * lineSpacingFactor);
+    }
+
+    /**
+     * Positions the hover tooltip so that it is horizontally aligned with the
+     * hovered word, and sits one line (plus a small gap) below the line the
+     * word is on.
+     */
+    @Override
+    public Point getToolTipLocation(MouseEvent e) {
+        if (hoveredWord == null) {
+            return null; // default placement
+        }
+        try {
+            Border b = UIManager.getBorder("ToolTip.border");
+            Insets in = (b != null)
+                    ? b.getBorderInsets(this)
+                    : new Insets(0, 0, 0, 0);
+            Rectangle2D r = modelToView2D(hoveredWord.getStart());
+
+            int lineHeight = getLineHeight(); // includes lineSpacingFactor
+
+            int x = (int) Math.round(r.getX())
+                    - in.left
+                    - EditorConstants.TOOLTIP_HTML_FUDGE_X;
+            int y = (int) Math.round(r.getY())
+                    + lineHeight
+                    + Math.round(lineHeight * EditorConstants.TOOLTIP_LINE_GAP_FACTOR);
+
+            return new Point(x, y);
+        } catch (BadLocationException ex) {
+            return null;
+        }
     }
 }

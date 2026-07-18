@@ -43,6 +43,10 @@ public class EditorConstants {
 
     public static final Color GUTTER_HEADER_COLOUR =new Color(0x8A8A8A);
 
+    public static final int TOOLTIP_OFFSET_X = 6;
+    public static final int TOOLTIP_OFFSET_Y = 6;
+    public static final int TOOLTIP_HTML_FUDGE_X = 2;
+    public static final float TOOLTIP_LINE_GAP_FACTOR = 0.15f;
 
     public static final Color[] GUTTER_PATTERN_COLOURS = {
             new Color(0xa599b8),   // lavender
@@ -58,4 +62,6 @@ public class EditorConstants {
             new Color(0xa78eb3),   // plum
             new Color(0x7fa2a9),   // steel cyan
     };
+
+
 }
