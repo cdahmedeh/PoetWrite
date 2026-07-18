@@ -200,7 +200,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
             Word w = entry.getValue();
             ((PoemTextArea) rsta).setHoveredWord(w);
             Font ef = rsta.getFont();
-            return "<html><b>" + w.getWord() + "</b><br>Random stuff for now</html>";
+            return "<html><b>" + w.getWord() + "</b><br>The word you're highlighting is " + w.getWord() + ".</html>";
         });
         ToolTipManager.sharedInstance().registerComponent(textArea);
 
