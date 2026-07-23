@@ -39,8 +39,6 @@ As a technical writer, I believe that good documentation is part of the developm
 
 As the first iteration of early PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! Look at the next section (with the wireframes) below to get an idea on how it will evolve further.
 
-![PoetWrite Initial Screenshot](./assets/initial-screenshot.png)
-
 ![PoetWrite Auto-Complete Screenshot](./assets/second-screenshot.png)
 
 ## Wireframe Prototype
