@@ -84,6 +84,10 @@ public class MainViewModel extends ViewModel {
         return this.dialogNeeded.hide();
     }
 
+    // For displaying the autocomplete wizard.
+    private PublishSubject<Boolean> autoCompleteRequested = PublishSubject.create();
+    public Observable<Boolean> autoCompleteRequested() { return this.autoCompleteRequested; }
+
     // The name of the file being dealt with. Not the full path, just for
     // displaying it in the title bar.
     private BehaviorSubject<String> fileName = BehaviorSubject.createDefault("");
@@ -156,9 +160,10 @@ public class MainViewModel extends ViewModel {
             this.poemIndex.onNext(indexedPoemEvent.getIndex());
         }
 
-        // Upon having the poem index to map text positions to an entity in the
-        // poem. Right now, used for providing information on a word when
-        // hoving over it.
+        // For displaying the autocompleted dialog
+        if (event instanceof AutoCompleteWizardRequestedEvent autoCompleteRequestedEvent) {
+            this.autoCompleteRequested.onNext(autoCompleteRequestedEvent.isRequested());
+        }
 
         // Upon a file successfully saved.
         // Just to change the status on the title bar for now.

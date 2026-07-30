@@ -97,6 +97,13 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    public void requestAutoComplete() {
+        AutoCompleteWizardRequestedEvent event = new AutoCompleteWizardRequestedEvent();
+        taskBus.submit("Request Auto Complete", event, () -> {
+            event.setRequested(true);
+        });
+    }
+
     @AssistedFactory
     public interface MainViewControllerFactory {
         MainViewController create(MainViewModel mainViewModel);

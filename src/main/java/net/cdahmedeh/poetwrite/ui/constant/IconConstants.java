@@ -33,4 +33,9 @@ public class IconConstants {
 
     public static final String TOOLS_ICON_PATH = "/icons/tools.svg";
     public static final String GENERATE_ICON_PATH = "/icons/generate.svg";
+
+    public static final String RHYME_ICON_PATH = "/icons/rhymes.svg";
+    public static final String METER_ICON_PATH = "/icons/meter.svg";
+    public static final String DICTIONARY_ICON_PATH = "/icons/dictionary.svg";
+    public static final String RELATIONSHIPS_ICON_PATH = "/icons/relationships.svg";
 }

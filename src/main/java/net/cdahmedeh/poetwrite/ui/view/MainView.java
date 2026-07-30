@@ -20,6 +20,8 @@ package net.cdahmedeh.poetwrite.ui.view;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.ui.FlatNativeWindowsLibrary;
+import com.formdev.flatlaf.util.SystemInfo;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.SneakyThrows;
@@ -27,10 +29,9 @@ import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
-import net.cdahmedeh.poetwrite.ui.component.PoemGutter;
+import net.cdahmedeh.poetwrite.ui.component.*;
 import net.cdahmedeh.poetwrite.ui.constant.*;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
-import net.cdahmedeh.poetwrite.ui.component.PoemTextArea;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -39,7 +40,9 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
@@ -178,7 +181,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private void setupHover(NavigableMap<Integer, Word> index) {
         textArea.setUseFocusableTips(false);
         // Colour + rounded border (arc = 8 rounds the corners of the border paint)
-        UIManager.put("ToolTip.background", new Color(0xFAF8F4));   // warm off-white; tune to your palette
+        UIManager.put("ToolTip.background", new Color(0xFFFFFD));   // warm off-white; tune to your palette
         UIManager.put("ToolTip.foreground", new Color(0x3A3A3A));
         UIManager.put("ToolTip.border", new FlatLineBorder(
                 new Insets(6, 10, 6, 10), new Color(0xD6D2C9), 1, 8));
@@ -242,6 +245,14 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 viewController.closeApp();
             }
         });
+
+        textArea.getInputMap().put(
+                KeyStroke.getKeyStroke("control SPACE"), "autocomplete");
+        textArea.getActionMap().put("autocomplete", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) {
+                viewController.requestAutoComplete();
+            }
+        });
     }
 
     public void attachStatusBar(JPanel pane) {
@@ -295,7 +306,19 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                     setupHover(poemIndex);
                 }
                );
+
         disposable.add(poemIndexSubscriber);
+
+
+        Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
+                autoCompleteRequested -> {
+                    if (autoCompleteRequested == true) {
+                        showAutoComplete();
+                    }
+                }
+        );
+        disposable.add(autoCompleteRequestedSubscriber);
+        
 
         Disposable dialogNeededSubscriber =  viewModel.dialogNeeded()
                 .subscribe(dialogNeeded -> {
@@ -327,6 +350,67 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         disposable.add(fileNameDisposable);
     }
 
+    private JWindow wizardWindow;
+
+    private void showAutoComplete() {
+        if (wizardWindow != null) {
+            wizardWindow.dispose();
+            wizardWindow = null;
+        }
+
+        Rectangle caret;
+        try {
+            caret = textArea.modelToView2D(textArea.getCaretPosition()).getBounds();
+        } catch (BadLocationException e) {
+            return;
+        }
+
+        JWindow window = new JWindow(SwingUtilities.getWindowAncestor(textArea));
+        window.setType(Window.Type.POPUP);      // BEFORE anything can pack the window
+        window.setFocusableWindowState(true);
+        wizardWindow = window;
+
+        AutoCompleteWizard wizard = new AutoCompleteWizard(WizardDemo.root(),
+                new AutoCompleteWizard.Listener() {
+                    @Override public void completed(WizardChain chain) {
+                        System.out.println("QUERY: " + chain.values());
+                        close();
+                    }
+                    @Override public void cancelled() {
+                        close();
+                    }
+                    @Override public void layoutChanged() {
+                        if (window.isShowing()) {   // ignore events fired during construction
+                            window.pack();
+                        }
+                    }
+                    private void close() {
+                        window.dispose();
+                        wizardWindow = null;
+                        textArea.requestFocusInWindow();
+                    }
+                });
+//        wizard.setFont(textArea.getFont());     // before pack, so the packed size is final
+        wizard.setFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, EditorConstants.DEFAULT_EDITOR_FONT_SIZE - 2));
+
+
+        window.add(wizard);
+        window.pack();
+
+        if (SystemInfo.isWindows_11_orLater && FlatNativeWindowsLibrary.isLoaded()) {
+            long hwnd = FlatNativeWindowsLibrary.getHWND(window);
+            // DWMWCP_ROUNDSMALL = 3 — small radius + native shadow, same as menus/tooltips.
+            // DWMWCP_ROUND = 2 is the larger dialog-style radius if you prefer.
+            FlatNativeWindowsLibrary.setWindowCornerPreference(hwnd, 3);
+        }
+
+        Point location = new Point(caret.x, caret.y + caret.height + 2);
+        SwingUtilities.convertPointToScreen(location, textArea);
+        window.setLocation(location);
+
+        window.setVisible(true);
+        wizard.focusActivePane();
+    }
 
 
     private void requestSave(Boolean dialogNeeded) {
