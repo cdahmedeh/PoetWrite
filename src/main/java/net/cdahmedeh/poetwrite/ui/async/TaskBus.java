@@ -19,10 +19,9 @@
 package net.cdahmedeh.poetwrite.ui.async;
 
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.ui.event.AppEvent;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

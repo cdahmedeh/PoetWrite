@@ -16,18 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.parsing;
+
+import lombok.Getter;
+import lombok.Setter;
+import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * See ./docs/async-design.md for design overview.
- *
- * Basically a notification that can be used by the UI layer to know when a
- * computation is complete and get its result. AppEvent contains no
- * special features of any kind. Extended classes contain the results in any
- * way that is appropriate for the computation.
- *
- * Keep in mind that both the ViewController and services within the tasks can
- * have a say of what it's in it.
+ * Thrown when the analysis of a poem's pattern is done.
  */
-public abstract class AppEvent {
+public class PoemPatternAnalyzedEvent extends AppEvent {
+    @Getter
+    @Setter
+    private PatternAnalysis patternAnalysis;
 }

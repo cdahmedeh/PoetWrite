@@ -16,7 +16,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.async;
+
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
  * Just for friendly display of the TaskBus starting. All controllers need

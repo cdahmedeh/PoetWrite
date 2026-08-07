@@ -16,19 +16,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.parsing;
 
-import lombok.NoArgsConstructor;
-import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
+import lombok.Getter;
+import lombok.Setter;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * After the user opens a new file. Or when the UI opens one.
+ * Thrown around when the poem has been converted from text to the Poem entity
+ * structure.
  */
-@NoArgsConstructor
-public class FileOpenedEvent extends FileEvent {
-
-    @Override
-    public PersistenceManager.FileStatus getFileStatus() {
-        return PersistenceManager.FileStatus.OPENED;
-    }
+public class ParsePoemEvent extends AppEvent {
+    @Getter
+    @Setter
+    private Poem poem;
 }

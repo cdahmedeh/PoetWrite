@@ -23,7 +23,7 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.AppEvent;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 import net.cdahmedeh.poetwrite.ui.async.TaskBusStatus;
 

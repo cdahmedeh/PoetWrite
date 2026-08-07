@@ -16,17 +16,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.file;
 
-import lombok.Getter;
-import lombok.Setter;
-import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
+import lombok.NoArgsConstructor;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
 /**
- * Thrown when the analysis of a poem's pattern is done.
+ * After the user opens a new file. Or when the UI opens one.
  */
-public class PoemPatternAnalyzedEvent extends AppEvent {
-    @Getter
-    @Setter
-    private PatternAnalysis patternAnalysis;
+@NoArgsConstructor
+public class FileOpenedEvent extends FileEvent {
+
+    @Override
+    public PersistenceManager.FileStatus getFileStatus() {
+        return PersistenceManager.FileStatus.OPENED;
+    }
 }

@@ -16,15 +16,20 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.app;
 
-import lombok.NoArgsConstructor;
-import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
-@NoArgsConstructor
-public class NewFileEvent extends FileEvent {
-    @Override
-    public PersistenceManager.FileStatus getFileStatus() {
-        return PersistenceManager.FileStatus.NEW;
-    }
+/**
+ * Not in use yet. Currently, application handler has a close() method that
+ * waits until the task bus is done doing all of its work.
+ *
+ * I tried putting this into the TaskBus, but it's casuing a cycling problem.
+ *
+ * TODO: Try to move into TaskBus.
+ * TODO: See if it can be used to show some kind of indication that a close was
+ *       requested so the user isn't confused about why the application didn't
+ *       close instantly.
+ */
+public class ApplicationClosedEvent extends AppEvent {
 }

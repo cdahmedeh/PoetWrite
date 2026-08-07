@@ -16,20 +16,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.parsing;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.lib.domain.Poem;
-
-import java.util.List;
+import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * Thrown around when the poem has been converted from text to the Poem entity
- * structure.
+ * Passed around when the number of syllables in the entire poem have been
+ * counted.
  */
-public class ParsePoemEvent extends AppEvent{
+public class LineSyllablesAnalyzedEvent extends AppEvent {
     @Getter
     @Setter
-    private Poem poem;
+    private PoemSyllablesAnalysis analysis;
 }

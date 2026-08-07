@@ -16,24 +16,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.parsing;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
+
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
- * All file operations inhirent this. Simplifies listening in Model, since these
- * kind of events guarantee that the text will change.
+ * Thrown when the character position to entity map has been calculated.
  */
-@NoArgsConstructor
-public abstract class FileEvent extends AppEvent {
-    @Getter @Setter
-    private String file = null;
-
-    @Getter @Setter
-    private String content = "";
-
-    public abstract PersistenceManager.FileStatus getFileStatus();
+public class IndexedPoemEvent extends AppEvent {
+    @Getter
+    @Setter
+    private NavigableMap<Integer, Word> index = new TreeMap<>();
 }

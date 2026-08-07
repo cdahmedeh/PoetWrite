@@ -19,9 +19,7 @@
 package net.cdahmedeh.poetwrite.service.interfaces;
 
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.ServiceStartingEvent;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import net.cdahmedeh.poetwrite.ui.event.async.ServiceStartingEvent;
 
 /**
  * See ./docs/async-design.md for design overview.

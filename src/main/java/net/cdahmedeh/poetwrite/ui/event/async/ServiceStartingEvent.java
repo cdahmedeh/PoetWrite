@@ -16,18 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.async;
+
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * Not in use yet. Currently, application handler has a close() method that
- * waits until the task bus is done doing all of its work.
- *
- * I tried putting this into the TaskBus, but it's casuing a cycling problem.
- *
- * TODO: Try to move into TaskBus.
- * TODO: See if it can be used to show some kind of indication that a close was
- *       requested so the user isn't confused about why the application didn't
- *       close instantly.
+ * All tasks that inherit LazyService will use this task to start lazy-loading
+ * of the service.
  */
-public class ApplicationClosedEvent extends AppEvent {
+public class ServiceStartingEvent extends AppEvent {
 }

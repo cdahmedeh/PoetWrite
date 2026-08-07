@@ -27,13 +27,18 @@ import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
-import net.cdahmedeh.poetwrite.service.indexer.PoemLookupIndexer;
+import net.cdahmedeh.poetwrite.ui.event.parsing.*;
+import net.cdahmedeh.poetwrite.ui.event.file.FileEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.NewFileEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.SaveEvent;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
+import net.cdahmedeh.poetwrite.ui.event.request.AutoCompleteWizardRequestedEvent;
+import net.cdahmedeh.poetwrite.ui.event.request.SaveRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
 
-import java.util.Map;
 import java.util.NavigableMap;
 
 public class MainViewModel extends ViewModel {

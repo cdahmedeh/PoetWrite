@@ -16,31 +16,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.file;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * This happens after checking for user prompt in SaveRequestedEvent, and comes
- * back after successfully saving a file.
- *
- * TODO: There's no robust checking yet.
+ * All file operations inhirent this. Simplifies listening in Model, since these
+ * kind of events guarantee that the text will change.
  */
 @NoArgsConstructor
-public class SaveEvent extends FileEvent {
-    @Getter
-    @Setter
-    private String file;
+public abstract class FileEvent extends AppEvent {
+    @Getter @Setter
+    private String file = null;
 
-    @Getter
-    @Setter
-    private String exists;
+    @Getter @Setter
+    private String content = "";
 
-    @Override
-    public PersistenceManager.FileStatus getFileStatus() {
-        return PersistenceManager.FileStatus.SAVED;
-    }
+    public abstract PersistenceManager.FileStatus getFileStatus();
 }

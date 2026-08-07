@@ -22,9 +22,13 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import net.cdahmedeh.poetwrite.ui.event.parsing.ContentChangedEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.NewFileEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.SaveEvent;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
-import net.cdahmedeh.poetwrite.ui.event.*;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 
 public class MenuViewModel extends ViewModel {

@@ -21,8 +21,8 @@ package net.cdahmedeh.poetwrite.ui.async;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.cdahmedeh.poetwrite.ui.event.AppEvent;
-import net.cdahmedeh.poetwrite.ui.event.TaskBusStartedEvent;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
+import net.cdahmedeh.poetwrite.ui.event.async.TaskBusStartedEvent;
 
 /**
  * See ./docs/async-design.md for design overview.

@@ -16,11 +16,31 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.file;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
 /**
- * All tasks that inherit LazyService will use this task to start lazy-loading
- * of the service.
+ * This happens after checking for user prompt in SaveRequestedEvent, and comes
+ * back after successfully saving a file.
+ *
+ * TODO: There's no robust checking yet.
  */
-public class ServiceStartingEvent extends AppEvent {
+@NoArgsConstructor
+public class SaveEvent extends FileEvent {
+    @Getter
+    @Setter
+    private String file;
+
+    @Getter
+    @Setter
+    private String exists;
+
+    @Override
+    public PersistenceManager.FileStatus getFileStatus() {
+        return PersistenceManager.FileStatus.SAVED;
+    }
 }

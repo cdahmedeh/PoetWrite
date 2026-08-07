@@ -16,18 +16,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.file;
 
-import lombok.Getter;
-import lombok.Setter;
-import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import lombok.NoArgsConstructor;
+import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
-/**
- * Passed around when the number of syllables in the entire poem have been
- * counted.
- */
-public class LineSyllablesAnalyzedEvent extends AppEvent {
-    @Getter
-    @Setter
-    private PoemSyllablesAnalysis analysis;
+@NoArgsConstructor
+public class NewFileEvent extends FileEvent {
+    @Override
+    public PersistenceManager.FileStatus getFileStatus() {
+        return PersistenceManager.FileStatus.NEW;
+    }
 }

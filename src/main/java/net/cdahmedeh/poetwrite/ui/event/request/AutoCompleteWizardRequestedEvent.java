@@ -16,10 +16,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 public class AutoCompleteWizardRequestedEvent extends AppEvent {
     @Getter

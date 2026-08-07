@@ -16,21 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
-
-import lombok.Getter;
-import lombok.Setter;
-import net.cdahmedeh.poetwrite.lib.domain.Poem;
-import net.cdahmedeh.poetwrite.lib.domain.Word;
-
-import java.util.NavigableMap;
-import java.util.TreeMap;
+package net.cdahmedeh.poetwrite.ui.event.interfaces;
 
 /**
- * Thrown when the character position to entity map has been calculated.
+ * See ./docs/async-design.md for design overview.
+ *
+ * Basically a notification that can be used by the UI layer to know when a
+ * computation is complete and get its result. AppEvent contains no
+ * special features of any kind. Extended classes contain the results in any
+ * way that is appropriate for the computation.
+ *
+ * Keep in mind that both the ViewController and services within the tasks can
+ * have a say of what it's in it.
  */
-public class IndexedPoemEvent extends AppEvent {
-    @Getter
-    @Setter
-    private NavigableMap<Integer, Word> index = new TreeMap<>();
+public abstract class AppEvent {
 }

@@ -21,8 +21,7 @@ package net.cdahmedeh.poetwrite.ui.services;
 import net.cdahmedeh.poetwrite.tools.SleepTools;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
-import net.cdahmedeh.poetwrite.ui.event.ServiceStartingEvent;
-import net.cdahmedeh.poetwrite.ui.event.WelcomeEvent;
+import net.cdahmedeh.poetwrite.ui.event.app.WelcomeEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

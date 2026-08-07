@@ -16,12 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event;
+package net.cdahmedeh.poetwrite.ui.event.parsing;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
  * Very important event. This is used to notify that the contents have been
