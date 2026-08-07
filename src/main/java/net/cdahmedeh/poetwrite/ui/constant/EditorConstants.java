@@ -64,4 +64,6 @@ public class EditorConstants {
     };
 
 
+    // Not actually global
+    public static final Color GUTTER_DIVIDER_COLOUR = new Color(0xDDDDDD);
 }

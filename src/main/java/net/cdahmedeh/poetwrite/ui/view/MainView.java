@@ -124,6 +124,22 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textAreaScrollPane.setBorder(BorderFactory.createLineBorder(
                 UIManager.getColor("Component.borderColor"), 0));
 
+        //TODO: Title bar shouldn't go here
+//        UIManager.put("TitlePane.unifiedBackground", false);
+//        UIManager.put("TitlePane.background", new Color(0xFAFAF8));
+//        UIManager.put("TitlePane.inactiveBackground", new Color(0xF0EFEA));
+//        UIManager.put("TitlePane.foreground", new Color(0x3A3A3A));       // keep title text readable
+//        UIManager.put("TitlePane.inactiveForeground", new Color(0x9A9A9A));
+
+        // The seam between the title bar and the editor. Painted here rather
+// than via TitlePane/MenuBar.borderColor: FlatLaf fills those at
+// UIScale.scale(1f) with antialiasing on, so at fractional scaling
+// they land as a solid row plus a half-covered one. MatteBorder fills
+// on integer bounds with AA off, matching how PoemGutter's divider
+// rasterizes, so both lines come out one device pixel at any scale.
+        textAreaScrollPane.setBorder(BorderFactory.createMatteBorder(
+                1, 0, 0, 0, EditorConstants.GUTTER_DIVIDER_COLOUR));
+
         textArea.setAnimateBracketMatching(false);
         textArea.setBracketMatchingEnabled(false);
 

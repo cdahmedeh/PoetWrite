@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.ui.app;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import net.cdahmedeh.poetwrite.ui.constant.AppearanceConstants;
+import net.cdahmedeh.poetwrite.ui.constant.EditorConstants;
 import net.cdahmedeh.poetwrite.ui.constant.LogConstants;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MenuViewController;
@@ -136,6 +137,14 @@ public class MainApp {
                 new Insets(
                         AppearanceConstants.UI_MENU_ITEM_MARGIN_VERTICAL, AppearanceConstants.UI_MENU_ITEM_MARGIN_HORIZONTAL,
                         AppearanceConstants.UI_MENU_ITEM_MARGIN_VERTICAL, AppearanceConstants.UI_MENU_ITEM_MARGIN_HORIZONTAL));
+
+
+        // Title bar
+        UIManager.put("TitlePane.unifiedBackground", true);
+        UIManager.put("RootPane.background",          Color.WHITE);
+        UIManager.put("TitlePane.foreground",         new Color(0x5A5A5A));
+        UIManager.put("TitlePane.embeddedForeground", new Color(0x5A5A5A));
+        UIManager.put("TitlePane.inactiveForeground", new Color(0x9A9A9A));
     }
 
 
