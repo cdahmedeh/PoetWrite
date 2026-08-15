@@ -24,7 +24,7 @@ import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * Thrown when the analysis of a poem's pattern is done.
+ * Thrown when the analysis of a poem's rhyming pattern is done.
  */
 public class PoemPatternAnalyzedEvent extends AppEvent {
     @Getter

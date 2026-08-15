@@ -22,10 +22,10 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import net.cdahmedeh.poetwrite.ui.event.parsing.ContentChangedEvent;
+import net.cdahmedeh.poetwrite.ui.event.parsing.EditorContentChangedEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.NewFileEvent;
-import net.cdahmedeh.poetwrite.ui.event.file.SaveEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.SaveFileEvent;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
@@ -51,8 +51,8 @@ public class MenuViewModel extends ViewModel {
     protected void listen(AppTask task, AppEvent event) {
         // If the content changes, it means that confirmation dialogue is
         // needed.
-        if (event instanceof ContentChangedEvent contentChangedEvent) {
-            boolean changed = contentChangedEvent.getStatus() == PersistenceManager.FileStatus.CHANGED;
+        if (event instanceof EditorContentChangedEvent editorContentChangedEvent) {
+            boolean changed = editorContentChangedEvent.getStatus() == PersistenceManager.FileStatus.CHANGED;
             this.confirmationNeeded.onNext(changed);
         }
 
@@ -61,7 +61,7 @@ public class MenuViewModel extends ViewModel {
         // These Might be redundant right now because ContentChangedEvent gets
         // calls when anything changes.
 
-        if (event instanceof SaveEvent saveEvent) {
+        if (event instanceof SaveFileEvent saveFileEvent) {
             this.confirmationNeeded.onNext(false);
         }
 

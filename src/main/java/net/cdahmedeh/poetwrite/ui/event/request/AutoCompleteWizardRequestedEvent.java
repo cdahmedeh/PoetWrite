@@ -22,6 +22,15 @@ import lombok.Getter;
 import lombok.Setter;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
+/**
+ * Called when the user presses the autocomplete shortcut (Ctrl+Space) to start
+ * the process of actually bringing up the wizard.
+ *
+ * NOTE: Could have been complete bypassed and done in the view enteritis, but
+ *       because an extensive amount of functionality will be available, it
+ *       might take some time to build the wizard's features.
+ *
+ */
 public class AutoCompleteWizardRequestedEvent extends AppEvent {
     @Getter
     @Setter

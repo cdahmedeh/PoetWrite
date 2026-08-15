@@ -21,6 +21,10 @@ package net.cdahmedeh.poetwrite.ui.event.file;
 import lombok.NoArgsConstructor;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 
+/**
+ * Called when a new file is created. Either when the application starts with
+ * a blank file, or the user creates a new one by selecting New in the menus.
+ */
 @NoArgsConstructor
 public class NewFileEvent extends FileEvent {
     @Override

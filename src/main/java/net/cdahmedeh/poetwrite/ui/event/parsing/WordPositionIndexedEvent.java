@@ -20,15 +20,20 @@ package net.cdahmedeh.poetwrite.ui.event.parsing;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
+import java.util.NavigableMap;
+import java.util.TreeMap;
+
 /**
- * Passed around when the number of syllables in the entire poem have been
- * counted.
+ * Thrown when the character position to entity map has been calculated.
+ *
+ * For example, when the user hovers the text, the index will be consulted, to
+ * see which word is selected based on the text position in the editor.
  */
-public class LineSyllablesAnalyzedEvent extends AppEvent {
+public class WordPositionIndexedEvent extends AppEvent {
     @Getter
     @Setter
-    private PoemSyllablesAnalysis analysis;
+    private NavigableMap<Integer, Word> index = new TreeMap<>();
 }

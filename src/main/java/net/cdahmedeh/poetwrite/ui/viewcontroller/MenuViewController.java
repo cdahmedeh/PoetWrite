@@ -24,7 +24,7 @@ import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.NewFileEvent;
-import net.cdahmedeh.poetwrite.ui.event.request.SaveRequestedEvent;
+import net.cdahmedeh.poetwrite.ui.event.request.SaveFileRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.service.generator.TextGenerator;
@@ -60,7 +60,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
      * or save as function.
      */
     public void save() {
-        SaveRequestedEvent event = new SaveRequestedEvent();
+        SaveFileRequestedEvent event = new SaveFileRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
             boolean check = persistenceManager.getStatus() == PersistenceManager.FileStatus.NEW;
             event.setDialogNeeded(check);
@@ -96,7 +96,7 @@ public class MenuViewController extends ViewController<MenuViewModel> {
      * selected Save As.
      */
     public void saveAs() {
-        SaveRequestedEvent event = new SaveRequestedEvent();
+        SaveFileRequestedEvent event = new SaveFileRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
             event.setDialogNeeded(true);
         });

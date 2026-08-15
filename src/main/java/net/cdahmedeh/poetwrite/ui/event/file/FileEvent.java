@@ -25,7 +25,7 @@ import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * All file operations inhirent this. Simplifies listening in Model, since these
+ * All file operations inherent this. Simplifies listening in Model, since these
  * kind of events guarantee that the text will change.
  */
 @NoArgsConstructor

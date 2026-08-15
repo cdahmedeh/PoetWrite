@@ -22,7 +22,7 @@ import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
  * Just for friendly display of the TaskBus starting. All controllers need
- * access to the task bus, and all of the services too (since they inhirit
+ * access to the task bus, and all of the services too (since they inherit
  * LazyService).
  */
 public class TaskBusStartedEvent extends AppEvent {

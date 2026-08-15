@@ -16,29 +16,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.ui.event.request;
+package net.cdahmedeh.poetwrite.ui.event.parsing;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * Called when a user requests to save their poem. What this does is if it
- * checks if a dialog is needed.
- *
- * For example, the dialog is needed when.
- * - A new file was created and the user entered some text. Then you'll want to
- *   ask them to put the new file somewhere.
- * - The user clicked save as.
- *
- * When it shouldn't be
- * - The file has no changes, and click saves, shouldn't be interrupted.
+ * Thrown around when the poem has been converted from text to the Poem entity
+ * structure.
  */
-
-@NoArgsConstructor
-public class SaveRequestedEvent extends AppEvent {
+public class PoemParsedEvent extends AppEvent {
     @Getter
     @Setter
-    private boolean dialogNeeded = true;
+    private Poem poem;
 }

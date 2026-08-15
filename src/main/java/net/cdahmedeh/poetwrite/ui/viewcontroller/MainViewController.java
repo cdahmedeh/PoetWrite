@@ -31,9 +31,9 @@ import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
 import net.cdahmedeh.poetwrite.service.indexer.PoemLookupIndexer;
 import net.cdahmedeh.poetwrite.ui.event.parsing.*;
-import net.cdahmedeh.poetwrite.ui.event.file.SaveEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.SaveFileEvent;
 import net.cdahmedeh.poetwrite.ui.event.request.AutoCompleteWizardRequestedEvent;
-import net.cdahmedeh.poetwrite.ui.event.request.SaveRequestedEvent;
+import net.cdahmedeh.poetwrite.ui.event.request.SaveFileRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
@@ -66,7 +66,7 @@ public class MainViewController extends ViewController<MainViewModel> {
      * @param content
      */
     public void parse(String content) {
-        ParsePoemEvent event = new ParsePoemEvent();
+        PoemParsedEvent event = new PoemParsedEvent();
         taskBus.submit("Parsing Poem", event, () -> {
             Poem poem = PoemConstructor.fromText(content);
             event.setPoem(poem);
@@ -77,7 +77,7 @@ public class MainViewController extends ViewController<MainViewModel> {
      * Analyzes the syllable lengths per line in the poem.
      */
     public void analyzeSyllables(Poem poem) {
-        LineSyllablesAnalyzedEvent event = new LineSyllablesAnalyzedEvent();
+        PoemSyllablesAnalyzedEvent event = new PoemSyllablesAnalyzedEvent();
         taskBus.submit("Analyze Poem Syllables", event, () -> {
             PoemSyllablesAnalysis poemSyllablesAnalysis = poemSyllablesAnalyzer.get(poem);
             event.setAnalysis(poemSyllablesAnalysis);
@@ -93,7 +93,7 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void indexPoem(Poem poem) {
-        IndexedPoemEvent event = new IndexedPoemEvent();
+        WordPositionIndexedEvent event = new WordPositionIndexedEvent();
         taskBus.submit("Index Poem", event, () -> {
             NavigableMap<Integer, Word> index = poemLookupIndexer.index(poem);
             event.setIndex(index);
@@ -116,7 +116,7 @@ public class MainViewController extends ViewController<MainViewModel> {
      * Content in the text editor has changed. Notify the persistence manager.
      */
     public void update(String content) {
-        ContentChangedEvent event = new ContentChangedEvent();
+        EditorContentChangedEvent event = new EditorContentChangedEvent();
         taskBus.submit("Updating Content", event, new Runnable() {
             @Override
             public void run() {
@@ -130,7 +130,7 @@ public class MainViewController extends ViewController<MainViewModel> {
      * Request a save. Check if the save selection dialog is needed.
      */
     public void ask(File selectedFile) {
-        SaveRequestedEvent event = new SaveRequestedEvent();
+        SaveFileRequestedEvent event = new SaveFileRequestedEvent();
         taskBus.submit("Saving Poem", event, () -> {
             event.setDialogNeeded(true);
         });
@@ -140,7 +140,7 @@ public class MainViewController extends ViewController<MainViewModel> {
      * Save the loaded file onto disk.
      */
     public void save() {
-        SaveEvent event = new SaveEvent();
+        SaveFileEvent event = new SaveFileEvent();
 
         taskBus.submit("Saving Poem", event, () -> {
             persistenceManager.save();
@@ -152,7 +152,7 @@ public class MainViewController extends ViewController<MainViewModel> {
      * Save a selected file onto the disk.
      */
     public void save(File selectedFile) {
-        SaveEvent event = new SaveEvent();
+        SaveFileEvent event = new SaveFileEvent();
 
         taskBus.submit("Saving Poem", event, () -> {
             persistenceManager.save(selectedFile);

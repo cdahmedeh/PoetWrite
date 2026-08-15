@@ -31,10 +31,10 @@ import net.cdahmedeh.poetwrite.ui.event.parsing.*;
 import net.cdahmedeh.poetwrite.ui.event.file.FileEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.NewFileEvent;
-import net.cdahmedeh.poetwrite.ui.event.file.SaveEvent;
+import net.cdahmedeh.poetwrite.ui.event.file.SaveFileEvent;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 import net.cdahmedeh.poetwrite.ui.event.request.AutoCompleteWizardRequestedEvent;
-import net.cdahmedeh.poetwrite.ui.event.request.SaveRequestedEvent;
+import net.cdahmedeh.poetwrite.ui.event.request.SaveFileRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.async.AppTask;
@@ -127,9 +127,9 @@ public class MainViewModel extends ViewModel {
         //       handling analysis and any kind of display.
         // TODO: Nothing is being done with the content yet, but some of the
         //       assistances will do exactly that.
-        if (event instanceof ContentChangedEvent contentChangedEvent) {
-            String text = contentChangedEvent.getContent();
-            this.fileStatus.onNext(contentChangedEvent.getStatus());
+        if (event instanceof EditorContentChangedEvent editorContentChangedEvent) {
+            String text = editorContentChangedEvent.getContent();
+            this.fileStatus.onNext(editorContentChangedEvent.getStatus());
         }
 
         // Upon succesful parsing of a Poem, sent it to the View. Right now,
@@ -137,9 +137,9 @@ public class MainViewModel extends ViewModel {
         //
         // TODO: Will eventually need this for when we have analysis that only
         //       show on hover. Like definitions or part of speech.
-        if (event instanceof ParsePoemEvent parsePoemEvent) {
-            if (parsePoemEvent.getPoem() != null) {
-                this.poem.onNext(parsePoemEvent.getPoem());
+        if (event instanceof PoemParsedEvent poemParsedEvent) {
+            if (poemParsedEvent.getPoem() != null) {
+                this.poem.onNext(poemParsedEvent.getPoem());
             }
         }
 
@@ -147,8 +147,8 @@ public class MainViewModel extends ViewModel {
         // lightning quick.
         //
         // TODO: Implement debouncing.
-        if (event instanceof LineSyllablesAnalyzedEvent lineSyllablesAnalyzedEvent) {
-            this.poemSyllablesAnalysis.onNext(lineSyllablesAnalyzedEvent.getAnalysis());
+        if (event instanceof PoemSyllablesAnalyzedEvent poemSyllablesAnalyzedEvent) {
+            this.poemSyllablesAnalysis.onNext(poemSyllablesAnalyzedEvent.getAnalysis());
         }
 
         // When the pattern groups have been calculated/detected. This seems
@@ -161,8 +161,8 @@ public class MainViewModel extends ViewModel {
 
         // Upon indexing the Poem to map the character positions to the original
         // entities as needed for the word hover highlight.
-        if (event instanceof IndexedPoemEvent indexedPoemEvent) {
-            this.poemIndex.onNext(indexedPoemEvent.getIndex());
+        if (event instanceof WordPositionIndexedEvent wordPositionIndexedEvent) {
+            this.poemIndex.onNext(wordPositionIndexedEvent.getIndex());
         }
 
         // For displaying the autocompleted dialog
@@ -172,8 +172,8 @@ public class MainViewModel extends ViewModel {
 
         // Upon a file successfully saved.
         // Just to change the status on the title bar for now.
-        if (event instanceof SaveEvent saveEvent) {
-            this.fileStatus.onNext(saveEvent.getFileStatus());
+        if (event instanceof SaveFileEvent saveFileEvent) {
+            this.fileStatus.onNext(saveFileEvent.getFileStatus());
         }
 
         // A new file is loaded.
@@ -188,7 +188,7 @@ public class MainViewModel extends ViewModel {
         // Called when save or save as is requested. This will decide if a
         // save dialog is needed. This is not the same as actually saving the
         // file.
-        if (event instanceof SaveRequestedEvent dialogNeededEvent) {
+        if (event instanceof SaveFileRequestedEvent dialogNeededEvent) {
             this.dialogNeeded.onNext(dialogNeededEvent.isDialogNeeded());
         }
 

@@ -30,7 +30,7 @@ import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
  * TODO: There's no robust checking yet.
  */
 @NoArgsConstructor
-public class SaveEvent extends FileEvent {
+public class SaveFileEvent extends FileEvent {
     @Getter
     @Setter
     private String file;

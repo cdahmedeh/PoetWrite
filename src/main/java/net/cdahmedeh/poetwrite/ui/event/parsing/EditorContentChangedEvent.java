@@ -33,6 +33,8 @@ import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
  * to access the review. It also eventually gets absorbed by the MainViewModel
  * that contains the editor.
  *
+ * TODO: CLARIFY the difference between editor content, persistence handler
+ *       content and actual file content.
  * TODO: I'm planning to have some kind of debounce algorithm for that. I don't
  *       know yet if this would need another kind of event. The issue right now,
  *       is that pretty much any change to the text, even a letter inserted
@@ -40,7 +42,7 @@ import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
  * TODO: Also, this could trigger the analysis.
  */
 @NoArgsConstructor
-public class ContentChangedEvent extends AppEvent {
+public class EditorContentChangedEvent extends AppEvent {
     @Getter @Setter
     private String content = "";
 
