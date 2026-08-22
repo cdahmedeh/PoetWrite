@@ -31,6 +31,9 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * TODO: Candidate for removal. In the spirit of a distraction-free and minimal
+ *       UI. I feel like it make it feel too much like an IDE.
+ *
  * TODO: This is a huge mess. For whoever is reading this, please don't judge
  *       me. Views are changing a lot, so I can't tempt myself to do premature
  *       refactoring.
