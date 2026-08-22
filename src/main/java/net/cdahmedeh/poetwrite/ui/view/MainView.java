@@ -77,7 +77,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     //       implementation multiple file editing.
     private JFrame frame;
 
-    // The auto-complete dialog.
+    // The auto-complete wizard.
     @Helped("Claude - PoetWrite autocomplete wizard implementation")
     private JWindow wizardWindow;
 
@@ -480,9 +480,9 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         disposable.add(fileNameDisposable);
     }
 
-    // Shows the auto-completed dialog. The request to display come from the
+    // Shows the auto-completed wizard. The request to display come from the
     // TaskBus loop after pressing ctrl+space.
-    @Draft("Displays the autocomplete dialogue")
+    @Draft("Displays the autocomplete wizard")
     @Helped("Claude - PoetWrite autocomplete wizard implementation")
     private void showAutoComplete() {
         if (wizardWindow != null) {
