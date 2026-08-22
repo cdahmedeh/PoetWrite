@@ -44,7 +44,9 @@ import java.awt.geom.Rectangle2D;
 public class PoemTextArea extends RSyntaxTextArea {
     private float lineSpacingFactor = EditorConstants.DEFAULT_LINE_SPACING;
 
-    // Set by the tooltip supplier on each hover; null when nothing matched.
+    // The word that the user is hovering over.
+    // TODO: I don't like that this part of the component, should be the
+    //       responsibility of the view or even the model to do this.
     @Setter
     private Word hoveredWord;
 

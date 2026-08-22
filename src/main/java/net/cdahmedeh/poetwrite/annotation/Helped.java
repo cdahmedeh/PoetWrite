@@ -19,9 +19,8 @@
 package net.cdahmedeh.poetwrite.annotation;
 
 /**
- * Just to remind myself in case there is duplicated code. Such as when
- * different view controllers have the same code.
+ * For code that is still heavily LLM-generated.
  */
-public @interface Duplicated {
+public @interface Helped {
     public String value() default "";
 }

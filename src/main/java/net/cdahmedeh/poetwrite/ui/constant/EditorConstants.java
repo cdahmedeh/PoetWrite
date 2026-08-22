@@ -66,4 +66,12 @@ public class EditorConstants {
 
     // Not actually global
     public static final Color GUTTER_DIVIDER_COLOUR = new Color(0xDDDDDD);
+    public static final int DEFAULT_TEXT_AREA_ROWS = 20;
+    public static final int DEFAULT_TEXT_AREA_COLUMNS = 60;
+    public static final int TOOLTIP_BACKGROUND_COLOUR = 0xFFFFFD;
+    public static final int TOOLTIP_FONT_COLOUR = 0x3A3A3A;
+    public static final int TOOLTIP_BORDER_COLOUR = 0xD6D2C9;
+    public static final String TOOLTIP_FONT = "Noto Sans";
+    public static final int TOOLTIP_FONT_WEIGHT = Font.PLAIN;
+    public static final int TOOLTIP_FONT_SIZE = 13;
 }
