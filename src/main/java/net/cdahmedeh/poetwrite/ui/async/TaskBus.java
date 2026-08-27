@@ -118,6 +118,8 @@ public class TaskBus {
             try {
                 set(task);
                 run.run();
+            } catch (Throwable t) {
+                t.printStackTrace();
             } finally {
                 publish(task);
                 progress(task);
