@@ -19,14 +19,20 @@
 package net.cdahmedeh.poetwrite.test;
 
 import lombok.SneakyThrows;
-import net.cdahmedeh.poetwrite.lib.constructor.PoemConstructor;
+import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
+import net.cdahmedeh.poetwrite.component.TestComponent;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
+import net.cdahmedeh.poetwrite.service.analyzer.LineAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
 import net.cdahmedeh.poetwrite.tools.FileTools;
 import net.cdahmedeh.poetwrite.tools.JsonTools;
+import net.cdahmedeh.poetwrite.ui.async.TaskBus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.List;
 
@@ -55,6 +61,22 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 public class ParserTest {
     public static final String PARSER_TEST_CASES_FOLDER = "parser-test-cases/";
 
+    @Inject
+    TaskBus taskBus;
+
+    @Inject
+    PoemAnalyzer poemAnalyzer;
+
+    @BeforeAll
+    void setup() {
+        TestComponent component = DaggerTestComponent.create();
+
+        taskBus = component.getTaskBus();
+        taskBus.enableTestMode();
+
+        poemAnalyzer = component.getPoemAnalyzer();
+    }
+
     @Disabled("Until we have a more stable way of serializing analyses.")
     @Test
     @SneakyThrows
@@ -71,8 +93,8 @@ public class ParserTest {
             String input = FileTools.readFile(inputFile);
             String expected = FileTools.readFile(expectedFile);
 
-            Poem poem = PoemConstructor.fromText(input);
-            String actual = JsonTools.toJson(poem);
+            Poem poem = new Poem(input);
+            String actual = JsonTools.toJson(poemAnalyzer.get(poem));
 
             assertJsonEquals(expected, actual);
         }

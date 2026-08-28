@@ -45,6 +45,13 @@ public class Word implements Entity {
     @Getter @Setter
     private final int end;
 
+    // TODO: For tests only
+    public Word(String word) {
+        this.word = normalize(word);
+        this.start = -1;
+        this.end = -1;
+    }
+
     public Word(String word, int start, int end) {
         this.word = normalize(word);
         this.start = start;

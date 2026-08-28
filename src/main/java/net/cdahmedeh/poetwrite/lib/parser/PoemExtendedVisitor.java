@@ -51,7 +51,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
     @Override
     public Object visitPoem(PoemParser.PoemContext ctx) {
-        Poem poem = new Poem();
+        Poem poem = new Poem("");
 
         for (var child : ctx.children) {
             Object result = child.accept(this);

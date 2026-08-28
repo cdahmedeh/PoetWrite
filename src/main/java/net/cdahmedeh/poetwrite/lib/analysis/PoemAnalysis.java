@@ -16,40 +16,40 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.cdahmedeh.poetwrite.lib.domain;
 
-import com.google.common.collect.Lists;
+package net.cdahmedeh.poetwrite.lib.analysis;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
+import net.cdahmedeh.poetwrite.service.analyzer.FeatureAnalyzer;
 
-import java.util.List;
+import javax.inject.Inject;
 
 /**
- * @author Ahmed El-Hajjar
+ * Previously, the Poem was parsed from a static helper method, but this caused
+ * issues when I was implementing the Autocomplete Wizard, since it doesn't
+ * have access to the Poem itself.
  *
- * This is the main root of the domain structure of a poem. Everything rests on
- * being able to prune through the poem effectively. So this is just your
- * run-of-the-mill silly OOP pattern.
- *
- * You can find how this is all designed in the following documentation.
- * Poem Syntax and Domain Structure - /docs/poem-syntax-and-domain-structure.md
- *
- * TODO: Right now, the Poem contains the text, but there's probably a way to
- *       clean this up a bit.
+ * I kept the input poem and output as a parsed poem seperate. I could in
+ * theory replace the initial poem, or at least re-parse it, but then it causes
+ * all sorts of complications when it's being used.
  */
-public class Poem implements Entity {
+public class PoemAnalysis extends FeatureAnalysis {
     @Getter
-    private final String text;
+    private final Poem poem;
 
-    @Getter
-    private final List<Line> lines = Lists.newArrayList();
+    @Getter @Setter
+    private Poem parsed;
 
-    public Poem() {
-        this.text = "";
+    @Inject
+    public PoemAnalysis(Poem poem) {
+        this.poem = poem;
     }
 
-    public Poem(String text) {
-        this.text = text;
+    @Override
+    public boolean analyzed() {
+        return parsed != null;
     }
 }

@@ -23,11 +23,12 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.PoemAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
-import net.cdahmedeh.poetwrite.lib.constructor.PoemConstructor;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
 import net.cdahmedeh.poetwrite.service.indexer.PoemLookupIndexer;
 import net.cdahmedeh.poetwrite.ui.event.parsing.*;
@@ -51,14 +52,17 @@ public class MainViewController extends ViewController<MainViewModel> {
     private final PatternAnalyzer patternAnalyzer;
     private final PoemLookupIndexer poemLookupIndexer;
 
+    private final PoemAnalyzer poemAnalyzer;
+
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
         this.poemSyllablesAnalyzer = poemSyllablesAnalyzer;
         this.patternAnalyzer = patternAnalyzer;
         this.poemLookupIndexer = poemLookupIndexer;
+        this.poemAnalyzer = poemAnalyzer;
     }
 
     /**
@@ -66,10 +70,11 @@ public class MainViewController extends ViewController<MainViewModel> {
      * @param content
      */
     public void parse(String content) {
-        PoemParsedEvent event = new PoemParsedEvent();
+        PoemAnalyzedEvent event = new PoemAnalyzedEvent();
         taskBus.submit("Parsing Poem", event, () -> {
-            Poem poem = PoemConstructor.fromText(content);
-            event.setPoem(poem);
+            Poem poem = new Poem(content);
+            PoemAnalysis poemAnalysis = poemAnalyzer.get(poem);
+            event.setPoem(poemAnalysis.getParsed());
         });
     }
 

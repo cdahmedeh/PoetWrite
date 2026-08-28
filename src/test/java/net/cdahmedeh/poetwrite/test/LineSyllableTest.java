@@ -20,9 +20,10 @@ package net.cdahmedeh.poetwrite.test;
 
 import net.cdahmedeh.poetwrite.component.DaggerTestComponent;
 import net.cdahmedeh.poetwrite.component.TestComponent;
-import net.cdahmedeh.poetwrite.lib.constructor.LineConstructor;
 import net.cdahmedeh.poetwrite.lib.domain.Line;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.service.analyzer.LineAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -49,6 +50,9 @@ public class LineSyllableTest {
     @Inject
     LineAnalyzer lineAnalyzer;
 
+    @Inject
+    PoemAnalyzer poemAnalyzer;
+
     @BeforeAll
     void setup() {
         TestComponent component = DaggerTestComponent.create();
@@ -57,23 +61,29 @@ public class LineSyllableTest {
         taskBus.enableTestMode();
 
         lineAnalyzer = component.getLineAnalyzer();
+        poemAnalyzer = component.getPoemAnalyzer();
+    }
+
+    Line fromText(String text) {
+        Poem poem = new Poem(text);;
+        return poemAnalyzer.get(poem).getParsed().getLines().getFirst();
     }
 
     @Test
     void testBasicLines() {
-        Line sentence01 = LineConstructor.fromText("this is a line");
+        Line sentence01 = fromText("this is a line");
         assertEquals(4,  lineAnalyzer.get(sentence01).getTotalSyllables());
 
-        Line sentence02 = LineConstructor.fromText("this is a another line");
+        Line sentence02 = fromText("this is a another line");
         assertEquals(7,  lineAnalyzer.get(sentence02).getTotalSyllables());
 
-        Line sentence03 = LineConstructor.fromText("we are going to be strong with the strength of six mighty men");
+        Line sentence03 = fromText("we are going to be strong with the strength of six mighty men");
         assertEquals(15, lineAnalyzer.get(sentence03).getTotalSyllables());
 
-        Line sentence04 = LineConstructor.fromText("he seems to have a lymph node on his neck");
+        Line sentence04 = fromText("he seems to have a lymph node on his neck");
         assertEquals(10, lineAnalyzer.get(sentence04).getTotalSyllables());
 
-        Line sentence05 = LineConstructor.fromText("we want to eat all the food");
+        Line sentence05 = fromText("we want to eat all the food");
         assertEquals(7,  lineAnalyzer.get(sentence05).getTotalSyllables());
     }
 
@@ -84,19 +94,19 @@ public class LineSyllableTest {
      */
     @Test
     void testLinesWithPunctuationAndCases() {
-        Line sentence01 = LineConstructor.fromText("This is a line.");
+        Line sentence01 = fromText("This is a line.");
         assertEquals(4,  lineAnalyzer.get(sentence01).getTotalSyllables());
 
-        Line sentence02 = LineConstructor.fromText("The time has come... Let the clock turn back!");
+        Line sentence02 = fromText("The time has come... Let the clock turn back!");
         assertEquals(9,  lineAnalyzer.get(sentence02).getTotalSyllables());
 
-        Line sentence03 = LineConstructor.fromText("It's really annoying to count syllables by hand.");
+        Line sentence03 = fromText("It's really annoying to count syllables by hand.");
         assertEquals(13, lineAnalyzer.get(sentence03).getTotalSyllables());
 
-        Line sentence04 = LineConstructor.fromText("One day he will say, we did it.");
+        Line sentence04 = fromText("One day he will say, we did it.");
         assertEquals(8, lineAnalyzer.get(sentence04).getTotalSyllables());
 
-        Line sentence05 = LineConstructor.fromText("The cat is great, but the dog is not.");
+        Line sentence05 = fromText("The cat is great, but the dog is not.");
         assertEquals(9,  lineAnalyzer.get(sentence05).getTotalSyllables());
     }
 
@@ -108,19 +118,19 @@ public class LineSyllableTest {
      */
     @Test
     void testLinesWithNotesAndAsides() {
-        Line sentence01 = LineConstructor.fromText("[Synth Solo]");
+        Line sentence01 = fromText("[Synth Solo]");
         assertEquals(0,  lineAnalyzer.get(sentence01).getTotalSyllables());
 
-        Line sentence02 = LineConstructor.fromText("The time has come... (Let the clock turn back!)");
+        Line sentence02 = fromText("The time has come... (Let the clock turn back!)");
         assertEquals(4,  lineAnalyzer.get(sentence02).getTotalSyllables());
 
-        Line sentence03 = LineConstructor.fromText("It's (really) annoying to count syllables [by hand].");
+        Line sentence03 = fromText("It's (really) annoying to count syllables [by hand].");
         assertEquals(9, lineAnalyzer.get(sentence03).getTotalSyllables());
 
-        Line sentence04 = LineConstructor.fromText("Great job (dude)! You did it. [Sing fast]");
+        Line sentence04 = fromText("Great job (dude)! You did it. [Sing fast]");
         assertEquals(5, lineAnalyzer.get(sentence04).getTotalSyllables());
 
-        Line sentence05 = LineConstructor.fromText("(The cat is great, but the dog is not.)");
+        Line sentence05 = fromText("(The cat is great, but the dog is not.)");
         assertEquals(0,  lineAnalyzer.get(sentence05).getTotalSyllables());
     }
 
@@ -135,11 +145,11 @@ public class LineSyllableTest {
     void testLinesWithSyntaxError() {
         // If there's no symbol to begin, then it should go all the way to the line.
         // Essentially, orphan brackets are ignored.
-        Line sentence01 = LineConstructor.fromText("Synth Solo] with Saxophone");
+        Line sentence01 = fromText("Synth Solo] with Saxophone");
         assertEquals(5,  lineAnalyzer.get(sentence01).getTotalSyllables());
 
         // Anything that trails after an opening bracket should be part of the note/aside
-        Line sentence02 = LineConstructor.fromText("Well, this one (is broken is great.");
+        Line sentence02 = fromText("Well, this one (is broken is great.");
         assertEquals(3,  lineAnalyzer.get(sentence02).getTotalSyllables());
     }
 }

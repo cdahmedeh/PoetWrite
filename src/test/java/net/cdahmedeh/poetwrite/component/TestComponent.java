@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.component;
 
 import dagger.Component;
 import net.cdahmedeh.poetwrite.service.analyzer.LineAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.RhymeAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
@@ -34,4 +35,5 @@ public interface TestComponent {
     RhymeAnalyzer getRhymeAnalyzer();
     SyllableAnalyzer getSyllableAnalyzer();
     LineAnalyzer getLineAnalyzer();
+    PoemAnalyzer getPoemAnalyzer();
 }

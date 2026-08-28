@@ -40,6 +40,7 @@ import java.awt.geom.Rectangle2D;
  * - Eventually having a custom drawn gutter for showing more than just a single
  *   string with line number of syllable count. But rhyming pattern as well and
  *   a few things.
+ * - Handling of the word that is being highlighted.
  */
 public class PoemTextArea extends RSyntaxTextArea {
     private float lineSpacingFactor = EditorConstants.DEFAULT_LINE_SPACING;

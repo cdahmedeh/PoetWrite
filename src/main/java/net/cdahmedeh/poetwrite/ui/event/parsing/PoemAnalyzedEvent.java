@@ -27,7 +27,7 @@ import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
  * Thrown around when the poem has been converted from text to the Poem entity
  * structure.
  */
-public class PoemParsedEvent extends AppEvent {
+public class PoemAnalyzedEvent extends AppEvent {
     @Getter
     @Setter
     private Poem poem;

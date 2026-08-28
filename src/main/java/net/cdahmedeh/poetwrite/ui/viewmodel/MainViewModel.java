@@ -46,14 +46,14 @@ public class MainViewModel extends ViewModel {
     // It may seem crude to parse every time, but it's proven to be so fast
     // that it doesn't justify something like a diff system.
     // See "Poem Analysis Implementation and Cache Design" for the motive.
-    private BehaviorSubject<Poem> poem = BehaviorSubject.createDefault(new Poem());
+    private BehaviorSubject<Poem> poem = BehaviorSubject.createDefault(new Poem(""));
     public Observable<Poem> poem() { return this.poem.hide(); }
 
     // Holds the syllable counts for the poem, namely each line inside the Poem
     // entity.
     // TODO: Will eventually need to seperate long running analysis and ones
     //       that are quicker.
-    private BehaviorSubject<PoemSyllablesAnalysis>  poemSyllablesAnalysis = BehaviorSubject.createDefault(new PoemSyllablesAnalysis(new Poem()));
+    private BehaviorSubject<PoemSyllablesAnalysis>  poemSyllablesAnalysis = BehaviorSubject.createDefault(new PoemSyllablesAnalysis(new Poem("")));
     public Observable<PoemSyllablesAnalysis> poemSyllablesAnalysis() { return this.poemSyllablesAnalysis.hide(); }
 
     // Holds the pattern groups for the poem. Essentially, a letter for each
@@ -137,9 +137,9 @@ public class MainViewModel extends ViewModel {
         //
         // TODO: Will eventually need this for when we have analysis that only
         //       show on hover. Like definitions or part of speech.
-        if (event instanceof PoemParsedEvent poemParsedEvent) {
-            if (poemParsedEvent.getPoem() != null) {
-                this.poem.onNext(poemParsedEvent.getPoem());
+        if (event instanceof PoemAnalyzedEvent poemAnalyzedEvent) {
+            if (poemAnalyzedEvent.getPoem() != null) {
+                this.poem.onNext(poemAnalyzedEvent.getPoem());
             }
         }
 
