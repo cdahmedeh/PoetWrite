@@ -35,6 +35,13 @@ import net.cdahmedeh.poetwrite.ui.event.async.ServiceStartingEvent;
  * TODO: What happens when this becomes truly multithreaded?
  * TODO: What happens when services are so expensive that they block frequent
  *       tasks like parsing?
+ *
+*   TODO: BIG_ONE: The only reason this works is because of the TaskBus single
+ *                 threadpool. So the initializing is called first. And the
+ *                 guarantee of the execution is because Dagger calls the
+ *                 constructor as soon as it's injected. Therefore, any calls
+ *                 to a LazyService method is done after running the constructor
+ *                 and therefore the init code.
  */
 public abstract class LazyService {
     // If the service has been inited.

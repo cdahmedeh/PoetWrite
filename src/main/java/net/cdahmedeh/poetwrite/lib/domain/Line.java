@@ -21,6 +21,7 @@ package net.cdahmedeh.poetwrite.lib.domain;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,8 @@ import java.util.List;
  * to worry about making it ORM compliant.
  *
  * See ./docs/poem-syntax-and-entity-structure.md for a more complete view.
+ *
+ * TODO: Doesn't actually do any parsing. Broke the LineSyllableTest
  */
 @RequiredArgsConstructor
 public class Line implements Entity {
