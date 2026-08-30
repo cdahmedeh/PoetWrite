@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.ui.event.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
@@ -35,4 +36,7 @@ public class AutoCompleteWizardRequestedEvent extends AppEvent {
     @Getter
     @Setter
     private boolean requested = false;
+
+    @Getter @Setter
+    private QueryStep root;
 }

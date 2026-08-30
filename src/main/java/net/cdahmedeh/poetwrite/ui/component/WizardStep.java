@@ -18,6 +18,9 @@
 
 package net.cdahmedeh.poetwrite.ui.component;
 
+import net.cdahmedeh.poetwrite.ui.async.AppTask;
+import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
+
 import java.util.List;
 import java.util.function.Consumer;
 

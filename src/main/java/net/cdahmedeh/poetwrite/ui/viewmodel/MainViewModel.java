@@ -27,6 +27,9 @@ import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
+import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.event.parsing.*;
 import net.cdahmedeh.poetwrite.ui.event.file.FileEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
@@ -90,8 +93,8 @@ public class MainViewModel extends ViewModel {
     }
 
     // For displaying the autocomplete wizard.
-    private PublishSubject<Boolean> autoCompleteRequested = PublishSubject.create();
-    public Observable<Boolean> autoCompleteRequested() { return this.autoCompleteRequested; }
+//    private PublishSubject<Boolean> autoCompleteRequested = PublishSubject.create();
+//    public Observable<Boolean> autoCompleteRequested() { return this.autoCompleteRequested; }
 
     // The name of the file being dealt with. Not the full path, just for
     // displaying it in the title bar.
@@ -107,6 +110,15 @@ public class MainViewModel extends ViewModel {
     public Observable<PersistenceManager.FileStatus> fileStatus() {
         return this.fileStatus.hide();
     }
+
+    private PublishSubject<QueryStep> autoCompleteRequested = PublishSubject.create();
+    public Observable<QueryStep> autoCompleteRequested() { return this.autoCompleteRequested; }
+
+    private PublishSubject<QueryStepExecutedEvent> queryStepExecuted = PublishSubject.create();
+    public Observable<QueryStepExecutedEvent> queryStepExecuted() { return this.queryStepExecuted.hide(); }
+
+    private PublishSubject<QueryPreviewedEvent> queryPreviewed = PublishSubject.create();
+    public Observable<QueryPreviewedEvent> queryPreviewed() { return this.queryPreviewed.hide(); }
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -167,7 +179,17 @@ public class MainViewModel extends ViewModel {
 
         // For displaying the autocompleted dialog
         if (event instanceof AutoCompleteWizardRequestedEvent autoCompleteRequestedEvent) {
-            this.autoCompleteRequested.onNext(autoCompleteRequestedEvent.isRequested());
+            if (autoCompleteRequestedEvent.getRoot() != null) {
+                this.autoCompleteRequested.onNext(autoCompleteRequestedEvent.getRoot());
+            }
+        }
+
+        if (event instanceof QueryStepExecutedEvent queryStepExecutedEvent) {
+            this.queryStepExecuted.onNext(queryStepExecutedEvent);
+        }
+
+        if (event instanceof QueryPreviewedEvent queryPreviewedEvent) {
+            this.queryPreviewed.onNext(queryPreviewedEvent);
         }
 
         // Upon a file successfully saved.

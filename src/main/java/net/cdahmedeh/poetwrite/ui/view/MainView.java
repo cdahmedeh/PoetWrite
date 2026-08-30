@@ -30,6 +30,7 @@ import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.component.*;
 import net.cdahmedeh.poetwrite.ui.constant.*;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
@@ -80,6 +81,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // The auto-complete wizard.
     @Helped("Claude - PoetWrite autocomplete wizard implementation")
     private JWindow wizardWindow;
+    private QueryWizard wizard;
 
     // Where the poem is actually written. Including gutter.
     private PoemTextArea textArea;
@@ -431,15 +433,15 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         // ---------------------------------------------------------------------
         // Auto-completed related stuff.
 
-        // When ctrl+space is pressed. To bring up the auto-complete dialog.
-        Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
-                autoCompleteRequested -> {
-                    if (autoCompleteRequested == true) {
-                        showAutoComplete();
-                    }
-                }
-        );
-        disposable.add(autoCompleteRequestedSubscriber);
+//        // When ctrl+space is pressed. To bring up the auto-complete dialog.
+//        Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
+//                autoCompleteRequested -> {
+//                    if (autoCompleteRequested == true) {
+//                        showAutoComplete();
+//                    }
+//                }
+//        );
+//        disposable.add(autoCompleteRequestedSubscriber);
         
         // ---------------------------------------------------------------------
         // File status related.
@@ -478,16 +480,36 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                     }
                 });
         disposable.add(fileNameDisposable);
+
+        Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
+                root -> SwingUtilities.invokeLater(() -> showAutoComplete(root)));
+        disposable.add(autoCompleteRequestedSubscriber);
+
+        Disposable queryStepSubscriber = viewModel.queryStepExecuted().subscribe(
+                event -> SwingUtilities.invokeLater(() -> {
+                    if (wizard != null) {
+                        wizard.deliver(event);
+                    }
+                }));
+        disposable.add(queryStepSubscriber);
+
+        Disposable queryPreviewSubscriber = viewModel.queryPreviewed().subscribe(
+                event -> SwingUtilities.invokeLater(() -> {
+                    if (wizard != null) {
+                        wizard.deliver(event);
+                    }
+                }));
+        disposable.add(queryPreviewSubscriber);
     }
 
     // Shows the auto-completed wizard. The request to display come from the
     // TaskBus loop after pressing ctrl+space.
     @Draft("Displays the autocomplete wizard")
-    @Helped("Claude - PoetWrite autocomplete wizard implementation")
-    private void showAutoComplete() {
+    private void showAutoComplete(QueryStep root) {
         if (wizardWindow != null) {
             wizardWindow.dispose();
             wizardWindow = null;
+            wizard = null;
         }
 
         Rectangle caret;
@@ -502,37 +524,46 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         window.setFocusableWindowState(true);
         wizardWindow = window;
 
-        AutoCompleteWizard wizard = new AutoCompleteWizard(WizardDemo.root(),
-                new AutoCompleteWizard.Listener() {
-                    @Override public void completed(WizardChain chain) {
-                        System.out.println("QUERY: " + chain.values());
-                        close();
-                    }
-                    @Override public void cancelled() {
-                        close();
-                    }
-                    @Override public void layoutChanged() {
-                        if (window.isShowing()) {   // ignore events fired during construction
-                            window.pack();
-                        }
-                    }
-                    private void close() {
-                        window.dispose();
-                        wizardWindow = null;
-                        textArea.requestFocusInWindow();
-                    }
-                });
-//        wizard.setFont(textArea.getFont());     // before pack, so the packed size is final
-        wizard.setFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN, EditorConstants.DEFAULT_EDITOR_FONT_SIZE - 2));
+        wizard = new QueryWizard(root, new QueryWizard.Listener() {
+            @Override public void execute(QueryStep step) {
+                viewController.executeQueryStep(step);
+            }
 
+            @Override public void preview(QueryStep step) {
+                viewController.previewQueryStep(step);
+            }
+
+            @Override public void completed(QueryStep step) {
+                System.out.println("QUERY: " + step.getParameters().all());
+                close();
+            }
+
+            @Override public void cancelled() {
+                close();
+            }
+
+            @Override public void layoutChanged() {
+                if (window.isShowing()) {   // ignore events fired during construction
+                    window.pack();
+                }
+            }
+
+            private void close() {
+                window.dispose();
+                wizardWindow = null;
+                wizard = null;
+                textArea.requestFocusInWindow();
+            }
+        });
+
+        wizard.setFont(new Font(EditorConstants.DEFAULT_EDITOR_FONT, Font.PLAIN,
+                EditorConstants.DEFAULT_EDITOR_FONT_SIZE - 2));
 
         window.add(wizard);
         window.pack();
 
         if (SystemInfo.isWindows_11_orLater && FlatNativeWindowsLibrary.isLoaded()) {
             long hwnd = FlatNativeWindowsLibrary.getHWND(window);
-            // DWMWCP_ROUNDSMALL = 3 — small radius + native shadow, same as menus/tooltips.
-            // DWMWCP_ROUND = 2 is the larger dialog-style radius if you prefer.
             FlatNativeWindowsLibrary.setWindowCornerPreference(hwnd, 3);
         }
 

@@ -27,6 +27,10 @@ import net.cdahmedeh.poetwrite.lib.analysis.PoemAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
+import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
+import net.cdahmedeh.poetwrite.query.holder.AutoCompleteTreeHolder;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
@@ -54,8 +58,10 @@ public class MainViewController extends ViewController<MainViewModel> {
 
     private final PoemAnalyzer poemAnalyzer;
 
+    private final AutoCompleteTreeHolder autoCompleteTreeHolder;
+
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
@@ -63,6 +69,7 @@ public class MainViewController extends ViewController<MainViewModel> {
         this.patternAnalyzer = patternAnalyzer;
         this.poemLookupIndexer = poemLookupIndexer;
         this.poemAnalyzer = poemAnalyzer;
+        this.autoCompleteTreeHolder = autoCompleteTreeHolder;
     }
 
     /**
@@ -105,10 +112,31 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    /**
+     * Builds the autocomplete tree if it has not been built, then asks the view
+     * to show the wizard rooted at it.
+     */
     public void requestAutoComplete() {
         AutoCompleteWizardRequestedEvent event = new AutoCompleteWizardRequestedEvent();
         taskBus.submit("Request Auto Complete", event, () -> {
+            event.setRoot(autoCompleteTreeHolder.tree());
             event.setRequested(true);
+        });
+    }
+
+    /** Resolves one column of the wizard. */
+    public void executeQueryStep(QueryStep step) {
+        QueryStepExecutedEvent event = new QueryStepExecutedEvent(step);
+        taskBus.submit("Query: " + step.getName(), event, () -> {
+            event.getSteps().addAll(step.resolve());
+        });
+    }
+
+    /** Renders one step's preview. */
+    public void previewQueryStep(QueryStep step) {
+        QueryPreviewedEvent event = new QueryPreviewedEvent(step);
+        taskBus.submit("Preview: " + step.getName(), event, () -> {
+            event.setText(step.render());
         });
     }
 

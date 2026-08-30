@@ -1,161 +1,152 @@
 package net.cdahmedeh.poetwrite.query.interfaces;
 
 import lombok.Getter;
-import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
-import net.cdahmedeh.poetwrite.ui.async.TaskBus;
-import net.cdahmedeh.poetwrite.ui.event.async.ServiceStartingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * TODO: BIG_ONE: The only reason this works is because of the TaskBus single
- *                threadpool. So the initializing is called first. And the
- *                guarantee of the execution is because Dagger calls the
- *                constructor as soon as it's injected. Therefore, any calls
- *                to a LazyService method is done after running the constructor
- *                and therefore the init code.
- * TODO: BIG_ONE Each time this is run, new QueryStep is created. So we'll have
- *               a ton of garbage QueryStep.
+ * One node in the query tree, and one row in the wizard.
+ *
+ * Everything declared on a step is lazy, so building the tree costs nothing
+ * until a column is opened.
+ *
+ * Nothing here is asynchronous and nothing here knows about the TaskBus.
+ * resolve() and render() are blocking; MainViewController is what puts them
+ * on the bus and wraps them in an event.
+ *
+ * TODO: BIG_ONE Each getSteps() rebuilds its children, so navigating back and
+ *               forth creates garbage QueryStep instances.
  */
 public abstract class QueryStep {
-    private volatile boolean initialized = false;
+
+    // TODO: TaskBus still does the job here.
 
     @Getter
     private final String name;
 
-    protected final TaskBus taskBus;
-
-    protected QueryStep(String name, TaskBus taskBus) {
+    protected QueryStep(String name) {
         this.name = name;
-        this.taskBus = taskBus;
-
-//        taskBus.stream().subscribe(status -> {
-//            listen(status.getTask(), status.getTask().getEvent());
-//        });
-
-//        ensure();
     }
-
-    public void ensure() {
-        if (initialized) return;
-
-        taskBus.submit(String.format("Starting %s",getName()), new ServiceStartingEvent(), () -> {
-//            init();
-            initialized = true;
-        });
-    };
-
-//    protected abstract void init();
-
-//    public abstract List<QueryStep> execute();
 
     public QueryStep step(String name) {
-        return new SimpleQueryStep(name, taskBus);
+        return new SimpleQueryStep(name);
     }
 
-    protected <T extends QueryStep> T step(Function<TaskBus, T> constructor) {
-        return constructor.apply(taskBus);
-    }
+    // ------------------------------------------------------------- children
 
     private Supplier<List<QueryStep>> steps = List::of;
     private boolean stepped = false;
+
     public QueryStep steps(Supplier<List<QueryStep>> steps) {
         this.steps = steps;
-        stepped = true;
+        this.stepped = true;
         return this;
     }
+
     public List<QueryStep> getSteps() {
         return steps.get();
     }
+
     public boolean hasSteps() {
         return stepped;
     }
 
+    // ----------------------------------------------------------- parameters
+
+    @Getter
     private final QueryParameters parameters = new QueryParameters();
-    public QueryParameters getParameters() {
-        return parameters;
-    }
+
     public boolean hasParameters() {
         return parameters.has();
     }
 
+    // -------------------------------------------------------------- command
+
     private QueryCommand command = null;
     private boolean commanded = false;
+
     public QueryStep command(QueryCommand command) {
         this.command = command;
         this.commanded = true;
         return this;
     }
+
     public QueryCommand getCommand() {
         return command;
     }
+
     public boolean hasCommand() {
         return commanded;
     }
 
-    private Supplier<QueryPreview> preview = () -> null;
-    private boolean previewed = false;
-    public QueryStep preview(Supplier<QueryPreview> preview) {
-        this.preview = preview;
-        this.previewed = true;
-        return this;
-    }
-    public QueryPreview getPreview() {
-        return preview.get();
-    }
-    public boolean hasPreview() {
-        return previewed;
-    }
+    // --------------------------------------------------------------- search
 
-    private Supplier<QuerySearch> search = () -> null;
+    private Supplier<QuerySearch> search = QuerySearch::new;
+    private QuerySearch resolvedSearch = null;
     private boolean searched = false;
+
     public QueryStep search(Supplier<QuerySearch> search) {
         this.search = search;
         this.searched = true;
         return this;
     }
+
+    /** Resolved once and kept, so the typed text survives between executions. */
     public QuerySearch getSearch() {
-        return search.get();
+        if (resolvedSearch == null) {
+            resolvedSearch = search.get();
+        }
+        return resolvedSearch;
     }
+
     public boolean hasSearch() {
         return searched;
     }
 
-    public void execute() {
-        QueryStepExecutedEvent event = new QueryStepExecutedEvent(this);
+    // -------------------------------------------------------------- preview
 
-        taskBus.submit("Query: " + getName(), event, new Runnable() {
-            @Override
-            public void run() {
-                List<QueryStep> steps = new ArrayList<>();
+    private Supplier<QueryPreview> preview = () -> null;
+    private boolean previewed = false;
 
-                if (hasCommand()) {
-                    steps.addAll(getCommand().run(getParameters()));
-                } else {
-                    steps.addAll(getSteps());
-                }
-
-                for (QueryStep step : steps) {
-                    // Kind of weird
-                    step.getParameters().put(getParameters());
-                }
-
-                event.getSteps().addAll(steps);
-            }
-        });
+    public QueryStep preview(Supplier<QueryPreview> preview) {
+        this.preview = preview;
+        this.previewed = true;
+        return this;
     }
 
-    // TODO: Claude suggested this
-//    public void execute() {
-//        QueryStepExecutedEvent event = new QueryStepExecutedEvent(this);
-//
-//        taskBus.submit("Query: " + getName(), event, () -> {
-//            List<QueryStep> next = hasCommand() ? getCommand().run(getParameters()) : getSteps();
-//            next.forEach(step -> step.getParameters().putAll(getParameters()));
-//            event.setSteps(next);
-//        });
-//    }
+    public QueryPreview getPreview() {
+        return preview.get();
+    }
+
+    public boolean hasPreview() {
+        return previewed;
+    }
+
+    // ------------------------------------------------------------- blocking
+
+    /**
+     * This step's column, with the accumulated parameters handed down to it.
+     * Blocking: a command may hit a dictionary. Call it from the TaskBus.
+     */
+    public List<QueryStep> resolve() {
+        List<QueryStep> steps = new ArrayList<>(
+                hasCommand() ? getCommand().run(this) : getSteps());
+
+        for (QueryStep step : steps) {
+            step.getParameters().put(getParameters());
+        }
+
+        return steps;
+    }
+
+    /**
+     * This step's preview text, or null if it has none.
+     * Blocking, for the same reason. Call it from the TaskBus.
+     */
+    public String render() {
+        QueryPreview preview = getPreview();
+        return preview == null ? null : preview.render(this);
+    }
 }
