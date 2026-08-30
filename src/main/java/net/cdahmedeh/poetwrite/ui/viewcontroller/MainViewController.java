@@ -29,7 +29,8 @@ import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
-import net.cdahmedeh.poetwrite.query.holder.AutoCompleteTreeHolder;
+import net.cdahmedeh.poetwrite.query.AutoCompleteTreeHolder;
+import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
@@ -119,8 +120,14 @@ public class MainViewController extends ViewController<MainViewModel> {
     public void requestAutoComplete() {
         AutoCompleteWizardRequestedEvent event = new AutoCompleteWizardRequestedEvent();
         taskBus.submit("Request Auto Complete", event, () -> {
-            event.setRoot(autoCompleteTreeHolder.tree());
             event.setRequested(true);
+        });
+    }
+
+    public void buildAutoCompleteTree() {
+        QueryTreeBuiltEvent event = new QueryTreeBuiltEvent();
+        taskBus.submit("Building Auto Complete Tree", event, () -> {
+            event.setRoot(autoCompleteTreeHolder.tree());
         });
     }
 

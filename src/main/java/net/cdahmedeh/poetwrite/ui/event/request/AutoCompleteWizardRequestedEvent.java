@@ -36,7 +36,4 @@ public class AutoCompleteWizardRequestedEvent extends AppEvent {
     @Getter
     @Setter
     private boolean requested = false;
-
-    @Getter @Setter
-    private QueryStep root;
 }

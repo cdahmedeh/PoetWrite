@@ -442,7 +442,15 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 //                }
 //        );
 //        disposable.add(autoCompleteRequestedSubscriber);
-        
+
+        Disposable queryTreeSubscriber = viewModel.queryTreeBuilt().subscribe(
+                root -> SwingUtilities.invokeLater(() -> {
+                    if (wizard != null) {
+                        wizard.setRoot(root);
+                    }
+                }));
+        disposable.add(queryTreeSubscriber);
+
         // ---------------------------------------------------------------------
         // File status related.
 
@@ -482,7 +490,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         disposable.add(fileNameDisposable);
 
         Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
-                root -> SwingUtilities.invokeLater(() -> showAutoComplete(root)));
+                root -> SwingUtilities.invokeLater(() -> showAutoComplete()));
         disposable.add(autoCompleteRequestedSubscriber);
 
         Disposable queryStepSubscriber = viewModel.queryStepExecuted().subscribe(
@@ -505,7 +513,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // Shows the auto-completed wizard. The request to display come from the
     // TaskBus loop after pressing ctrl+space.
     @Draft("Displays the autocomplete wizard")
-    private void showAutoComplete(QueryStep root) {
+    private void showAutoComplete() {
         if (wizardWindow != null) {
             wizardWindow.dispose();
             wizardWindow = null;
@@ -524,7 +532,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         window.setFocusableWindowState(true);
         wizardWindow = window;
 
-        wizard = new QueryWizard(root, new QueryWizard.Listener() {
+        wizard = new QueryWizard(new QueryWizard.Listener() {
             @Override public void execute(QueryStep step) {
                 viewController.executeQueryStep(step);
             }
@@ -573,6 +581,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         window.setVisible(true);
         wizard.focusActivePane();
+
+        viewController.buildAutoCompleteTree();
     }
 
     // Called when a user is trying to save a file, either directly with the

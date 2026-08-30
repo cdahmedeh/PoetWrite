@@ -93,7 +93,15 @@ public final class QueryWizard extends JPanel {
     private JComponent previewBox;      // currently attached preview, or null
     private QueryStep previewing;       // step we last asked a preview for
 
-    public QueryWizard(QueryStep root, Listener listener) {
+    private Timer previewDotsTimer;     // cycles the preview's "Loading..." dots
+    private JLabel previewLoadingLabel; // non-null only while the preview is pending
+    private int previewDotCount = 1;
+
+    /**
+     * Opens with a single pending pane, so the popup can be shown the instant
+     * the user asks for it. Call setRoot(..) once the tree has been built.
+     */
+    public QueryWizard(Listener listener) {
         this.listener = listener;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBorder(BorderFactory.createLineBorder(borderColor())); // single outer border;
@@ -101,12 +109,33 @@ public final class QueryWizard extends JPanel {
         setOpaque(true);
         setFocusable(true); // receives keys when the active pane has no text field
         installKeyBindings();
+        push(null); // pending pane: shows the loading row, asks for nothing
+    }
+
+    /** Called on the EDT by the View once the query tree is available. */
+    public void setRoot(QueryStep root) {
+        if (!panes.isEmpty() && panes.get(0).step == null) {
+            StepPane pending = panes.remove(0);
+            remove(pending);
+            pending.stopLoadingAnimation();
+        }
         push(root);
     }
 
     /** Call once after the host popup becomes visible. */
     public void focusActivePane() {
         activePane().takeFocus();
+    }
+
+    /**
+     * Stops every animation. Call from the host when the popup closes,
+     * otherwise the dot timers keep firing against a detached component.
+     */
+    public void dispose() {
+        stopPreviewLoading();
+        for (StepPane pane : panes) {
+            pane.stopLoadingAnimation();
+        }
     }
 
     /** Propagates the font (use the editor's) to all panes and the preview. */
@@ -249,10 +278,48 @@ public final class QueryWizard extends JPanel {
     // --------------------------------------------------------------- preview
 
     private void detachPreview() {
+        stopPreviewLoading();
         if (previewBox != null) {
             remove(previewBox);
             previewBox = null;
         }
+    }
+
+    private void stopPreviewLoading() {
+        if (previewDotsTimer != null) {
+            previewDotsTimer.stop();
+        }
+        previewLoadingLabel = null;
+    }
+
+    /**
+     * Puts the preview box up straight away, holding a loading row, so it does
+     * not pop into existence once the TaskBus is done. Same shape and size as
+     * the finished preview, so the packed window does not jump.
+     */
+    private void attachPreviewLoading() {
+        detachPreview();
+
+        previewDotCount = 1;
+        previewLoadingLabel = new JLabel("Loading.");
+        previewLoadingLabel.setVerticalAlignment(JLabel.TOP);
+        previewLoadingLabel.setForeground(new Color(150, 150, 150)); // matches the "Searching..." row
+
+        if (previewDotsTimer == null) {
+            previewDotsTimer = new Timer(350, e -> {
+                previewDotCount = (previewDotCount % 3) + 1;
+                if (previewLoadingLabel != null) {
+                    previewLoadingLabel.setText("Loading" + ".".repeat(previewDotCount));
+                }
+            });
+        }
+        previewDotsTimer.start();
+
+        previewBox = wrapPreview(previewLoadingLabel);
+        add(previewBox);
+        revalidate();
+        repaint();
+        listener.layoutChanged();
     }
 
     /**
@@ -368,7 +435,7 @@ public final class QueryWizard extends JPanel {
                 }
             });
 
-            if (step.hasSearch()) {
+            if (step != null && step.hasSearch()) {
                 field = new JTextField();
                 field.setBackground(new Color(0xFEFEFE));
                 field.putClientProperty("JTextField.placeholderText", "word...");
@@ -445,6 +512,10 @@ public final class QueryWizard extends JPanel {
          * one -- no generation token on the event needed.
          */
         void refilter() {
+            if (step == null) {
+                showLoadingPlaceholder();   // pending pane: nothing to ask for yet
+                return;
+            }
             if (field != null) {
                 step.getSearch().setText(field.getText());
             }
@@ -534,6 +605,7 @@ public final class QueryWizard extends JPanel {
                 return;
             }
 
+            attachPreviewLoading();
             listener.preview(selected);
         }
 

@@ -29,6 +29,7 @@ import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
+import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.event.parsing.*;
 import net.cdahmedeh.poetwrite.ui.event.file.FileEvent;
@@ -111,14 +112,17 @@ public class MainViewModel extends ViewModel {
         return this.fileStatus.hide();
     }
 
-    private PublishSubject<QueryStep> autoCompleteRequested = PublishSubject.create();
-    public Observable<QueryStep> autoCompleteRequested() { return this.autoCompleteRequested; }
+    private PublishSubject<Boolean> autoCompleteRequested = PublishSubject.create();
+    public Observable<Boolean> autoCompleteRequested() { return this.autoCompleteRequested; }
 
     private PublishSubject<QueryStepExecutedEvent> queryStepExecuted = PublishSubject.create();
     public Observable<QueryStepExecutedEvent> queryStepExecuted() { return this.queryStepExecuted.hide(); }
 
     private PublishSubject<QueryPreviewedEvent> queryPreviewed = PublishSubject.create();
     public Observable<QueryPreviewedEvent> queryPreviewed() { return this.queryPreviewed.hide(); }
+
+    private PublishSubject<QueryStep> queryTreeBuilt = PublishSubject.create();
+    public Observable<QueryStep> queryTreeBuilt() { return this.queryTreeBuilt.hide(); }
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -179,9 +183,7 @@ public class MainViewModel extends ViewModel {
 
         // For displaying the autocompleted dialog
         if (event instanceof AutoCompleteWizardRequestedEvent autoCompleteRequestedEvent) {
-            if (autoCompleteRequestedEvent.getRoot() != null) {
-                this.autoCompleteRequested.onNext(autoCompleteRequestedEvent.getRoot());
-            }
+            this.autoCompleteRequested.onNext(autoCompleteRequestedEvent.isRequested());
         }
 
         if (event instanceof QueryStepExecutedEvent queryStepExecutedEvent) {
@@ -190,6 +192,12 @@ public class MainViewModel extends ViewModel {
 
         if (event instanceof QueryPreviewedEvent queryPreviewedEvent) {
             this.queryPreviewed.onNext(queryPreviewedEvent);
+        }
+
+        if (event instanceof QueryTreeBuiltEvent queryTreeBuiltEvent) {
+            if (queryTreeBuiltEvent.getRoot() != null) {
+                this.queryTreeBuilt.onNext(queryTreeBuiltEvent.getRoot());
+            }
         }
 
         // Upon a file successfully saved.
