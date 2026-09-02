@@ -1,4 +1,4 @@
-package net.cdahmedeh.poetwrite.query;
+package net.cdahmedeh.poetwrite.query.holder;
 
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.query.steps.RootQueryStep;

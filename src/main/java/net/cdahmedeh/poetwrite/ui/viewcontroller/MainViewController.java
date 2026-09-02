@@ -29,7 +29,7 @@ import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
-import net.cdahmedeh.poetwrite.query.AutoCompleteTreeHolder;
+import net.cdahmedeh.poetwrite.query.holder.AutoCompleteTreeHolder;
 import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
