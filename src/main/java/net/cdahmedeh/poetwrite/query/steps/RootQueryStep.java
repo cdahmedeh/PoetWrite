@@ -37,6 +37,11 @@ public class RootQueryStep extends QueryStep {
      * the TaskBus.
      */
     public QueryStep build() {
-        return steps(() -> List.of(new RhymeWithQueryStep().steps()));
+        return steps(() -> List.of(
+                new RhymeWithQueryStep().steps(),
+                new MeterQueryStep().steps(),
+                new DefinitionsQueryStep().steps(),
+                new RelationshipsQueryStep().steps()
+        ));
     }
 }

@@ -23,6 +23,8 @@ import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.constant.EditorConstants;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon; //TODO: trick the classloader
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -31,7 +33,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Wizard-style chained autocomplete, driven entirely by the keyboard.
@@ -86,6 +90,29 @@ public final class QueryWizard extends JPanel {
 
     /** Placeholder row while a column is still resolving. */
     private static final Object LOADING = new Object();
+
+    private static final int ICON_SIZE = 16;
+    private static final int ICON_GAP  = 6;
+    private static final float ICON_OPACITY = 0.50f; // ~25% transparent
+
+    // QueryStep stores an icon as a resource path so the query package stays
+    // free of Swing. Resolving it is the wizard's job, and cached because the
+    // renderer runs per row per repaint.
+    private static final Map<String, Icon> ICON_CACHE = new HashMap<>();
+
+    private static Icon icon(String path) {
+        if (path == null) {
+            return null;
+        }
+        return ICON_CACHE.computeIfAbsent(path, resource -> {
+            String name = resource.startsWith("/") ? resource.substring(1) : resource;
+            FlatSVGIcon svg = new FlatSVGIcon(name, ICON_SIZE, ICON_SIZE);
+            svg.setColorFilter(new FlatSVGIcon.ColorFilter(color ->
+                    new Color(color.getRed(), color.getGreen(), color.getBlue(),
+                            Math.round(color.getAlpha() * ICON_OPACITY))));
+            return svg;
+        });
+    }
 
     private final Listener listener;
     private final List<StepPane> panes = new ArrayList<>();
@@ -339,7 +366,10 @@ public final class QueryWizard extends JPanel {
     }
 
     private JComponent previewLabel(String text) {
-        JLabel label = new JLabel("<html>" + text.replace("\n", "<br>") + "</html>");
+        // The explicit width is what makes long lines wrap -- a plain <html>
+        // label lays out on one line and gets clipped by the box.
+        JLabel label = new JLabel("<html><div style='width:" + (PREVIEW_WIDTH - 26) + "px'>"
+                + text.replace("\n", "<br>") + "</div></html>");
         label.setVerticalAlignment(JLabel.TOP);
         return label;
     }
@@ -352,7 +382,11 @@ public final class QueryWizard extends JPanel {
         box.setOpaque(true);
         content.setOpaque(false);
         box.add(content, BorderLayout.CENTER);
-        Dimension size = new Dimension(PREVIEW_WIDTH, PANE_HEIGHT);
+
+        // Never shorter than a pane, but allowed to grow so a rich preview
+        // (definition, synonyms, ARPAbet) is not cut off at the bottom.
+        int height = Math.max(PANE_HEIGHT, content.getPreferredSize().height + 16);
+        Dimension size = new Dimension(PREVIEW_WIDTH, height);
         box.setPreferredSize(size);
         box.setMinimumSize(size);
         box.setMaximumSize(size);
@@ -569,9 +603,14 @@ public final class QueryWizard extends JPanel {
 
             stopLoadingAnimation();
             model.clear();
+            boolean hasIcons = false;
             for (QueryStep step : steps) {
                 model.addElement(step);
+                hasIcons |= step.hasIcon();
             }
+            // Rows without an icon get padded to match, so text lines up.
+            list.putClientProperty("pw.hasIcons", hasIcons);
+
             selectFirst();
             if (isActivePane()) {
                 requestPreview();
@@ -663,10 +702,18 @@ public final class QueryWizard extends JPanel {
                 return c;
             }
 
+            QueryStep step = (QueryStep) value;
+
             JLabel c = (JLabel) super.getListCellRendererComponent(
-                    list, ((QueryStep) value).getName(), index, selected, false);
-            c.setIcon(null);
-            c.setBorder(BorderFactory.createEmptyBorder(4, 9, 4, 9));
+                    list, step.getName(), index, selected, false);
+            c.setIcon(icon(step.getIcon()));
+            c.setIconTextGap(ICON_GAP);
+
+            // if this pane has any icons, pad icon-less rows so text lines up
+            boolean paneHasIcons = Boolean.TRUE.equals(list.getClientProperty("pw.hasIcons"));
+            int indent = (paneHasIcons && !step.hasIcon()) ? ICON_SIZE + ICON_GAP : 0;
+
+            c.setBorder(BorderFactory.createEmptyBorder(4, 9 + indent, 4, 9));
             c.setForeground(new Color(EditorConstants.TEXT_EDITOR_FONT_COLOUR,
                     EditorConstants.TEXT_EDITOR_FONT_COLOUR, EditorConstants.TEXT_EDITOR_FONT_COLOUR));
             c.setOpaque(true);

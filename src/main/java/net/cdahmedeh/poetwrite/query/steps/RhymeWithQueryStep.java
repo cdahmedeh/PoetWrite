@@ -21,6 +21,7 @@ package net.cdahmedeh.poetwrite.query.steps;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.cdahmedeh.poetwrite.query.interfaces.*;
+import net.cdahmedeh.poetwrite.ui.constant.IconConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class RhymeWithQueryStep extends QueryStep {
 
     public RhymeWithQueryStep() {
         super("rhyme with");
+        icon(IconConstants.RHYME_ICON_PATH);
     }
 
     public QueryStep steps() {
@@ -96,20 +98,62 @@ public class RhymeWithQueryStep extends QueryStep {
         return steps;
     }
 
-    // Hardcoded dictionary, keyed by the group picked upstream.
+    // Hardcoded dictionary, keyed by the group picked upstream. Everything
+    // below is demo data -- the real version comes from the CMU dictionary
+    // plus whatever thesaurus we end up wiring in.
     private List<Word> words(String pattern) {
         return switch (pattern) {
             case "B (tion)" -> List.of(
-                    new Word("attention", "AH T EH N SH AH N", 3),
-                    new Word("devotion", "D IH V OW SH AH N", 3),
-                    new Word("motion", "M OW SH AH N", 2));
+                    new Word("attention", "noun", 3, "at-TEN-tion", "AH0 T EH1 N SH AH0 N",
+                            "perfect", "feminine",
+                            "Notice taken of someone or something; the directing of the mind to an object.",
+                            List.of("notice", "regard", "heed", "scrutiny"),
+                            List.of("intention", "invention", "dimension"),
+                            "it asks no attention, and gets none"),
+                    new Word("devotion", "noun", 3, "de-VO-tion", "D IH0 V OW1 SH AH0 N",
+                            "perfect", "feminine",
+                            "Love, loyalty, or enthusiasm for a person or cause; religious worship.",
+                            List.of("dedication", "allegiance", "piety", "fidelity"),
+                            List.of("emotion", "commotion", "promotion"),
+                            "a devotion worn thin by weather"),
+                    new Word("motion", "noun", 2, "MO-tion", "M OW1 SH AH0 N",
+                            "slant", "feminine",
+                            "The action or process of moving, or of changing place or position.",
+                            List.of("movement", "passage", "drift", "travel"),
+                            List.of("ocean", "notion", "potion"),
+                            "the slow motion of a curtain"));
             case "C (able)" -> List.of(
-                    new Word("unspeakable", "AH N S P IY K AH B AH L", 4),
-                    new Word("fadeable", "F EY D AH B AH L", 3));
+                    new Word("unspeakable", "adjective", 4, "un-SPEAK-a-ble", "AH0 N S P IY1 K AH0 B AH0 L",
+                            "perfect", "dactylic",
+                            "Too great, too bad, or too sacred to be expressed in words.",
+                            List.of("unutterable", "ineffable", "dreadful", "nameless"),
+                            List.of("unbreakable", "unshakeable", "untakeable"),
+                            "an unspeakable quiet in the hall"),
+                    new Word("fadeable", "adjective", 3, "FADE-a-ble", "F EY1 D AH0 B AH0 L",
+                            "slant", "dactylic",
+                            "Liable to lose colour, brightness, or intensity over time.",
+                            List.of("perishable", "impermanent", "transient"),
+                            List.of("tradeable", "playable", "shadeable"),
+                            "a fadeable blue, like old ink"));
             default -> List.of(
-                    new Word("blackness", "B L AE K N AH S", 2),
-                    new Word("vividness", "V IH V IH D N AH S", 3),
-                    new Word("fortress", "F AO R T R AH S", 2));
+                    new Word("blackness", "noun", 2, "BLACK-ness", "B L AE1 K N AH0 S",
+                            "perfect", "feminine",
+                            "The quality of being without light; complete or near-complete darkness.",
+                            List.of("gloom", "murk", "pitch", "obscurity"),
+                            List.of("starkness", "darkness", "harshness"),
+                            "a blackness that swallowed the lamplight"),
+                    new Word("vividness", "noun", 3, "VIV-id-ness", "V IH1 V AH0 D N AH0 S",
+                            "perfect", "feminine",
+                            "Intensity of colour, imagery, or recollection; the quality of being strikingly clear.",
+                            List.of("brilliance", "intensity", "clarity", "sharpness"),
+                            List.of("liveliness", "timidness", "solidness"),
+                            "the vividness of a half-remembered room"),
+                    new Word("fortress", "noun", 2, "FOR-tress", "F AO1 R T R AH0 S",
+                            "slant", "masculine",
+                            "A military stronghold, especially a strongly fortified town.",
+                            List.of("citadel", "stronghold", "bastion", "keep"),
+                            List.of("buttress", "mattress", "actress"),
+                            "a fortress of unlit windows"));
         };
     }
 
@@ -167,15 +211,42 @@ public class RhymeWithQueryStep extends QueryStep {
 
         @Override
         public String render(QueryStep step) {
-            sleep(200);               // pretend we walked a few dictionaries
-            return word.text() + "\n\n/" + word.arpaBet() + "/\n"
-                    + word.syllables() + " syllables";
+            sleep(200);   // pretend we walked a dictionary and a thesaurus
+
+            return "<b>" + word.text() + "</b> &middot; <i>" + word.partOfSpeech() + "</i>\n"
+                    + word.syllables() + " syllables &middot; " + word.stress() + "\n"
+                    + word.rhymeType() + " rhyme &middot; " + word.ending() + "\n"
+                    + "\n"
+                    + word.definition() + "\n"
+                    + "\n"
+                    + "<i>Synonyms</i> &nbsp;" + String.join(", ", word.synonyms()) + "\n"
+                    + "<i>Also rhymes</i> &nbsp;" + String.join(", ", word.alsoRhymes()) + "\n"
+                    + "\n"
+                    + "<i>\u201c" + word.example() + "\u201d</i>\n"
+                    + "\n"
+                    + "<font color='#999999'>/" + word.arpaBet() + "/</font>";
         }
     }
 
-    public record Word(String text, String arpaBet, int syllables) {
+    /**
+     * A dictionary entry as the preview wants to show it. All demo data for
+     * now; the real one comes out of the CMU dictionary.
+     */
+    public record Word(String text,
+                       String partOfSpeech,
+                       int syllables,
+                       String stress,        // FOR-tress
+                       String arpaBet,       // F AO1 R T R AH0 S
+                       String rhymeType,     // perfect / slant
+                       String ending,        // masculine / feminine / dactylic
+                       String definition,
+                       List<String> synonyms,
+                       List<String> alsoRhymes,
+                       String example) {
+
         public String label() {
-            return text + " (" + syllables + ")";
+            return text + " (" + syllables + " syllables"
+                    + ("perfect".equals(rhymeType) ? "" : " - " + rhymeType) + ")";
         }
     }
 
