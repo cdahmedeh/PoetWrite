@@ -189,6 +189,22 @@ public abstract class QueryStep {
         return previewed;
     }
 
+    // Display icon
+
+    @Getter
+    private String icon = null;
+
+    public QueryStep icon(String icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    public boolean hasIcon() {
+        return icon != null;
+    }
+
+    // Controller responsibilities ---------------------------------------------
+
     // This is the key part where the steps are actually computed based on the
     // lambda supplier.
     // This is not called by the QueryStep. The UI, through the controller,
