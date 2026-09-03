@@ -113,10 +113,9 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
-    /**
-     * Builds the autocomplete tree if it has not been built, then asks the view
-     * to show the wizard rooted at it.
-     */
+    // When the user wants the auto complete dialog after pressing control+enter
+    // This is will not build the tree or directly caused it to appear. It's
+    // just a request.
     public void requestAutoComplete() {
         AutoCompleteWizardRequestedEvent event = new AutoCompleteWizardRequestedEvent();
         taskBus.submit("Request Auto Complete", event, () -> {
@@ -124,6 +123,11 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    // After receiving the appropriate event, the tree starts to be built.
+    // Keep in mind, this is seperate from requestAutoComplete as we are
+    // preparing for cases when the feature set grows and the tree will be built
+    // slowly. Remember, again, the query tree builds step-by-step, not the
+    // entire thing.
     public void buildAutoCompleteTree() {
         QueryTreeBuiltEvent event = new QueryTreeBuiltEvent();
         taskBus.submit("Building Auto Complete Tree", event, () -> {
@@ -131,7 +135,7 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
-    /** Resolves one column of the wizard. */
+    // Called after the user selected a steps and we want to see the next ones.
     public void executeQueryStep(QueryStep step) {
         QueryStepExecutedEvent event = new QueryStepExecutedEvent(step);
         taskBus.submit("Query: " + step.getName(), event, () -> {
@@ -139,7 +143,7 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
-    /** Renders one step's preview. */
+    // Called when we want to see the preview of a highlighted step.
     public void previewQueryStep(QueryStep step) {
         QueryPreviewedEvent event = new QueryPreviewedEvent(step);
         taskBus.submit("Preview: " + step.getName(), event, () -> {

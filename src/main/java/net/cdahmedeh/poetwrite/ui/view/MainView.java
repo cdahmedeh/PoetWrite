@@ -430,26 +430,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
         disposable.add(poemIndexSubscriber);
 
-        // ---------------------------------------------------------------------
-        // Auto-completed related stuff.
 
-//        // When ctrl+space is pressed. To bring up the auto-complete dialog.
-//        Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
-//                autoCompleteRequested -> {
-//                    if (autoCompleteRequested == true) {
-//                        showAutoComplete();
-//                    }
-//                }
-//        );
-//        disposable.add(autoCompleteRequestedSubscriber);
-
-        Disposable queryTreeSubscriber = viewModel.queryTreeBuilt().subscribe(
-                root -> SwingUtilities.invokeLater(() -> {
-                    if (wizard != null) {
-                        wizard.setRoot(root);
-                    }
-                }));
-        disposable.add(queryTreeSubscriber);
 
         // ---------------------------------------------------------------------
         // File status related.
@@ -489,10 +470,25 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 });
         disposable.add(fileNameDisposable);
 
+        // ---------------------------------------------------------------------
+        // Auto-completed related stuff.
+        // See Controller and Model comments for information on these.
+
+        // Query Tree created. Only the tree as needed.
+        Disposable queryTreeSubscriber = viewModel.queryTreeBuilt().subscribe(
+                root -> SwingUtilities.invokeLater(() -> {
+                    if (wizard != null) {
+                        wizard.setRoot(root);
+                    }
+                }));
+        disposable.add(queryTreeSubscriber);
+
+        // User asks for the auto complete dialog to show up with ctrl+space.
         Disposable autoCompleteRequestedSubscriber = viewModel.autoCompleteRequested().subscribe(
                 root -> SwingUtilities.invokeLater(() -> showAutoComplete()));
         disposable.add(autoCompleteRequestedSubscriber);
 
+        // After the next steps are requested when the user makes the selection.
         Disposable queryStepSubscriber = viewModel.queryStepExecuted().subscribe(
                 event -> SwingUtilities.invokeLater(() -> {
                     if (wizard != null) {
@@ -501,6 +497,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 }));
         disposable.add(queryStepSubscriber);
 
+        // After the preview for the current step was made.
         Disposable queryPreviewSubscriber = viewModel.queryPreviewed().subscribe(
                 event -> SwingUtilities.invokeLater(() -> {
                     if (wizard != null) {
@@ -513,6 +510,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // Shows the auto-completed wizard. The request to display come from the
     // TaskBus loop after pressing ctrl+space.
     @Draft("Displays the autocomplete wizard")
+    @Helped("The feature set is huge, and as mentioned, custom UI components are throwaway")
     private void showAutoComplete() {
         if (wizardWindow != null) {
             wizardWindow.dispose();

@@ -112,17 +112,27 @@ public class MainViewModel extends ViewModel {
         return this.fileStatus.hide();
     }
 
+    // AUTO-COMPLETE STUFF
+    // The user has requested an auto-complete dialog by pressing Ctrl+Space
     private PublishSubject<Boolean> autoCompleteRequested = PublishSubject.create();
     public Observable<Boolean> autoCompleteRequested() { return this.autoCompleteRequested; }
 
+    // The command of the query has been run, meaning that it now has steps for
+    // the user to select.
     private PublishSubject<QueryStepExecutedEvent> queryStepExecuted = PublishSubject.create();
     public Observable<QueryStepExecutedEvent> queryStepExecuted() { return this.queryStepExecuted.hide(); }
 
+    // Once a preview for the selected step has been computed, this is what
+    // prepares for preview.
     private PublishSubject<QueryPreviewedEvent> queryPreviewed = PublishSubject.create();
     public Observable<QueryPreviewedEvent> queryPreviewed() { return this.queryPreviewed.hide(); }
 
+    // Remember,we don't want for the entire auto complete steps to be loaded in
+    // all at once. Remember, this only builds hard-coded steps, NOT anything
+    // that needs computations like a preview or a command or a search.
     private PublishSubject<QueryStep> queryTreeBuilt = PublishSubject.create();
     public Observable<QueryStep> queryTreeBuilt() { return this.queryTreeBuilt.hide(); }
+    // END OF AUTO-COMPLETE STUFF
 
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
@@ -181,24 +191,37 @@ public class MainViewModel extends ViewModel {
             this.poemIndex.onNext(wordPositionIndexedEvent.getIndex());
         }
 
+        // AUTO-COMPLETE STUFF
+        // NOTE, THESE COMMENTS ARE THE SAME AS THE FIELD DELECRATIONS
         // For displaying the autocompleted dialog
+
+        // The user has requested an auto-complete dialog by pressing Ctrl+Space
         if (event instanceof AutoCompleteWizardRequestedEvent autoCompleteRequestedEvent) {
             this.autoCompleteRequested.onNext(autoCompleteRequestedEvent.isRequested());
         }
 
+        // Once a preview for the selected step has been computed, this is what
+        // prepares for preview.
         if (event instanceof QueryStepExecutedEvent queryStepExecutedEvent) {
             this.queryStepExecuted.onNext(queryStepExecutedEvent);
         }
 
+        // Once a preview for the selected step has been computed, this is what
+        // prepares for preview.
         if (event instanceof QueryPreviewedEvent queryPreviewedEvent) {
             this.queryPreviewed.onNext(queryPreviewedEvent);
         }
 
+        // Remember,we don't want for the entire auto complete steps to be loaded in
+        // all at once. Remember, this only builds hard-coded steps, NOT anything
+        // that needs computations like a preview or a command or a search.
         if (event instanceof QueryTreeBuiltEvent queryTreeBuiltEvent) {
             if (queryTreeBuiltEvent.getRoot() != null) {
                 this.queryTreeBuilt.onNext(queryTreeBuiltEvent.getRoot());
             }
         }
+
+        // END OF AUTO-COMPLETE STEP
 
         // Upon a file successfully saved.
         // Just to change the status on the title bar for now.
