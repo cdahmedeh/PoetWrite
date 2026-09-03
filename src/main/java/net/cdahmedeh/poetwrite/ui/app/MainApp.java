@@ -46,8 +46,6 @@ import java.awt.*;
 
  * TODO: In the future logging will probably go here.
  *
- * TODO:
- *
  * NOTE: The generation of the MVVM stuff is getting quite ugly. I have to do
  *       things like, if for example, all the views will have a reference to
  *       TaskBus. There's an @AssistedInject annotation in the injected services

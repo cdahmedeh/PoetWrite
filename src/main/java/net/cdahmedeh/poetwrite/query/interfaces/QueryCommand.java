@@ -1,13 +1,30 @@
+/**
+ * PoetWrite - A Poetry Writing Application
+ * Copyright (C) 2026 Ahmed El-Hajjar
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.cdahmedeh.poetwrite.query.interfaces;
 
 import java.util.List;
 
 /**
- * Produces the next column. Runs on the TaskBus; QueryStep.execute() owns that.
+ * Produces the next autocomplete column.
  *
- * Takes the step rather than the parameters so a command can reach everything
- * it belongs to: the accumulated parameters, and the QuerySearch holding
- * whatever the user typed.
+ * The QueryCommand is what produces the next steps after selection. QueryStep
+ * has the parameter that this will need.
  */
 @FunctionalInterface
 public interface QueryCommand {
