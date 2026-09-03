@@ -25,25 +25,66 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * One node in the query tree, and one row in the wizard.
+ * This is the most important of the auto-complete handling system.
+ *
+ * At the base of everything is a QueryStep, an entry in the auto-complete
+ * wizard. You can see it as a node of a tree if you want.
+ *
+ * QueryStep defines the following things:
+ * - The name of the step itself.
+ * - The steps inside the step. Keep in mind, this is not something, this is
+ *   when something is hard-coded in.
+ * - It contains a command, which is a dynamic system that will feel in the
+ *   next steps. For example, based on a user selection or a search query.
+ * - It can contain a search query. Text that the user entered and that will
+ *   determine the next step. Such as the results of a dictionary search.
+ * - A preview. A tooltip that shows up when this step is currently highlighted.
+ *   This could for example, be the pattern group that is selected, or
+ *   the definition of a highlighted word.
+ *
+ *  Very important, as the user steps through, parameters are stored based on
+ *  user selections. As previous selections can affect the query. These
+ *  parameters are collected as the user makes their selection.
+ *
+ *  Absolutely everything is declarated in such a way that is lazy. When
+ *  feeding, for example, a lookup command, it is not called until the wizard
+ *  arrives at that step. This is to avoid
  *
  * Everything declared on a step is lazy, so building the tree costs nothing
- * until a column is opened.
+ * until a column is opened. So a costly query is not run until we actually
+ * get to that step. This is a performance decision, each command should do the
+ * bare minimum to show its sub-steps.
  *
- * Nothing here is asynchronous and nothing here knows about the TaskBus.
- * resolve() and render() are blocking; MainViewController is what puts them
- * on the bus and wraps them in an event.
+ * VERY IMPORTANT: Nothing here is actually asynchronous. Everything is
+ *                 BLOCKING. Just like everything we've done so far, it is the
+ *                 responsibility of the caller to put the computations in the
+ *                 task bus and wait for the event. Maybe once I get clever,
+ *                 find someway to have the TaskBus used automatically. But
+ *                 could you imagine the confusion?
+ *
+ * EVEN MORE IMPORTANT: To allow steps to be computed or built in a way that is
+ *                      dynamic, so we don't force the whole tree to be built
+ *                      as soon as the auto-complete dialogue is requested.
+ *                      So we're using lambda to do this. For all the methods,
+ *                      that related to building or previewing the tree, you
+ *                      need to pass a supplier for a query or compute method.
  *
  * TODO: BIG_ONE Each getSteps() rebuilds its children, so navigating back and
  *               forth creates garbage QueryStep instances.
+ *
+ * TODO: Dependencies are loaded thanks to the constructor being called on the
+ *       TaskBus, almost accidental by design. The win is that we don't need
+ *       a lazy loading method like we did with LazyService. BUT, this also
+ *       means we have no control over the loading flow. BIG MISTAKE.
  */
 public abstract class QueryStep {
-
-    // TODO: TaskBus still does the job here.
 
     @Getter
     private final String name;
 
+    // This part is called as soon as the dependency is injected. Because it's
+    // wrapped in TaskBus normally, this already happens before any other of the
+    // other methods are called. Not happy with this.
     protected QueryStep(String name) {
         this.name = name;
     }
@@ -52,7 +93,7 @@ public abstract class QueryStep {
         return new SimpleQueryStep(name);
     }
 
-    // ------------------------------------------------------------- children
+    // Hard-coded steps. -------------------------------------------------------
 
     private Supplier<List<QueryStep>> steps = List::of;
     private boolean stepped = false;
@@ -71,7 +112,7 @@ public abstract class QueryStep {
         return stepped;
     }
 
-    // ----------------------------------------------------------- parameters
+    // Parameters that are accumulated as the query is built. ------------------
 
     @Getter
     private final QueryParameters parameters = new QueryParameters();
@@ -80,7 +121,8 @@ public abstract class QueryStep {
         return parameters.has();
     }
 
-    // -------------------------------------------------------------- command
+    // This is like steps() but dynamic based on the result of a computation.
+    // -------------------------------------------------------------------------
 
     private QueryCommand command = null;
     private boolean commanded = false;
@@ -99,7 +141,8 @@ public abstract class QueryStep {
         return commanded;
     }
 
-    // --------------------------------------------------------------- search
+    // A user entered text query. Such as a dictionary lookup.
+    // -------------------------------------------------------------------------
 
     private Supplier<QuerySearch> search = QuerySearch::new;
     private QuerySearch resolvedSearch = null;
@@ -111,7 +154,9 @@ public abstract class QueryStep {
         return this;
     }
 
-    /** Resolved once and kept, so the typed text survives between executions. */
+    // Resolved search is my messed up way to keep the existing search query
+    // inside the step.
+    // TODO: Redesign search.
     public QuerySearch getSearch() {
         if (resolvedSearch == null) {
             resolvedSearch = search.get();
@@ -123,7 +168,9 @@ public abstract class QueryStep {
         return searched;
     }
 
-    // -------------------------------------------------------------- preview
+    // What is displayed if the query step has some kind of preview. Like a
+    // definition of a word.
+    // -------------------------------------------------------------------------
 
     private Supplier<QueryPreview> preview = () -> null;
     private boolean previewed = false;
@@ -142,12 +189,11 @@ public abstract class QueryStep {
         return previewed;
     }
 
-    // ------------------------------------------------------------- blocking
-
-    /**
-     * This step's column, with the accumulated parameters handed down to it.
-     * Blocking: a command may hit a dictionary. Call it from the TaskBus.
-     */
+    // This is the key part where the steps are actually computed based on the
+    // lambda supplier.
+    // This is not called by the QueryStep. The UI, through the controller,
+    // will call this to start building the tree.
+    // WRAP IT IN A TASKBUS.
     public List<QueryStep> resolve() {
         List<QueryStep> steps = new ArrayList<>(
                 hasCommand() ? getCommand().run(this) : getSteps());
@@ -159,10 +205,9 @@ public abstract class QueryStep {
         return steps;
     }
 
-    /**
-     * This step's preview text, or null if it has none.
-     * Blocking, for the same reason. Call it from the TaskBus.
-     */
+    // The other visiual part, showing the preview of a step. Again, a
+    // controller calls this.
+    // WRAP IT IN A TASKBUS
     public String render() {
         QueryPreview preview = getPreview();
         return preview == null ? null : preview.render(this);
