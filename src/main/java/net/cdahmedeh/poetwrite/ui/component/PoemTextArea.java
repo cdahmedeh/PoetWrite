@@ -19,6 +19,7 @@
 package net.cdahmedeh.poetwrite.ui.component;
 
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.annotation.Helped;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.ui.constant.EditorConstants;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -100,5 +101,41 @@ public class PoemTextArea extends RSyntaxTextArea {
         } catch (BadLocationException ex) {
             return null;
         }
+    }
+
+    /**
+     * Nudges Swing into asking the tooltip supplier again.
+     *
+     * Used when a hover analysis comes back from the TaskBus after the tooltip
+     * is already on screen showing its loading message. There is no public way
+     * to poke text into a tooltip that is already up, so instead we replay the
+     * last mouse move at the ToolTipManager. It re-asks the supplier, gets the
+     * finished text this time, and swaps the popup.
+     *
+     * Deliberately NOT a custom tooltip component. This is still Swing's own
+     * JToolTip with the post-it styling from the UIManager, we are just asking
+     * it a second time.
+     *
+     * The timing does not change: the tooltip is already visible when this
+     * runs, so ToolTipManager re-shows it immediately rather than restarting
+     * its delay.
+     */
+    @Helped("I couldn't figure out this quirk at all because I didn't know how" +
+            "for the tooltip manager to update. Again, I didn't want to use " +
+            "a custom component.")
+    public void refreshToolTip(MouseEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        // The pointer may have left the editor entirely while the task was
+        // running. Leaving does not fire a move, so the view still thinks that
+        // word is hovered. Replaying the move here would pop a tooltip up over
+        // an editor nobody is pointing at.
+        if (getMousePosition() == null) {
+            return;
+        }
+
+        ToolTipManager.sharedInstance().mouseMoved(event);
     }
 }

@@ -31,6 +31,8 @@ import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
+import net.cdahmedeh.poetwrite.service.indexer.HoverContext;
+import net.cdahmedeh.poetwrite.ui.event.hover.HoverAnalyzedEvent;
 import net.cdahmedeh.poetwrite.ui.event.parsing.*;
 import net.cdahmedeh.poetwrite.ui.event.file.FileEvent;
 import net.cdahmedeh.poetwrite.ui.event.file.FileOpenedEvent;
@@ -68,8 +70,15 @@ public class MainViewModel extends ViewModel {
     // Holds the relationship between text positions in the content in the
     // editor and entities.
     // TODO: Right now, it's only words.
-    private BehaviorSubject<NavigableMap<Integer, Word>> poemIndex = BehaviorSubject.create();
-    public Observable<NavigableMap<Integer, Word>> poemIndex() { return this.poemIndex.hide(); }
+    private BehaviorSubject<NavigableMap<Integer, HoverContext>> poemIndex = BehaviorSubject.create();
+    public Observable<NavigableMap<Integer, HoverContext>> poemIndex() { return this.poemIndex.hide(); }
+
+    // One piece of a hover tooltip is ready. Fires once per analysis, so the
+    // view can fill its rows in as they arrive rather than waiting for the
+    // slowest one. Publish rather than Behaviour, same as the wizard's events,
+    // since a stale hover result is worse than none.
+    private PublishSubject<HoverAnalyzedEvent> hoverAnalyzed = PublishSubject.create();
+    public Observable<HoverAnalyzedEvent> hoverAnalyzed() { return this.hoverAnalyzed.hide(); }
 
     // What is in the content editor. Mostly to modify the content editor
     // when something changes. Not really intended to be updated if user
@@ -189,6 +198,14 @@ public class MainViewModel extends ViewModel {
         // entities as needed for the word hover highlight.
         if (event instanceof WordPositionIndexedEvent wordPositionIndexedEvent) {
             this.poemIndex.onNext(wordPositionIndexedEvent.getIndex());
+        }
+
+        // One of the hover analyses came back. The view matches it against
+        // whatever is under the pointer now before showing it.
+        if (event instanceof HoverAnalyzedEvent hoverAnalyzedEvent) {
+            if (hoverAnalyzedEvent.getAnalysis() != null) {
+                this.hoverAnalyzed.onNext(hoverAnalyzedEvent);
+            }
         }
 
         // AUTO-COMPLETE STUFF

@@ -20,7 +20,7 @@ package net.cdahmedeh.poetwrite.ui.event.parsing;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.service.indexer.HoverContext;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 import java.util.NavigableMap;
@@ -35,5 +35,5 @@ import java.util.TreeMap;
 public class WordPositionIndexedEvent extends AppEvent {
     @Getter
     @Setter
-    private NavigableMap<Integer, Word> index = new TreeMap<>();
+    private NavigableMap<Integer, HoverContext> index = new TreeMap<>();
 }

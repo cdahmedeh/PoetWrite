@@ -56,11 +56,21 @@ public class PoemLookupIndexer extends LazyService {
 
     }
 
-    public NavigableMap<Integer, Word> index(Poem poem) {
-        NavigableMap<Integer, Word> index = new TreeMap<>();
+    /**
+     * Maps a character position to the poem, line and word found there.
+     *
+     * Used to hold just the Word. It holds a HoverContext now because the
+     * hover analyses need more than the word: a definition needs the word, a
+     * part of speech or the meter needs the line, a rhyme group needs the
+     * poem. This walk already has all three in hand, so handing them over
+     * costs nothing here and saves searching for them later. Line has no
+     * offsets of its own, so working it out afterwards would be miserable.
+     */
+    public NavigableMap<Integer, HoverContext> index(Poem poem) {
+        NavigableMap<Integer, HoverContext> index = new TreeMap<>();
         for (Line line : poem.getLines()) {
             for (Word word : line.getAllWords()) {
-                index.put(word.getStart(), word);
+                index.put(word.getStart(), new HoverContext(poem, line, word));
             }
         }
         return index;

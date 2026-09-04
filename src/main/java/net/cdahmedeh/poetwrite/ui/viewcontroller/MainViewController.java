@@ -32,10 +32,16 @@ import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
 import net.cdahmedeh.poetwrite.query.holder.AutoCompleteTreeHolder;
 import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
+import net.cdahmedeh.poetwrite.lib.domain.Line;
+import net.cdahmedeh.poetwrite.service.analyzer.DefinitionAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.MeterAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PartOfSpeechAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemSyllablesAnalyzer;
+import net.cdahmedeh.poetwrite.service.indexer.HoverContext;
 import net.cdahmedeh.poetwrite.service.indexer.PoemLookupIndexer;
+import net.cdahmedeh.poetwrite.ui.event.hover.HoverAnalyzedEvent;
 import net.cdahmedeh.poetwrite.ui.event.parsing.*;
 import net.cdahmedeh.poetwrite.ui.event.file.SaveFileEvent;
 import net.cdahmedeh.poetwrite.ui.event.request.AutoCompleteWizardRequestedEvent;
@@ -61,8 +67,12 @@ public class MainViewController extends ViewController<MainViewModel> {
 
     private final AutoCompleteTreeHolder autoCompleteTreeHolder;
 
+    private final DefinitionAnalyzer definitionAnalyzer;
+    private final PartOfSpeechAnalyzer partOfSpeechAnalyzer;
+    private final MeterAnalyzer meterAnalyzer;
+
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder, DefinitionAnalyzer definitionAnalyzer, PartOfSpeechAnalyzer partOfSpeechAnalyzer, MeterAnalyzer meterAnalyzer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
@@ -71,6 +81,9 @@ public class MainViewController extends ViewController<MainViewModel> {
         this.poemLookupIndexer = poemLookupIndexer;
         this.poemAnalyzer = poemAnalyzer;
         this.autoCompleteTreeHolder = autoCompleteTreeHolder;
+        this.definitionAnalyzer = definitionAnalyzer;
+        this.partOfSpeechAnalyzer = partOfSpeechAnalyzer;
+        this.meterAnalyzer = meterAnalyzer;
     }
 
     /**
@@ -105,10 +118,31 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+    public void getDefinition(Word word) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent(word);
+        taskBus.submit("Definition: " + word.getWord(), event, () -> {
+            event.setAnalysis(definitionAnalyzer.get(word));
+        });
+    }
+
+    public void getPartOfSpeech(Word word, Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent(word);
+        taskBus.submit("Part of Speech: " + word.getWord(), event, () -> {
+            event.setAnalysis(partOfSpeechAnalyzer.get(line));
+        });
+    }
+
+    public void getMeter(Word word, Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent(word);
+        taskBus.submit("Meter: " + word.getWord(), event, () -> {
+            event.setAnalysis(meterAnalyzer.get(line));
+        });
+    }
+
     public void indexPoem(Poem poem) {
         WordPositionIndexedEvent event = new WordPositionIndexedEvent();
         taskBus.submit("Index Poem", event, () -> {
-            NavigableMap<Integer, Word> index = poemLookupIndexer.index(poem);
+            NavigableMap<Integer, HoverContext> index = poemLookupIndexer.index(poem);
             event.setIndex(index);
         });
     }

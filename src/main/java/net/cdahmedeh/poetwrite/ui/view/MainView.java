@@ -27,12 +27,18 @@ import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.annotation.Helped;
 import net.cdahmedeh.poetwrite.annotation.Draft;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
+import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.LineMeterAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.LinePartOfSpeechAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.WordDefinitionAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.component.*;
 import net.cdahmedeh.poetwrite.ui.constant.*;
+import net.cdahmedeh.poetwrite.service.indexer.HoverContext;
+import net.cdahmedeh.poetwrite.ui.event.hover.HoverAnalyzedEvent;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
@@ -45,6 +51,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
@@ -82,6 +89,22 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     @Helped("Claude - PoetWrite autocomplete wizard implementation")
     private JWindow wizardWindow;
     private QueryWizard wizard;
+
+    // Hover tooltip state.
+    // The index maps a character position to the poem, line and word sitting
+    // there. Rebuilt on every parse.
+    private NavigableMap<Integer, HoverContext> hoverIndex = new TreeMap<>();
+    // What we last asked the TaskBus about, null when the pointer is not on a
+    // word. Used to throw away results that arrive after the pointer moved.
+    private HoverContext hovered;
+    // The analyses that have come back for `hovered` so far, by their class.
+    // Anything missing from here is still out on the bus and renders as a
+    // Loading row.
+    // TODO: In the future, this will be using the cache directly.
+    private final Map<Class<?>, FeatureAnalysis> hoverAnalyses = new HashMap<>();
+    // The last mouse move over a word, kept so the tooltip can be re-asked for
+    // once the analyses land. See PoemTextArea.refreshToolTip(..).
+    private MouseEvent hoverEvent;
 
     // Where the poem is actually written. Including gutter.
     private PoemTextArea textArea;
@@ -172,6 +195,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         setupSyntaxHighlighting();
+        setupHover();
     }
 
     // Setting up the syntax highlighting.
@@ -229,12 +253,29 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         SwingUtilities.invokeLater(() -> poemGutter.setPattern(pattern));
     }
 
-    // Setting up what shows when user hovers over a word.
-    // TODO: Right now it's placeholder text. Eventually it will show
-    //       stuff from the dictionary, parts of speech and metering.
-    // It takes in a map with the word character offset and the associated word
-    // to know what word is in question is being hovered over.
-    private void setupHover(NavigableMap<Integer, Word> index) {
+    // Setting up what shows when the user hovers over a word.
+    //
+    // Called once, from setupEditor(). It used to run again on every re-parse,
+    // which meant re-pushing the same UIManager keys and re-registering the
+    // same component over and over. The index is the only part that actually
+    // changes, so that now arrives on its own through setHoverIndex(..).
+    //
+    // THE ASYNC BIT. The supplier has to answer Swing right now, but the
+    // analyses live on the TaskBus and take as long as they take. So the
+    // supplier answers more than once:
+    //
+    // 1. First time over a word, it asks the controller for every analysis it
+    //    wants and returns a tooltip whose rows all say Loading. The tooltip
+    //    appears on Swing's usual schedule, we do not touch the timing.
+    // 2. Each analysis lands separately. deliverHover(..) drops it into
+    //    hoverAnalyses and asks the tooltip to refresh, which calls this
+    //    supplier again. That row is now filled in, the rest still say
+    //    Loading.
+    //
+    // Same flow as the wizard: ask through the controller, get handed the
+    // answer back through an event, check it is still the one we wanted,
+    // display it.
+    private void setupHover() {
         // Allows the tooltips to be hovered over and keep them displayed. Done
         // mostly to keep them in view so the user doesn't have keep the pointer
         // over the word to read it's details.
@@ -242,11 +283,6 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         //       away as the pointer moves.
         textArea.setUseFocusableTips(false);
 
-        // Tooltip Appearance.
-        // Post-It Note Style. Yellow background. A hint of grey. And rounded
-        // edges.
-
-        // Colours
         UIManager.put("ToolTip.background", new Color(EditorConstants.TOOLTIP_BACKGROUND_COLOUR));   // warm off-white; tune to your palette
         UIManager.put("ToolTip.foreground", new Color(EditorConstants.TOOLTIP_FONT_COLOUR));
         UIManager.put("ToolTip.border", new FlatLineBorder(
@@ -272,29 +308,138 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         //    hovered over. So from pixel coordinates like 303x203 to character
         //    at position 12th letter.
         // 2. The index map comes from the parser PoemExtended visitor. It maps
-        //    a text position to the associated Word object. Keep in mind, the
-        //    map doesn't know when the text ends. A NavigableMap is used
-        //    because it can find the key with the closest character position.
-        // 3. TODO: Right now, the actual word is just shown as a placeholder.
-        //          Eventually analysis of part-of-word and definitions and
-        //          stuff will be here.
-        // TODO: The tooltip text should be a template.
-        // TODO: The logic for the null check could be simplified.
-        textArea.setToolTipSupplier((textArea, event) -> {
+        //    a text position to the poem, line and word there. Keep in mind,
+        //    the map doesn't know when a word ends. A NavigableMap is used
+        //    because it can find the key with the closest character position,
+        //    and contains(..) rules out the gaps between words.
+        textArea.setToolTipSupplier((area, event) -> {
             int offset = textArea.viewToModel2D(event.getPoint());
-            Map.Entry<Integer, Word> entry = index.floorEntry(offset);
-            if (entry == null || !entry.getValue().contains(offset)) {
-                ((PoemTextArea) textArea).setHoveredWord(null);
+            Map.Entry<Integer, HoverContext> entry = hoverIndex.floorEntry(offset);
+
+            if (entry == null || !entry.getValue().getWord().contains(offset)) {
+                clearHover();
                 return null;
             }
-            Word word = entry.getValue();
-            ((PoemTextArea) textArea).setHoveredWord(word);
-            return "<html><b>" + word.getWord() + "</b><br>The word you're highlighting is " + word.getWord() + ".</html>";
+
+            HoverContext context = entry.getValue();
+
+            textArea.setHoveredWord(context.getWord());
+            hoverEvent = event;
+
+            // Moved onto a different word, so nothing we have is about what
+            // the pointer is on any more. Ask again.
+            if (!isHovering(context.getWord())) {
+                requestHover(context);
+            }
+
+            return renderTooltip(context);
         });
 
         // Make Swing aware that tooltips will need to be shown for the editor
         // area.
         ToolTipManager.sharedInstance().registerComponent(textArea);
+    }
+
+    // Everything the tooltip wants to show, asked for all at once. Each one is
+    // its own task and comes back on its own, so the rows fill in as they
+    // finish rather than all at the end.
+    //
+    // The word goes to the definition, the line goes to the part of speech and
+    // the meter. That split is the whole reason the index hands over a
+    // HoverContext instead of just a Word.
+    private void requestHover(HoverContext context) {
+        hovered = context;
+        hoverAnalyses.clear();
+
+        viewController.getDefinition(context.getWord());
+        viewController.getPartOfSpeech(context.getWord(), context.getLine());
+        viewController.getMeter(context.getWord(), context.getLine());
+    }
+
+    // The index changed because the poem was re-parsed. Everything the pointer
+    // is currently sitting on refers to the old parse, so drop it.
+    private void setHoverIndex(NavigableMap<Integer, HoverContext> index) {
+        hoverIndex = index;
+        clearHover();
+    }
+
+    private void clearHover() {
+        hovered = null;
+        hoverAnalyses.clear();
+        textArea.setHoveredWord(null);
+    }
+
+    // One of the analyses came back. If the pointer has moved on since we
+    // asked, it is about a word nobody is looking at any more, so drop it.
+    // Same check QueryWizard does on an incoming preview.
+    private void deliverHover(HoverAnalyzedEvent event) {
+        if (!isHovering(event.getWord())) {
+            return;
+        }
+
+        hoverAnalyses.put(event.getAnalysis().getClass(), event.getAnalysis());
+        textArea.refreshToolTip(hoverEvent);
+    }
+
+    // Whether that word is the one under the pointer right now. Compared by
+    // position and text rather than by instance, because a re-parse builds
+    // brand new Word objects for the same words.
+    private boolean isHovering(Word word) {
+        return hovered != null
+                && hovered.getWord().getStart() == word.getStart()
+                && hovered.getWord().getWord().equals(word.getWord());
+    }
+
+    // Builds the tooltip out of whatever has come back so far.
+    //
+    // This is the only place that decides what a tooltip looks like: which
+    // rows there are, what order they go in, and how each analysis reads. Any
+    // row whose analysis has not landed yet renders as Loading, so the tooltip
+    // is useful the moment it appears and fills itself in.
+    //
+    // Adding a row is a line here plus a line in requestHover(..).
+    //
+    // TODO: The tooltip text should be a template.
+    private String renderTooltip(HoverContext context) {
+        WordDefinitionAnalysis definition = hoverAnalysis(WordDefinitionAnalysis.class);
+        LinePartOfSpeechAnalysis partOfSpeech = hoverAnalysis(LinePartOfSpeechAnalysis.class);
+        LineMeterAnalysis meter = hoverAnalysis(LineMeterAnalysis.class);
+
+        StringBuilder html = new StringBuilder("<html>");
+        html.append("<b>").append(context.getWord().getWord()).append("</b>");
+
+        html.append(row("Definition",
+                definition == null ? null : definition.getDefinition()));
+
+        html.append(row("Part of Speech",
+                partOfSpeech == null ? null : italic(partOfSpeech.getTag(context.getWord()))));
+
+        html.append(row("Meter",
+                meter == null ? null : meter.getMeter()));
+
+        return html.append("</html>").toString();
+    }
+
+    // One heading and its text. A null body means the analysis is still out on
+    // the TaskBus, so the row says Loading instead, in the same grey and with
+    // the same wording the wizard uses for a pending preview.
+    //
+    // TODO: The wizard animates the dots. Doing that here means driving a
+    //       Timer against a tooltip that Swing owns, so it is left alone for
+    //       now.
+    private String row(String name, String body) {
+        return "<br><br><font color='#9A9A9A'>" + name + "</font><br>"
+                + (body == null ? "<font color='#969696'>Loading...</font>" : body);
+    }
+
+    private String italic(String text) {
+        return text == null ? "" : "<i>" + text + "</i>";
+    }
+
+    // The analysis of that type for the word being hovered, or null if it has
+    // not come back yet.
+    private <A extends FeatureAnalysis> A hoverAnalysis(Class<A> type) {
+        return type.cast(hoverAnalyses.get(type));
     }
 
     @Override
@@ -421,14 +566,19 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         );
         disposable.add(patternAnalysisSubscriber);
 
-        // Setup what will be shown in hover over words.
+        // The character position to poem/line/word index, rebuilt on every
+        // parse. Feeds the hover tooltip.
         Disposable poemIndexSubscriber = viewModel.poemIndex().subscribe(
-                poemIndex -> {
-                    setupHover(poemIndex);
-                }
+                poemIndex -> SwingUtilities.invokeLater(() -> setHoverIndex(poemIndex))
         );
-
         disposable.add(poemIndexSubscriber);
+
+        // One of the hover analyses came back, so that row of the tooltip can
+        // stop saying Loading.
+        Disposable hoverAnalyzedSubscriber = viewModel.hoverAnalyzed().subscribe(
+                event -> SwingUtilities.invokeLater(() -> deliverHover(event))
+        );
+        disposable.add(hoverAnalyzedSubscriber);
 
 
 
