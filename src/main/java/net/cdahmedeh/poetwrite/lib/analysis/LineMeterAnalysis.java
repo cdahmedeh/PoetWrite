@@ -36,16 +36,11 @@ import net.cdahmedeh.poetwrite.lib.domain.Line;
  * TODO: The real one will want the stress pattern too, not just the name, so
  *       the gutter and the tooltip can both read off the same analysis.
  */
-@RequiredArgsConstructor
-public class LineMeterAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Line line;
+public class LineMeterAnalysis extends FeatureAnalysis<Line> {
+    public LineMeterAnalysis(Line line) {
+        super(line);
+    }
 
     @Getter @Setter
     private String meter = null;
-
-    @Override
-    public boolean analyzed() {
-        return meter != null;
-    }
 }

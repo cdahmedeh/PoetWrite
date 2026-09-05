@@ -31,16 +31,11 @@ import java.util.List;
  * TODO: Relies on line number being aligned. Possible in the future that only
  *       non-whitespace lines will be part of the line count.
  */
-@RequiredArgsConstructor
-public class PoemSyllablesAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Poem poem;
+public class PoemSyllablesAnalysis extends FeatureAnalysis<Poem> {
+    public PoemSyllablesAnalysis(Poem poem) {
+        super(poem);
+    }
 
     @Getter
     private List<Integer> syllables = new ArrayList<>();
-
-    @Override
-    public boolean analyzed() {
-        return syllables.isEmpty() == false;
-    }
 }

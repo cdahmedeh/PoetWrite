@@ -35,16 +35,11 @@ import net.cdahmedeh.poetwrite.lib.domain.Word;
  * constructor taking the entity, which is what @RequiredArgsConstructor over a
  * single final Word gives us.
  */
-@RequiredArgsConstructor
-public class WordDefinitionAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Word word;
+public class WordDefinitionAnalysis extends FeatureAnalysis<Word> {
+    public WordDefinitionAnalysis(Word word) {
+        super(word);
+    }
 
     @Getter @Setter
     private String definition = null;
-
-    @Override
-    public boolean analyzed() {
-        return definition != null;
-    }
 }

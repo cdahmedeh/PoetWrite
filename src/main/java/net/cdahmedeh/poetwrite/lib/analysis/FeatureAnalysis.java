@@ -18,6 +18,10 @@
 
 package net.cdahmedeh.poetwrite.lib.analysis;
 
+import lombok.Getter;
+import lombok.Setter;
+import net.cdahmedeh.poetwrite.lib.domain.Entity;
+
 /**
  * See the documentation for details on the cache implementation.
  * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
@@ -26,12 +30,14 @@ package net.cdahmedeh.poetwrite.lib.analysis;
  *
  * TODO: Add invalidation method.
  */
-public abstract class FeatureAnalysis {
-    /**
-     * Use this to check if the analysis has been computed yet. The simplest
-     * way for now, is just to check if the values of the fields are null.
-     *
-     * @return
-     */
-    public abstract boolean analyzed();
+public abstract class FeatureAnalysis<E extends Entity> {
+    @Getter
+    private final E entity;
+
+    @Getter @Setter
+    private boolean analyzed = false;
+
+    public FeatureAnalysis(E entity) {
+        this.entity = entity;
+    }
 }

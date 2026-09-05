@@ -36,20 +36,12 @@ import javax.inject.Inject;
  * theory replace the initial poem, or at least re-parse it, but then it causes
  * all sorts of complications when it's being used.
  */
-public class PoemAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Poem poem;
-
+public class PoemAnalysis extends FeatureAnalysis<Poem> {
     @Getter @Setter
     private Poem parsed;
 
     @Inject
     public PoemAnalysis(Poem poem) {
-        this.poem = poem;
-    }
-
-    @Override
-    public boolean analyzed() {
-        return parsed != null;
+        super(poem);
     }
 }

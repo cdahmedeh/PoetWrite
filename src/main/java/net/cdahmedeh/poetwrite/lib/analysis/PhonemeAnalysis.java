@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 
 import java.util.List;
@@ -42,16 +43,12 @@ import java.util.List;
  *
  * @author Ahmed El-Hajjar
  */
-@RequiredArgsConstructor
-public class PhonemeAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Word word;
+public class PhonemeAnalysis extends FeatureAnalysis<Word> {
+    public PhonemeAnalysis(Word word) {
+        super(word);
+    }
 
     @Getter @Setter
     private List<Phoneme> phonemes = null;
 
-    @Override
-    public boolean analyzed() {
-        return phonemes != null;
-    }
 }

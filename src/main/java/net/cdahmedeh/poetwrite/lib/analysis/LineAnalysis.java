@@ -22,6 +22,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import net.cdahmedeh.poetwrite.lib.domain.Entity;
 import net.cdahmedeh.poetwrite.lib.domain.Line;
 
 /**
@@ -29,16 +31,11 @@ import net.cdahmedeh.poetwrite.lib.domain.Line;
  *
  * Current only has the number of syllables in a line.
  */
-@RequiredArgsConstructor
-public class LineAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Line line;
+public class LineAnalysis extends FeatureAnalysis<Line> {
+    public LineAnalysis(Line line) {
+        super(line);
+    }
 
     @Getter @Setter
     private int totalSyllables = -1;
-
-    @Override
-    public boolean analyzed() {
-        return totalSyllables != -1;
-    }
 }

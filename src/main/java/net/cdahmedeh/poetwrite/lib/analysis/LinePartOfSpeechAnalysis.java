@@ -35,13 +35,16 @@ import java.util.Map;
  * TODO: I'm cheating so badly here. Rather than have the word be the key, it's
  *       actually the character position of the word. And then, we do the
  *       computation.
+ *       WAIT, this could be a bad idea since one word could be in different
+ *       parts in the poem, and they had a different part-of-speech.
+ *
  *
  * TODO: All hard-coded.
  */
-@RequiredArgsConstructor
-public class LinePartOfSpeechAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Line line;
+public class LinePartOfSpeechAnalysis extends FeatureAnalysis<Line> {
+    public LinePartOfSpeechAnalysis(Line line) {
+        super(line);
+    }
 
     // Word start offset, to its tag. Null until the analyzer has filled it in,
     // which is also how analyzed() knows it has run. An empty map is a valid
@@ -58,10 +61,5 @@ public class LinePartOfSpeechAnalysis extends FeatureAnalysis {
      */
     public String getTag(Word word) {
         return tags == null ? null : tags.get(word.getStart());
-    }
-
-    @Override
-    public boolean analyzed() {
-        return tags != null;
     }
 }

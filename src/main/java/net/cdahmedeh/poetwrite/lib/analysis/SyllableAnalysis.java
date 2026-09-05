@@ -41,16 +41,11 @@ import net.cdahmedeh.poetwrite.lib.domain.Word;
  * @author Ahmed El-Hajjar
  *
  */
-@RequiredArgsConstructor
-public class SyllableAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Word word;
+public class SyllableAnalysis extends FeatureAnalysis<Word> {
+    public SyllableAnalysis(Word word) {
+        super(word);
+    }
 
     @Getter @Setter
     private Integer numberOfSyllables = null;
-
-    @Override
-    public boolean analyzed() {
-        return numberOfSyllables != null;
-    }
 }

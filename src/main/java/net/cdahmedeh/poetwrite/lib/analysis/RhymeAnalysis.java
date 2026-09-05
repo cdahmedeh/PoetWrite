@@ -46,19 +46,15 @@ import net.cdahmedeh.poetwrite.lib.domain.WordPair;
  * @author Ahmed El-Hajjar
  *
  */
-@RequiredArgsConstructor
-public class RhymeAnalysis extends FeatureAnalysis {
-    private final WordPair wordPair;
-
+public class RhymeAnalysis extends FeatureAnalysis<WordPair> {
     public RhymeAnalysis(Word word1, Word word2) {
-        this(new WordPair(word1, word2));
+        super(new WordPair(word1, word2));
+    }
+
+    public RhymeAnalysis(WordPair pair) {
+        super(pair);
     }
 
     @Getter @Setter
     private Integer numberOfRhymeSyllables = null;
-
-    @Override
-    public boolean analyzed() {
-        return numberOfRhymeSyllables != null;
-    }
 }

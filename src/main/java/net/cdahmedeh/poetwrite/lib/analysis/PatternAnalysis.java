@@ -36,16 +36,11 @@ import java.util.List;
  * Empty lines or ones that don't belong to any pattern are going to just be
  * blank strings.
  */
-@RequiredArgsConstructor
-public class PatternAnalysis extends FeatureAnalysis {
-    @Getter
-    private final Poem poem;
+public class PatternAnalysis extends FeatureAnalysis<Poem> {
+    public PatternAnalysis(Poem poem) {
+        super(poem);
+    }
 
     @Getter
     List<String> pattern = new ArrayList<>();
-
-    @Override
-    public boolean analyzed() {
-        return pattern.isEmpty() == false;
-    }
 }
