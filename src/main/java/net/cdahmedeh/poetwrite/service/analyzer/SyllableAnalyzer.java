@@ -67,7 +67,6 @@ public class SyllableAnalyzer extends FeatureAnalyzer<Word, SyllableAnalysis> {
                 .count();
 
         analysis.setNumberOfSyllables(syllables);
-        ensure();
     }
 
     @Override
