@@ -19,9 +19,13 @@
 package net.cdahmedeh.poetwrite.test;
 
 import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.LineAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PhonemeAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.SyllableAnalysis;
 import net.cdahmedeh.poetwrite.service.cache.AnalysisCache;
+import net.cdahmedeh.poetwrite.lib.domain.Line;
+import net.cdahmedeh.poetwrite.lib.domain.Poem;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -89,5 +93,28 @@ public class AnalysisCacheTest {
         assertTrue(analysis6 instanceof SyllableAnalysis);
         assertTrue(analysis7 instanceof PhonemeAnalysis);
         assertTrue(analysis8 instanceof SyllableAnalysis);
+
+        // == CHECK 004 ==
+        // Same as CHECK 002, but for Line. This is the one that was missing.
+        // The entity tree is rebuilt from scratch on every parse, so keying on
+        // the instance means a guaranteed miss on every keystroke, plus a dead
+        // entry left behind in the map.
+        Line lineA = new Line("the cat sat on the mat");
+        Line lineB = new Line("the cat sat on the mat");
+        Line lineC = new Line("a different line entirely");
+
+        assertTrue(  cache.get(lineA, LineAnalysis.class) == cache.get(lineB, LineAnalysis.class) );
+        assertFalse( cache.get(lineA, LineAnalysis.class) == cache.get(lineC, LineAnalysis.class) );
+
+        // == CHECK 005 ==
+        // The pre-parse Poem and the parsed Poem carry the same text but are
+        // different states of it. They must not share a cache key, or the
+        // empty-lines version can win and the poem analyses see no lines.
+        Poem unparsed = new Poem("the cat sat on the mat");
+        Poem parsed = new Poem("the cat sat on the mat");
+        parsed.getLines().add(new Line("the cat sat on the mat"));
+
+        assertFalse( cache.get(unparsed, PatternAnalysis.class)
+                     == cache.get(parsed, PatternAnalysis.class) );
     }
 }
