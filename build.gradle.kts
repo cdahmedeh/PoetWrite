@@ -49,6 +49,10 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.19.0")
     implementation("com.google.guava:guava:33.4.8-jre")
 
+    // Logging
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("ch.qos.logback:logback-classic:1.5.12")
+
     // Dependency Injection
     implementation("com.google.dagger:dagger:2.57")
     annotationProcessor("com.google.dagger:dagger:2.57")
