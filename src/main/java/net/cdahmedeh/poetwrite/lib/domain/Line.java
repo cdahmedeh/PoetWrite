@@ -25,6 +25,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Ahmed El-Hajjar
@@ -91,5 +92,22 @@ public class Line implements Entity {
             }
         }
         return allWords;
+    }
+
+    // TODO: Right now, the lines are compared using the text directly, rather
+    //       than the nodes. Should consider that Node and sub-classes handle
+    //       equality on their own.
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof Line other) {
+            return Objects.equals(text, other.text);
+        }
+        return false;
     }
 }

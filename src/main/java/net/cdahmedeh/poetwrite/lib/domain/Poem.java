@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Ahmed El-Hajjar
@@ -51,5 +52,24 @@ public class Poem implements Entity {
 
     public Poem(String text) {
         this.text = text;
+    }
+
+    // TODO: We're relying on two different kinds of equality here. The poem,
+    //       which is directly from the editor, for a fast comparison. And then
+    //       use the line equality as well. As there are cases where two
+    //       identical poems are the same with different whitespace or
+    //       arrangment.
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, lines);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof Poem other) {
+            return Objects.equals(text, other.text) && lines.equals(other.lines);
+        }
+        return false;
     }
 }
