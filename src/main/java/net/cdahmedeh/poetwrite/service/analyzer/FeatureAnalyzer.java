@@ -48,8 +48,9 @@ public abstract class FeatureAnalyzer<E extends Entity, A extends FeatureAnalysi
     public A get(E entity, Class<A> analysisClass) {
         A analysis = analysisCache.get(entity, analysisClass);
 
-        if (analysis.analyzed() == false) {
+        if (analysis.isAnalyzed() == false) {
             analyze(entity, analysis);
+            analysis.setAnalyzed(true);
         }
 
         return analysis;
