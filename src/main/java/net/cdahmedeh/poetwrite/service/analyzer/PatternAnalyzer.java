@@ -71,6 +71,12 @@ public class PatternAnalyzer extends FeatureAnalyzer<Poem, PatternAnalysis> {
     void analyze(Poem poem, PatternAnalysis analysis) {
         List<String> scheme = analysis.getPattern();
 
+        // Analyses are re-used, so they should be cleared before a new
+        // analysis.
+        // TODO: Consider the operation to be done automatically by this
+        //       analysis instead.
+        scheme.clear();
+
         // Since we are using the rhyme group as the key, to prevent chaining.
         Map<String, Word> groups = new LinkedHashMap<>();
 
@@ -149,7 +155,7 @@ public class PatternAnalyzer extends FeatureAnalyzer<Poem, PatternAnalysis> {
 
     @Override
     public String name() {
-        return "Poem Syllables Analyzer";
+        return "Pattern Analyzer";
     }
 
     @Override
