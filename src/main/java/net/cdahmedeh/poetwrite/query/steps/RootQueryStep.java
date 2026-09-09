@@ -27,9 +27,25 @@ import java.util.List;
 @Singleton
 public class RootQueryStep extends QueryStep {
 
+    // Injected instead of new'd, so each branch can ask for whatever it needs
+    // on its own. RhymeWithQueryStep wants a handful of analyzers for its
+    // previews, and this way it gets them like everything else does.
+    private final RhymeWithQueryStep rhymeWithQueryStep;
+    private final MeterQueryStep meterQueryStep;
+    private final DefinitionsQueryStep definitionsQueryStep;
+    private final RelationshipsQueryStep relationshipsQueryStep;
+
     @Inject
-    public RootQueryStep() {
+    public RootQueryStep(
+            RhymeWithQueryStep rhymeWithQueryStep,
+            MeterQueryStep meterQueryStep,
+            DefinitionsQueryStep definitionsQueryStep,
+            RelationshipsQueryStep relationshipsQueryStep) {
         super("root");
+        this.rhymeWithQueryStep = rhymeWithQueryStep;
+        this.meterQueryStep = meterQueryStep;
+        this.definitionsQueryStep = definitionsQueryStep;
+        this.relationshipsQueryStep = relationshipsQueryStep;
     }
 
     /**
@@ -38,10 +54,10 @@ public class RootQueryStep extends QueryStep {
      */
     public QueryStep build() {
         return steps(() -> List.of(
-                new RhymeWithQueryStep().steps(),
-                new MeterQueryStep().steps(),
-                new DefinitionsQueryStep().steps(),
-                new RelationshipsQueryStep().steps()
+                rhymeWithQueryStep.steps(),
+                meterQueryStep.steps(),
+                definitionsQueryStep.steps(),
+                relationshipsQueryStep.steps()
         ));
     }
 }
