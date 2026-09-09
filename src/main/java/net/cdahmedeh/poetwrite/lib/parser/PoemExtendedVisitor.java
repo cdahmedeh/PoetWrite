@@ -18,7 +18,6 @@
 
 package net.cdahmedeh.poetwrite.lib.parser;
 
-import net.cdahmedeh.poetwrite.lib.parser.*;
 import net.cdahmedeh.poetwrite.lib.domain.*;
 import net.cdahmedeh.poetwrite.lib.parser.PoemParser.AsideContext;
 import net.cdahmedeh.poetwrite.lib.parser.PoemParser.NoteContext;
@@ -49,9 +48,18 @@ import org.antlr.v4.runtime.tree.ErrorNode;
  * cheating with the parameter Object.
  */
 public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
+    // We are keeping the original text as ANTLR4 output doesn't always match
+    // what was entered in the first place. Fixed a major bug where any kind
+    // of Poem inequality would fail. So the cache would be rebuild everything.
+    private final String content;
+
+    public PoemExtendedVisitor(String content) {
+        this.content = content;
+    }
+
     @Override
     public Object visitPoem(PoemParser.PoemContext ctx) {
-        Poem poem = new Poem("");
+        Poem poem = new Poem(content);
 
         for (var child : ctx.children) {
             Object result = child.accept(this);

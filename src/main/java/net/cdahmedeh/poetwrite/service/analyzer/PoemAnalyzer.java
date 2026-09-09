@@ -68,7 +68,7 @@ public class PoemAnalyzer extends FeatureAnalyzer<Poem, PoemAnalysis> {
 
         PoemParser.PoemContext context = parser.poem();
 
-        PoemVisitor visitor = new PoemExtendedVisitor();
+        PoemVisitor visitor = new PoemExtendedVisitor(poem.getText());
 
         Poem parsed = (Poem) visitor.visit(context);
         analysis.setParsed(parsed);
