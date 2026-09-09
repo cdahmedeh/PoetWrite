@@ -33,6 +33,7 @@ import net.cdahmedeh.poetwrite.lib.analysis.LinePartOfSpeechAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.WordDefinitionAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
+import net.cdahmedeh.poetwrite.lib.domain.Entity;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.component.*;
@@ -97,10 +98,11 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // What we last asked the TaskBus about, null when the pointer is not on a
     // word. Used to throw away results that arrive after the pointer moved.
     private HoverContext hovered;
-    // The analyses that have come back for `hovered` so far, by their class.
-    // Anything missing from here is still out on the bus and renders as a
-    // Loading row.
-    // TODO: In the future, this will be using the cache directly.
+    // The last analysis of each type that came back off the bus. Never
+    // cleared: an answer stays useful after the pointer leaves, because the
+    // pointer usually comes back. Each entry is only drawn when its entity
+    // matches what is being hovered now, so a stale one shows as Loading
+    // rather than as some other word's answer. At most one entry per row.
     private final Map<Class<?>, FeatureAnalysis> hoverAnalyses = new HashMap<>();
     // The last mouse move over a word, kept so the tooltip can be re-asked for
     // once the analyses land. See PoemTextArea.refreshToolTip(..).
@@ -264,9 +266,10 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // analyses live on the TaskBus and take as long as they take. So the
     // supplier answers more than once:
     //
-    // 1. First time over a word, it asks the controller for every analysis it
-    //    wants and returns a tooltip whose rows all say Loading. The tooltip
-    //    appears on Swing's usual schedule, we do not touch the timing.
+    // 1. Over a word it has nothing for, it asks the controller and returns a
+    //    tooltip whose rows say Loading. The tooltip appears on Swing's usual
+    //    schedule, we do not touch the timing. Rows it can already draw are
+    //    drawn straight away and are not asked for again.
     // 2. Each analysis lands separately. deliverHover(..) drops it into
     //    hoverAnalyses and asks the tooltip to refresh, which calls this
     //    supplier again. That row is now filled in, the rest still say
@@ -349,11 +352,25 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // HoverContext instead of just a Word.
     private void requestHover(HoverContext context) {
         hovered = context;
-        hoverAnalyses.clear();
 
-        viewController.getDefinition(context.getWord());
-        viewController.getPartOfSpeech(context.getWord(), context.getLine());
-        viewController.getMeter(context.getWord(), context.getLine());
+        // Only ask for what cannot already be drawn. Clearing first and asking
+        // for all three was what made a second hover blank every row and then
+        // fill them in together: the answers were already known, but the view
+        // had thrown them away and had to wait for the bus to hand them back.
+        if (hoverAnalysis(WordDefinitionAnalysis.class, context.getWord()) == null) {
+            viewController.getDefinition(context.getWord());
+        }
+
+        // Part of speech and meter are analyses of the Line, so moving to
+        // another word on a line already looked at draws both immediately and
+        // only the definition is asked for.
+        if (hoverAnalysis(LinePartOfSpeechAnalysis.class, context.getLine()) == null) {
+            viewController.getPartOfSpeech(context.getWord(), context.getLine());
+        }
+
+        if (hoverAnalysis(LineMeterAnalysis.class, context.getLine()) == null) {
+            viewController.getMeter(context.getWord(), context.getLine());
+        }
     }
 
     // The index changed because the poem was re-parsed. Everything the pointer
@@ -365,7 +382,6 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
 
     private void clearHover() {
         hovered = null;
-        hoverAnalyses.clear();
         textArea.setHoveredWord(null);
     }
 
@@ -373,12 +389,14 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // asked, it is about a word nobody is looking at any more, so drop it.
     // Same check QueryWizard does on an incoming preview.
     private void deliverHover(HoverAnalyzedEvent event) {
-        if (!isHovering(event.getWord())) {
-            return;
-        }
-
+        // Kept either way. This is a real answer even if the pointer has moved
+        // on since it was asked for, and dropping it is what forced the work
+        // to be asked for a second time.
         hoverAnalyses.put(event.getAnalysis().getClass(), event.getAnalysis());
-        textArea.refreshToolTip(hoverEvent);
+
+        if (isHovering(event.getWord())) {
+            textArea.refreshToolTip(hoverEvent);
+        }
     }
 
     // Whether that word is the one under the pointer right now. Compared by
@@ -401,9 +419,12 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     //
     // TODO: The tooltip text should be a template.
     private String renderTooltip(HoverContext context) {
-        WordDefinitionAnalysis definition = hoverAnalysis(WordDefinitionAnalysis.class);
-        LinePartOfSpeechAnalysis partOfSpeech = hoverAnalysis(LinePartOfSpeechAnalysis.class);
-        LineMeterAnalysis meter = hoverAnalysis(LineMeterAnalysis.class);
+        WordDefinitionAnalysis definition =
+                hoverAnalysis(WordDefinitionAnalysis.class, context.getWord());
+        LinePartOfSpeechAnalysis partOfSpeech =
+                hoverAnalysis(LinePartOfSpeechAnalysis.class, context.getLine());
+        LineMeterAnalysis meter =
+                hoverAnalysis(LineMeterAnalysis.class, context.getLine());
 
         StringBuilder html = new StringBuilder("<html>");
         html.append("<b>").append(context.getWord().getWord()).append("</b>");
@@ -436,10 +457,22 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         return text == null ? "" : "<i>" + text + "</i>";
     }
 
-    // The analysis of that type for the word being hovered, or null if it has
-    // not come back yet.
-    private <A extends FeatureAnalysis> A hoverAnalysis(Class<A> type) {
-        return type.cast(hoverAnalyses.get(type));
+    // The analysis of that type, but only when it is about the entity being
+    // drawn right now. Null means the row cannot be drawn yet, either because
+    // nothing has come back or because what came back was about something
+    // else.
+    //
+    // Word and Line compare on their text, so a re-parse that rebuilds the
+    // entity tree does not invalidate an answer. A real edit to the line does,
+    // because the text no longer matches.
+    private <A extends FeatureAnalysis> A hoverAnalysis(Class<A> type, Entity entity) {
+        FeatureAnalysis analysis = hoverAnalyses.get(type);
+
+        if (analysis == null || !analysis.getEntity().equals(entity)) {
+            return null;
+        }
+
+        return type.cast(analysis);
     }
 
     @Override
