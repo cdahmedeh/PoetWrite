@@ -23,6 +23,8 @@ import net.cdahmedeh.poetwrite.annotation.Helped;
 import net.cdahmedeh.poetwrite.query.interfaces.*;
 import net.cdahmedeh.poetwrite.ui.constant.IconConstants;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,8 +37,10 @@ import java.util.function.Supplier;
  */
 @Draft("Currently hard-coded")
 @Helped("100% generated")
+@Singleton
 public class RelationshipsQueryStep extends QueryStep {
 
+    @Inject
     public RelationshipsQueryStep() {
         super("relationships");
         icon(IconConstants.RELATIONSHIPS_ICON_PATH);
@@ -66,7 +70,9 @@ public class RelationshipsQueryStep extends QueryStep {
 
         List<QueryStep> steps = new ArrayList<>();
         for (String related : related(step.getName(), typed)) {
-            steps.add(step(related).preview(() -> new RelationPreview(step.getName(), typed, related)));
+            steps.add(step(related)
+                    .preview(s -> "<b>" + related + "</b>")
+                    .preview(s -> typed + " &rarr; " + step.getName() + " &rarr; " + related));
         }
         return steps;
     }
@@ -78,23 +84,5 @@ public class RelationshipsQueryStep extends QueryStep {
             case "broader terms"  -> List.of("absence", "condition");
             default               -> List.of("dusk", "twilight", "penumbra");
         };
-    }
-
-    public static class RelationPreview extends QueryPreview {
-        private final String relation;
-        private final String source;
-        private final String target;
-
-        public RelationPreview(String relation, String source, String target) {
-            this.relation = relation;
-            this.source = source;
-            this.target = target;
-        }
-
-        @Override
-        public String render(QueryStep step) {
-            return "<b>" + target + "</b><br><br>"
-                    + source + " &rarr; " + relation + " &rarr; " + target;
-        }
     }
 }

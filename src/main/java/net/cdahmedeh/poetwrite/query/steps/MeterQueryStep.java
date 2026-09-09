@@ -23,14 +23,18 @@ package net.cdahmedeh.poetwrite.query.steps;
 import net.cdahmedeh.poetwrite.query.interfaces.*;
 import net.cdahmedeh.poetwrite.ui.constant.IconConstants;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
  * "remaining meter" branch. Entirely hard-coded for now -- the real version
  * asks the meter analyser what the current line still has room for.
  */
+@Singleton
 public class MeterQueryStep extends QueryStep {
 
+    @Inject
     public MeterQueryStep() {
         super("remaining meter");
         icon(IconConstants.METER_ICON_PATH);
@@ -38,39 +42,29 @@ public class MeterQueryStep extends QueryStep {
 
     public QueryStep steps() {
         return steps(() -> List.of(
-                step("iambic pentameter").preview(() -> new MeterPreview(
-                        "iambic pentameter",
+                meter("iambic pentameter",
                         "da DUM da DUM da DUM da DUM da DUM",
-                        "2 feet remaining on this line")),
-                step("trochaic tetrameter").preview(() -> new MeterPreview(
-                        "trochaic tetrameter",
+                        "2 feet remaining on this line"),
+                meter("trochaic tetrameter",
                         "DUM da DUM da DUM da DUM da",
-                        "1 foot remaining on this line")),
-                step("anapestic trimeter").preview(() -> new MeterPreview(
-                        "anapestic trimeter",
+                        "1 foot remaining on this line"),
+                meter("anapestic trimeter",
                         "da da DUM da da DUM da da DUM",
-                        "line is complete")),
-                step("free verse").preview(() -> new MeterPreview(
-                        "free verse",
+                        "line is complete"),
+                meter("free verse",
                         "no fixed pattern",
-                        "nothing to match"))
+                        "nothing to match")
         ));
     }
 
-    public static class MeterPreview extends QueryPreview {
-        private final String title;
-        private final String scansion;
-        private final String remaining;
-
-        public MeterPreview(String title, String scansion, String remaining) {
-            this.title = title;
-            this.scansion = scansion;
-            this.remaining = remaining;
-        }
-
-        @Override
-        public String render(QueryStep step) {
-            return "<b>" + title + "</b><br><br>" + scansion + "<br><br>" + remaining;
-        }
+    /**
+     * All three pieces are already known, so nothing here waits on anything.
+     * Not every preview needs a lookup behind it.
+     */
+    private QueryStep meter(String title, String scansion, String remaining) {
+        return step(title)
+                .preview(s -> "<b>" + title + "</b>")
+                .preview(s -> scansion)
+                .preview(s -> remaining);
     }
 }

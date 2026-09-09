@@ -20,30 +20,61 @@ package net.cdahmedeh.poetwrite.query.steps;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.cdahmedeh.poetwrite.lib.analysis.PhonemeAnalysis;
+import net.cdahmedeh.poetwrite.lib.domain.Phoneme;
 import net.cdahmedeh.poetwrite.query.interfaces.*;
+import net.cdahmedeh.poetwrite.service.analyzer.DefinitionAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.PhonemeAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.RhymingWordsAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.SynonymAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
 import net.cdahmedeh.poetwrite.ui.constant.IconConstants;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+@Singleton
 public class RhymeWithQueryStep extends QueryStep {
 
-    public RhymeWithQueryStep() {
+    // Everything the candidate preview needs, injected like every other
+    // service in the app. The preview methods below just call these straight
+    // out. No registry, no indirection, the caching and the blocking rules
+    // already handle it.
+    private final SyllableAnalyzer syllableAnalyzer;
+    private final PhonemeAnalyzer phonemeAnalyzer;
+    private final DefinitionAnalyzer definitionAnalyzer;
+    private final SynonymAnalyzer synonymAnalyzer;
+    private final RhymingWordsAnalyzer rhymingWordsAnalyzer;
+
+    @Inject
+    public RhymeWithQueryStep(
+            SyllableAnalyzer syllableAnalyzer,
+            PhonemeAnalyzer phonemeAnalyzer,
+            DefinitionAnalyzer definitionAnalyzer,
+            SynonymAnalyzer synonymAnalyzer,
+            RhymingWordsAnalyzer rhymingWordsAnalyzer) {
         super("rhyme with");
         icon(IconConstants.RHYME_ICON_PATH);
+        this.syllableAnalyzer = syllableAnalyzer;
+        this.phonemeAnalyzer = phonemeAnalyzer;
+        this.definitionAnalyzer = definitionAnalyzer;
+        this.synonymAnalyzer = synonymAnalyzer;
+        this.rhymingWordsAnalyzer = rhymingWordsAnalyzer;
     }
 
     public QueryStep steps() {
         return steps(() -> List.of(
                 step("previous line")
-                        .preview(() -> new LinePreview(-1))
+                        .preview(s -> line(-1))
                         .steps(relationshipsSteps()),
                 step("next line")
-                        .preview(() -> new LinePreview(+1))
+                        .preview(s -> line(+1))
                         .steps(relationshipsSteps()),
                 step("matching pattern")
-                        .preview(PatternGroupPreview::new)
+                        .preview(RhymeWithQueryStep::patternGroupPrompt)
                         .command(this::findPatternGroups)
         ));
     }
@@ -71,7 +102,15 @@ public class RhymeWithQueryStep extends QueryStep {
 
     private QueryStep patternGroup(String pattern) {
         return step(pattern)
-                .preview(PatternGroupPreview::new)
+                // Captures the pattern instead of digging it back out of the
+                // step. This step IS the group, it already knows.
+                //
+                // Going through the parameter was the bug. PatternGroupParameter
+                // only gets put when the command below runs, and that's on
+                // commit. Previews render on highlight. So every group was
+                // showing the parent's "pick a group" prompt right up until
+                // you'd already picked one.
+                .preview(s -> patternGroupText(pattern))
                 .command(step -> {
                     step.getParameters().put(new PatternGroupParameter(pattern));
                     return relationshipsSteps().get();
@@ -93,7 +132,22 @@ public class RhymeWithQueryStep extends QueryStep {
 
         List<QueryStep> steps = new ArrayList<>();
         for (Word word : words(pattern)) {
-            steps.add(step(word.label()).preview(() -> new WordPreview(word)));
+            net.cdahmedeh.poetwrite.lib.domain.Word entity =
+                    new net.cdahmedeh.poetwrite.lib.domain.Word(word.text());
+
+            // Every preview(..) here is one piece of the box and one task.
+            // The first two came back with this lookup so they show up
+            // instantly. The rest are separate analyzer calls and land
+            // whenever they land.
+            steps.add(step(word.label())
+                    .preview(s -> heading(word))
+                    .preview(s -> word.rhymeType() + " rhyme &middot; " + word.ending())
+                    .preview("Syllables", s -> syllables(entity))
+                    .preview("Pronunciation", s -> pronunciation(entity))
+                    .preview("Definition", s -> definition(entity))
+                    .preview("Synonyms", s -> synonyms(entity))
+                    .preview("Also rhymes", s -> rhymingWords(entity))
+                    .preview(s -> "<i>\u201c" + word.example() + "\u201d</i>"));
         }
         return steps;
     }
@@ -166,6 +220,15 @@ public class RhymeWithQueryStep extends QueryStep {
     }
 
     // ---------------------------------------------------------- previews
+    //
+    // One method per piece of a preview. All BLOCKING, and the controller puts
+    // each one on the TaskBus separately, so the ones that already have an
+    // answer show up while the slow ones are still going.
+    //
+    // Nothing special about the analyzer calls below, they go through
+    // AnalysisCache like everywhere else. Which means arrowing back onto a
+    // candidate you already looked at draws every piece at once, since all
+    // five are sitting in the cache against that Word.
 
     // Hardcoded stand-in for the real poem lines.
     private static final List<String> LINES = List.of(
@@ -173,63 +236,90 @@ public class RhymeWithQueryStep extends QueryStep {
             "A quiet, creeping darkness",
             "And nothing moved at all");
 
-    @RequiredArgsConstructor
-    public static class LinePreview extends QueryPreview {
-        private final int offset;
-
-        @Override
-        public String render(QueryStep step) {
-            int index = 1 + offset;
-            if (index < 0 || index >= LINES.size()) {
-                return "(no line)";
-            }
-            return LINES.get(index);
+    private static String line(int offset) {
+        int index = 1 + offset;
+        if (index < 0 || index >= LINES.size()) {
+            return "(no line)";
         }
+        return LINES.get(index);
     }
 
-    public static class PatternGroupPreview extends QueryPreview {
-        @Override
-        public String render(QueryStep step) {
-            PatternGroupParameter group = (PatternGroupParameter)
-                    step.getParameters().get(PatternGroupParameter.class);
+    // For "matching pattern" itself, which doesn't have a group of its own.
+    // Nothing is picked while it's highlighted, so it just prompts. It still
+    // reads the parameter though, because coming BACK to this pane after
+    // picking a group is a real thing, and then there is something to show.
+    private static String patternGroupPrompt(QueryStep step) {
+        PatternGroupParameter group = (PatternGroupParameter)
+                step.getParameters().get(PatternGroupParameter.class);
 
-            if (group == null) {
-                return "Pick a rhyme group from the poem.";
-            }
-
-            return switch (group.getPattern()) {
-                case "A (less)" -> "A (less)\n\nstarless\nnameless";
-                case "B (tion)" -> "B (tion)\n\nattention\ndevotion";
-                default -> "C (able)\n\nunspeakable\nfadeable";
-            };
+        if (group == null) {
+            return "Pick a rhyme group from the poem.";
         }
+
+        return patternGroupText(group.getPattern());
     }
 
-    @RequiredArgsConstructor
-    public static class WordPreview extends QueryPreview {
-        private final Word word;
+    // The lines already in that group. Takes the pattern instead of the step
+    // so a caller that knows its own group can just hand it over.
+    private static String patternGroupText(String pattern) {
+        return switch (pattern) {
+            case "A (less)" -> "<b>A (less)</b><br><br>starless<br>nameless";
+            case "B (tion)" -> "<b>B (tion)</b><br><br>attention<br>devotion";
+            default -> "<b>C (able)</b><br><br>unspeakable<br>fadeable";
+        };
+    }
 
-        @Override
-        public String render(QueryStep step) {
-            sleep(200);   // pretend we walked a dictionary and a thesaurus
+    // Came back with the lookup that built the step, so there's nothing to do
+    // here. Keep in mind the rhyme type is relative to whatever we're rhyming
+    // against, so it belongs to the lookup and not to the word itself.
+    private static String heading(Word candidate) {
+        return "<b>" + candidate.text() + "</b> &middot; <i>" + candidate.partOfSpeech() + "</i>";
+    }
 
-            return "<b>" + word.text() + "</b> &middot; <i>" + word.partOfSpeech() + "</i>\n"
-                    + word.syllables() + " syllables &middot; " + word.stress() + "\n"
-                    + word.rhymeType() + " rhyme &middot; " + word.ending() + "\n"
-                    + "\n"
-                    + word.definition() + "\n"
-                    + "\n"
-                    + "<i>Synonyms</i> &nbsp;" + String.join(", ", word.synonyms()) + "\n"
-                    + "<i>Also rhymes</i> &nbsp;" + String.join(", ", word.alsoRhymes()) + "\n"
-                    + "\n"
-                    + "<i>\u201c" + word.example() + "\u201d</i>\n"
-                    + "\n"
-                    + "<font color='#999999'>/" + word.arpaBet() + "/</font>";
+    private String syllables(net.cdahmedeh.poetwrite.lib.domain.Word word) {
+        return syllableAnalyzer.get(word).getNumberOfSyllables() + " syllables";
+    }
+
+    private String pronunciation(net.cdahmedeh.poetwrite.lib.domain.Word word) {
+        List<Phoneme> phonemes = phonemeAnalyzer.get(word).getPhonemes();
+
+        if (phonemes == null || phonemes.isEmpty()) {
+            return null;    // nothing to say, the piece gets dropped
         }
+
+        StringBuilder arpabet = new StringBuilder();
+        for (Phoneme phoneme : phonemes) {
+            if (arpabet.length() > 0) {
+                arpabet.append(' ');
+            }
+            arpabet.append(phoneme.getPhone());
+        }
+        return "<font color='#999999'>/" + arpabet + "/</font>";
+    }
+
+    private String definition(net.cdahmedeh.poetwrite.lib.domain.Word word) {
+        return definitionAnalyzer.get(word).getDefinition();
+    }
+
+    private String synonyms(net.cdahmedeh.poetwrite.lib.domain.Word word) {
+        return String.join(", ", synonymAnalyzer.get(word).getSynonyms());
+    }
+
+    private String rhymingWords(net.cdahmedeh.poetwrite.lib.domain.Word word) {
+        return String.join(", ", rhymingWordsAnalyzer.get(word).getRhymingWords());
     }
 
     /**
-     * A dictionary entry as the preview wants to show it. All demo data for
+     * A dictionary entry as the preview wants to show it.
+     *
+     * NOTE: Several of these fields are now dead weight. The definition, the
+     *       synonyms and the rhyme list moved out to their own analyses, so
+     *       the demo data here duplicates what the demo analyzers hold. Left
+     *       alone rather than trimmed because the real lookup will return
+     *       something much thinner than this anyway, probably little more than
+     *       the word and how well it rhymes, with everything else asked for
+     *       per row.
+     * All demo data for
      * now; the real one comes out of the CMU dictionary.
      */
     public record Word(String text,

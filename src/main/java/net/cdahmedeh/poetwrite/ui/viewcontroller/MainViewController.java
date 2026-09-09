@@ -31,6 +31,7 @@ import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
 import net.cdahmedeh.poetwrite.query.holder.AutoCompleteTreeHolder;
 import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryPreview;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.lib.domain.Line;
 import net.cdahmedeh.poetwrite.service.analyzer.DefinitionAnalyzer;
@@ -220,10 +221,21 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     // Called when we want to see the preview of a highlighted step.
-    public void previewQueryStep(QueryStep step) {
-        QueryPreviewedEvent event = new QueryPreviewedEvent(step);
+    // One task per piece of the highlighted step's preview.
+    //
+    // The wizard reads the list of pieces straight off the step, since
+    // registering one costs nothing, then asks for each one separately. So a
+    // piece that's already cached comes back almost instantly while one that
+    // has to walk a dictionary takes as long as it takes. Neither holds up the
+    // other.
+    //
+    // The piece does the work itself by calling whatever the step had
+    // injected. All this does is put it on the bus. Which is why adding a
+    // lookup to a preview needs nothing here at all.
+    public void previewQueryStep(QueryStep step, QueryPreview preview) {
+        QueryPreviewedEvent event = new QueryPreviewedEvent(step, preview);
         taskBus.submit("Preview: " + step.getName(), event, () -> {
-            event.setText(step.render());
+            event.setText(preview.render(step));
         });
     }
 

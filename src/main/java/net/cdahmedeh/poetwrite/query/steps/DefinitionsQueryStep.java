@@ -20,19 +20,31 @@
 
 package net.cdahmedeh.poetwrite.query.steps;
 
+import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.interfaces.*;
+import net.cdahmedeh.poetwrite.service.analyzer.SynonymAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.SyllableAnalyzer;
 import net.cdahmedeh.poetwrite.ui.constant.IconConstants;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * "definitions" branch: type a word, get its senses. Hard-coded dictionary.
  */
+@Singleton
 public class DefinitionsQueryStep extends QueryStep {
 
-    public DefinitionsQueryStep() {
+    private final SyllableAnalyzer syllableAnalyzer;
+    private final SynonymAnalyzer synonymAnalyzer;
+
+    @Inject
+    public DefinitionsQueryStep(SyllableAnalyzer syllableAnalyzer, SynonymAnalyzer synonymAnalyzer) {
         super("definitions");
+        this.syllableAnalyzer = syllableAnalyzer;
+        this.synonymAnalyzer = synonymAnalyzer;
         icon(IconConstants.DICTIONARY_ICON_PATH);
         search(QuerySearch::new);
         command(this::lookup);
@@ -50,7 +62,16 @@ public class DefinitionsQueryStep extends QueryStep {
 
         List<QueryStep> steps = new ArrayList<>();
         for (Sense sense : senses(typed)) {
-            steps.add(step(sense.label()).preview(() -> new SensePreview(sense)));
+            Word word = new Word(sense.word());
+
+            // First three came out of the lookup itself. Last two are real
+            // analyses, so they land on their own.
+            steps.add(step(sense.label())
+                    .preview(s -> "<b>" + sense.word() + "</b>")
+                    .preview(s -> "<i>" + sense.partOfSpeech() + "</i>")
+                    .preview(s -> sense.gloss())
+                    .preview("Syllables", s -> syllableAnalyzer.get(word).getNumberOfSyllables() + " syllables")
+                    .preview("Synonyms", s -> String.join(", ", synonymAnalyzer.get(word).getSynonyms())));
         }
         return steps;
     }
@@ -75,18 +96,4 @@ public class DefinitionsQueryStep extends QueryStep {
         }
     }
 
-    public static class SensePreview extends QueryPreview {
-        private final Sense sense;
-
-        public SensePreview(Sense sense) {
-            this.sense = sense;
-        }
-
-        @Override
-        public String render(QueryStep step) {
-            return "<b>" + sense.word() + "</b><br><br>"
-                    + "<i>" + sense.partOfSpeech() + "</i><br><br>"
-                    + sense.gloss();
-        }
-    }
 }
