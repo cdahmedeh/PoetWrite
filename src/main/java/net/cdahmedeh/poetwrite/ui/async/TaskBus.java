@@ -22,6 +22,8 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import lombok.SneakyThrows;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -51,6 +53,8 @@ import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class TaskBus {
+    private static final Logger LOG =  LoggerFactory.getLogger(TaskBus.class);
+
     // Artificial delay to keep short-running tasks visible in the UI for a bit.
     private static final long STATUS_DELAY_MILLIS = 160;
 
@@ -155,7 +159,7 @@ public class TaskBus {
      * Increment the total number of pending tasks.
      */
     private void queue(AppTask task) {
-        System.out.println(task.getName() + " queued");
+        LOG.debug("Task {} Queued", task.getName());
 
         TaskBusStatus status = this.monitor.getValue();
         status.queue();

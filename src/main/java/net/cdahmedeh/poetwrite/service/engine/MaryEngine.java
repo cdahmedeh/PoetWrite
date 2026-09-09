@@ -29,6 +29,8 @@ import net.cdahmedeh.poetwrite.service.interfaces.LazyService;
 import net.cdahmedeh.poetwrite.tools.XmlTools;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -114,6 +116,8 @@ import java.util.Locale;
  */
 @Singleton
 public class MaryEngine extends LazyService {
+    private static final Logger LOG = LoggerFactory.getLogger(MaryEngine.class);
+
     // Config Stuff
 
     // The default settings for MaryTTS, wondering if this one day could become
@@ -197,10 +201,8 @@ public class MaryEngine extends LazyService {
             // Every so often, I discover some SAMPA phoneme that has no ARPAbet
             // equivalent. So this is the point where I catch them. And then
             // it goes into the PhonemeConstants map.
-            //
-            // TODO: Make it a log output.
             if (phoneme.getPhone() == null) {
-                System.out.printf("Phoneme is null for %s.", element);
+                LOG.debug("Phoneme is null for {}", element);
             }
 
             phonemes.add(phoneme);

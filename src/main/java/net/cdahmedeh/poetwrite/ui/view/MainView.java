@@ -899,7 +899,6 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
             }
 
             @Override public void completed(QueryStep step) {
-                System.out.println("QUERY: " + step.getParameters().all());
                 close();
             }
 

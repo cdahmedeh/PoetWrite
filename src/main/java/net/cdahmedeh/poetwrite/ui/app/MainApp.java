@@ -32,6 +32,8 @@ import net.cdahmedeh.poetwrite.ui.viewcontroller.MainViewController;
 import net.cdahmedeh.poetwrite.ui.view.MainView;
 import net.cdahmedeh.poetwrite.ui.view.MenuView;
 import net.cdahmedeh.poetwrite.ui.view.StatusView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,11 +56,22 @@ import java.awt.*;
  *       to pass on the MVVM pieces to each other.
  */
 
+
+
 public class MainApp {
+    private static final Logger LOG = LoggerFactory.getLogger(MainApp.class);
+
     public static void main(String[] args) {
         System.out.println(LogConstants.LOG_WELCOME);
 
-        new MainApp().build();
+        MainApp app = new MainApp();
+
+        app.prepareLogging();
+        app.build();
+    }
+
+    private void prepareLogging() {
+        LOG.info(LogConstants.LOG_WELCOME);
     }
 
     /**
