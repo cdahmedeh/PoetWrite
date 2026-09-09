@@ -57,6 +57,10 @@ public class PoemSyllablesAnalyzer extends FeatureAnalyzer<Poem, PoemSyllablesAn
             counts.add(syllables);
         }
 
+        // Since the analysis gets re-used, the entries will just compound.
+        // TODO: Consider doing this in the analysis directly in the addAll.
+        analysis.getSyllables().clear();
+
         analysis.getSyllables().addAll(counts);
     }
 
