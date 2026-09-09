@@ -20,6 +20,7 @@ package net.cdahmedeh.poetwrite.ui.component;
 
 import net.cdahmedeh.poetwrite.query.event.QueryPreviewedEvent;
 import net.cdahmedeh.poetwrite.query.event.QueryStepExecutedEvent;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryPreview;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.constant.EditorConstants;
 
@@ -65,8 +66,8 @@ public final class QueryWizard extends JPanel {
         /** Ask for a step's column. Result comes back via deliver(..). */
         void execute(QueryStep step);
 
-        /** Ask for a step's preview text. Result comes back via deliver(..). */
-        void preview(QueryStep step);
+        /** Ask for ONE piece of a step's preview. Comes back via deliver(..). */
+        void preview(QueryStep step, QueryPreview preview);
 
         /** The user committed a terminal step. Its parameters are the full query. */
         void completed(QueryStep step);
@@ -118,10 +119,16 @@ public final class QueryWizard extends JPanel {
     private final List<StepPane> panes = new ArrayList<>();
 
     private JComponent previewBox;      // currently attached preview, or null
+    private JLabel previewContent;      // the label inside previewBox
     private QueryStep previewing;       // step we last asked a preview for
 
-    private Timer previewDotsTimer;     // cycles the preview's "Loading..." dots
-    private JLabel previewLoadingLabel; // non-null only while the preview is pending
+    // The preview being put together. Pieces come straight off the step, then
+    // each one's text lands separately. Anything missing from previewTexts is
+    // still out on the TaskBus and draws as a Loading line.
+    private List<QueryPreview> previewUnits = List.of();
+    private final Map<QueryPreview, String> previewTexts = new HashMap<>();
+
+    private Timer previewDotsTimer;     // cycles the "Loading..." dots
     private int previewDotCount = 1;
 
     /**
@@ -204,12 +211,15 @@ public final class QueryWizard extends JPanel {
         // Belongs to a pane that has since been popped.
     }
 
-    /** Called on the EDT by the View when a preview is ready. */
+    /** Called on the EDT by the View when ONE piece of a preview is done. */
     public void deliver(QueryPreviewedEvent event) {
         if (event.getStep() != previewing) {
             return; // the highlight has already moved on
         }
-        attachPreview(event.getText());
+        if (!previewUnits.contains(event.getPreview())) {
+            return; // belongs to a preview we have already replaced
+        }
+        applyPreview(event.getPreview(), event.getText());
     }
 
     // ------------------------------------------------------------------ flow
@@ -303,9 +313,18 @@ public final class QueryWizard extends JPanel {
     }
 
     // --------------------------------------------------------------- preview
+    //
+    // The step tells us what pieces its preview has, and then each piece comes
+    // back on its own whenever it's ready. So the box shows everything as
+    // Loading right away and fills them in one at a time, instead of sitting
+    // on a single Loading line until the slowest lookup in the whole preview
+    // is finished.
 
     private void detachPreview() {
         stopPreviewLoading();
+        previewUnits = List.of();
+        previewTexts.clear();
+        previewContent = null;
         if (previewBox != null) {
             remove(previewBox);
             previewBox = null;
@@ -316,62 +335,152 @@ public final class QueryWizard extends JPanel {
         if (previewDotsTimer != null) {
             previewDotsTimer.stop();
         }
-        previewLoadingLabel = null;
     }
 
     /**
-     * Puts the preview box up straight away, holding a loading row, so it does
-     * not pop into existence once the TaskBus is done. Same shape and size as
-     * the finished preview, so the packed window does not jump.
+     * Puts the whole box up at once with every piece saying Loading, then goes
+     * and asks for each one.
+     *
+     * The list of pieces comes straight off the step. Registering one just
+     * records a label and a lambda, so there's nothing to wait for and no
+     * round trip needed before we can draw the box.
      */
-    private void attachPreviewLoading() {
+    private void attachPreviewLoading(List<QueryPreview> previews) {
         detachPreview();
 
-        previewDotCount = 1;
-        previewLoadingLabel = new JLabel("Loading.");
-        previewLoadingLabel.setVerticalAlignment(JLabel.TOP);
-        previewLoadingLabel.setForeground(new Color(150, 150, 150)); // matches the "Searching..." row
+        previewUnits = List.copyOf(previews);
 
+        rebuildPreviewBox();
+        startPreviewLoading();
+
+        for (QueryPreview preview : previewUnits) {
+            listener.preview(previewing, preview);
+        }
+    }
+
+    /**
+     * One piece came back. Its height almost certainly changed, so the box has
+     * to be rebuilt and the window re-packed.
+     */
+    private void applyPreview(QueryPreview preview, String text) {
+        previewTexts.put(preview, text == null ? "" : text);
+        rebuildPreviewBox();
+
+        if (!previewPending()) {
+            stopPreviewLoading();
+        }
+    }
+
+    private boolean previewPending() {
+        for (QueryPreview preview : previewUnits) {
+            if (!previewTexts.containsKey(preview)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void startPreviewLoading() {
+        if (!previewPending()) {
+            return;
+        }
+
+        previewDotCount = 1;
         if (previewDotsTimer == null) {
+            // Only the text changes on a tick, never the layout. Otherwise
+            // we'd be repacking the window three times a second.
             previewDotsTimer = new Timer(350, e -> {
-                previewDotCount = (previewDotCount % 3) + 1;
-                if (previewLoadingLabel != null) {
-                    previewLoadingLabel.setText("Loading" + ".".repeat(previewDotCount));
+                if (previewContent != null && previewPending()) {
+                    previewDotCount = (previewDotCount % 3) + 1;
+                    // previewLabelText(..), NOT previewHtml(). The raw one
+                    // is a fragment with no <html> on it, and a JLabel will
+                    // happily draw the tags as text.
+                    previewContent.setText(previewLabelText(previewHtml()));
                 }
             });
         }
         previewDotsTimer.start();
+    }
 
-        previewBox = wrapPreview(previewLoadingLabel);
+    /**
+     * Rebuilds the box out of whatever has arrived so far. Only called when
+     * the content really changed, since it re-packs the window.
+     */
+    private void rebuildPreviewBox() {
+        if (previewBox != null) {
+            remove(previewBox);
+            previewBox = null;
+        }
+
+        previewContent = previewLabel(previewHtml());
+        previewBox = wrapPreview(previewContent);
         add(previewBox);
+
         revalidate();
         repaint();
         listener.layoutChanged();
     }
 
     /**
-     * The second half of the old refreshPreview(): the ask happens in
-     * StepPane.requestPreview(), and the text lands here when the TaskBus is
-     * done with it.
+     * The whole preview as one block of HTML. One chunk per declared piece,
+     * and anything still out on the TaskBus gets a Loading line in the same
+     * grey as the "Searching..." row in a pane.
+     *
+     * A piece that came back with nothing to say is dropped entirely instead
+     * of leaving an empty heading sitting there.
      */
-    private void attachPreview(String text) {
-        detachPreview();
-        if (text != null && !text.isBlank()) {
-            previewBox = wrapPreview(previewLabel(text));
-            add(previewBox);
+    private String previewHtml() {
+        StringBuilder html = new StringBuilder();
+
+        for (QueryPreview preview : previewUnits) {
+            boolean landed = previewTexts.containsKey(preview);
+            String text = previewTexts.get(preview);
+
+            if (landed && (text == null || text.isBlank())) {
+                continue;
+            }
+
+            html.append(gap(html));
+
+            if (preview.getLabel() != null) {
+                html.append("<font color='#9A9A9A'>").append(preview.getLabel()).append("</font><br>");
+            }
+
+            html.append(landed ? text : loadingHtml());
         }
-        revalidate();
-        repaint();
-        listener.layoutChanged();
+
+        return html.toString();
     }
 
-    private JComponent previewLabel(String text) {
-        // The explicit width is what makes long lines wrap -- a plain <html>
-        // label lays out on one line and gets clipped by the box.
-        JLabel label = new JLabel("<html><div style='width:" + (PREVIEW_WIDTH - 26) + "px'>"
-                + text.replace("\n", "<br>") + "</div></html>");
+    private String gap(StringBuilder html) {
+        return html.length() == 0 ? "" : "<br><br>";
+    }
+
+    private String loadingHtml() {
+        return "<font color='#969696'>Loading" + ".".repeat(previewDotCount) + "</font>";
+    }
+
+    private JLabel previewLabel(String text) {
+        JLabel label = new JLabel(previewLabelText(text));
         label.setVerticalAlignment(JLabel.TOP);
         return label;
+    }
+
+    /**
+     * Wraps a preview fragment in the bits a JLabel needs before it will treat
+     * it as HTML at all.
+     *
+     * previewHtml() returns a FRAGMENT on purpose, no <html> element, because
+     * it gets built up a piece at a time. Anything handing that to a label has
+     * to come through here first, otherwise Swing just sees text that happens
+     * to look like markup and draws the tags.
+     *
+     * The explicit width is what makes long lines wrap -- a plain <html> label
+     * lays out on one line and gets clipped by the box.
+     */
+    private String previewLabelText(String text) {
+        return "<html><div style='width:" + (PREVIEW_WIDTH - 26) + "px'>"
+                + text.replace("\n", "<br>") + "</div></html>";
     }
 
     private JComponent wrapPreview(JComponent content) {
@@ -644,8 +753,7 @@ public final class QueryWizard extends JPanel {
                 return;
             }
 
-            attachPreviewLoading();
-            listener.preview(selected);
+            attachPreviewLoading(selected.getPreviews());
         }
 
         void moveSelection(int direction) {

@@ -131,8 +131,8 @@ public class MainViewModel extends ViewModel {
     private PublishSubject<QueryStepExecutedEvent> queryStepExecuted = PublishSubject.create();
     public Observable<QueryStepExecutedEvent> queryStepExecuted() { return this.queryStepExecuted.hide(); }
 
-    // Once a preview for the selected step has been computed, this is what
-    // prepares for preview.
+    // One piece of the highlighted step's preview is done. Fires once per
+    // piece, so the wizard can fill the box in as things arrive.
     private PublishSubject<QueryPreviewedEvent> queryPreviewed = PublishSubject.create();
     public Observable<QueryPreviewedEvent> queryPreviewed() { return this.queryPreviewed.hide(); }
 

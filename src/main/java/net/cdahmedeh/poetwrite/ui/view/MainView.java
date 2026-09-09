@@ -39,6 +39,7 @@ import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Entity;
 import net.cdahmedeh.poetwrite.lib.domain.Line;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryPreview;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.component.*;
 import net.cdahmedeh.poetwrite.ui.constant.*;
@@ -855,7 +856,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 }));
         disposable.add(queryStepSubscriber);
 
-        // After the preview for the current step was made.
+        // After one piece of the highlighted step's preview is done.
         Disposable queryPreviewSubscriber = viewModel.queryPreviewed().subscribe(
                 event -> SwingUtilities.invokeLater(() -> {
                     if (wizard != null) {
@@ -893,8 +894,8 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                 viewController.executeQueryStep(step);
             }
 
-            @Override public void preview(QueryStep step) {
-                viewController.previewQueryStep(step);
+            @Override public void preview(QueryStep step, QueryPreview preview) {
+                viewController.previewQueryStep(step, preview);
             }
 
             @Override public void completed(QueryStep step) {

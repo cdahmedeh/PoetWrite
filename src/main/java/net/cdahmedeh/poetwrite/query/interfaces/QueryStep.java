@@ -41,6 +41,9 @@ import java.util.function.Supplier;
  * - A preview. A tooltip that shows up when this step is currently highlighted.
  *   This could for example, be the pattern group that is selected, or
  *   the definition of a highlighted word.
+ * - For the preview, multiple entries could be provided, to allow computing
+ *   the different parts of the preview in different events. Allowing for async
+ *   compute of different parts of the preview.
  *
  *  Very important, as the user steps through, parameters are stored based on
  *  user selections. As previous selections can affect the query. These
@@ -170,23 +173,44 @@ public abstract class QueryStep {
 
     // What is displayed if the query step has some kind of preview. Like a
     // definition of a word.
+    //
+    // A step can have SEVERAL of them. Each one gets its own task and shows up
+    // in the box on its own, so a slow dictionary lookup doesn't hold up a
+    // syllable count we already have. Call preview(..) once per piece, they
+    // show up in the order they were declared.
+    //
+    // Unlike steps(), commands and searches, this one is NOT wrapped in a
+    // supplier. Registering a piece just records a label and a lambda, which
+    // costs nothing, and the laziness that matters is inside the render
+    // anyway. Nice side effect of that: the wizard can read the list straight
+    // off the step on the EDT and draw the whole box as Loading before
+    // anything has even been asked for.
     // -------------------------------------------------------------------------
 
-    private Supplier<QueryPreview> preview = () -> null;
-    private boolean previewed = false;
+    private final List<QueryPreview> previews = new ArrayList<>();
 
-    public QueryStep preview(Supplier<QueryPreview> preview) {
-        this.preview = preview;
-        this.previewed = true;
+    /**
+     * A piece with no heading. A title line, a closing quote, anything that
+     * reads as a plain paragraph.
+     */
+    public QueryStep preview(QueryPreview.Render render) {
+        return preview(null, render);
+    }
+
+    /**
+     * A piece with a little grey heading above it.
+     */
+    public QueryStep preview(String label, QueryPreview.Render render) {
+        previews.add(new QueryPreview(label, render));
         return this;
     }
 
-    public QueryPreview getPreview() {
-        return preview.get();
+    public List<QueryPreview> getPreviews() {
+        return previews;
     }
 
     public boolean hasPreview() {
-        return previewed;
+        return !previews.isEmpty();
     }
 
     // Display icon
@@ -221,11 +245,8 @@ public abstract class QueryStep {
         return steps;
     }
 
-    // The other visiual part, showing the preview of a step. Again, a
-    // controller calls this.
-    // WRAP IT IN A TASKBUS
-    public String render() {
-        QueryPreview preview = getPreview();
-        return preview == null ? null : preview.render(this);
-    }
+    // The preview used to be rendered here, one blocking call that produced the
+    // whole block of text. A step has a list of previews now and each one is
+    // rendered on its own task, so there's nothing left to do at this level.
+    // See QueryPreview and MainViewController.previewQueryStep(..).
 }

@@ -21,17 +21,24 @@ package net.cdahmedeh.poetwrite.query.event;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.cdahmedeh.poetwrite.query.interfaces.QueryPreview;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
- * Called when an auto-complete preview has been computed and sent to the
- * UI.
+ * Called when auto-complete preview has been computed and sent to the UI.
+ *
+ * Now designed in such a way that previews can be sent pieceeal, so that
+ * different parts can be computed individually. Different previews can take
+ * different amounts of time.
  */
 @RequiredArgsConstructor
 public class QueryPreviewedEvent extends AppEvent {
     @Getter
     private final QueryStep step;
+
+    @Getter
+    private final QueryPreview preview;
 
     @Getter @Setter
     private String text;
