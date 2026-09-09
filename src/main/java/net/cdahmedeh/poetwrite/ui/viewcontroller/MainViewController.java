@@ -34,7 +34,10 @@ import net.cdahmedeh.poetwrite.query.event.QueryTreeBuiltEvent;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.lib.domain.Line;
 import net.cdahmedeh.poetwrite.service.analyzer.DefinitionAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.LineAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.MeterAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.RhymeGroupAnalyzer;
+import net.cdahmedeh.poetwrite.service.analyzer.VerseAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PartOfSpeechAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PatternAnalyzer;
 import net.cdahmedeh.poetwrite.service.analyzer.PoemAnalyzer;
@@ -71,8 +74,12 @@ public class MainViewController extends ViewController<MainViewModel> {
     private final PartOfSpeechAnalyzer partOfSpeechAnalyzer;
     private final MeterAnalyzer meterAnalyzer;
 
+    private final LineAnalyzer lineAnalyzer;
+    private final RhymeGroupAnalyzer rhymeGroupAnalyzer;
+    private final VerseAnalyzer verseAnalyzer;
+
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder, DefinitionAnalyzer definitionAnalyzer, PartOfSpeechAnalyzer partOfSpeechAnalyzer, MeterAnalyzer meterAnalyzer) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder, DefinitionAnalyzer definitionAnalyzer, PartOfSpeechAnalyzer partOfSpeechAnalyzer, MeterAnalyzer meterAnalyzer, LineAnalyzer lineAnalyzer, RhymeGroupAnalyzer rhymeGroupAnalyzer, VerseAnalyzer verseAnalyzer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
@@ -84,6 +91,9 @@ public class MainViewController extends ViewController<MainViewModel> {
         this.definitionAnalyzer = definitionAnalyzer;
         this.partOfSpeechAnalyzer = partOfSpeechAnalyzer;
         this.meterAnalyzer = meterAnalyzer;
+        this.lineAnalyzer = lineAnalyzer;
+        this.rhymeGroupAnalyzer = rhymeGroupAnalyzer;
+        this.verseAnalyzer = verseAnalyzer;
     }
 
     /**
@@ -119,23 +129,55 @@ public class MainViewController extends ViewController<MainViewModel> {
     }
 
     public void getDefinition(Word word) {
-        HoverAnalyzedEvent event = new HoverAnalyzedEvent(word);
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent();
         taskBus.submit("Definition: " + word.getWord(), event, () -> {
             event.setAnalysis(definitionAnalyzer.get(word));
         });
     }
 
-    public void getPartOfSpeech(Word word, Line line) {
-        HoverAnalyzedEvent event = new HoverAnalyzedEvent(word);
-        taskBus.submit("Part of Speech: " + word.getWord(), event, () -> {
+    // Takes only the Line now. The Word used to be here to fill the event, and
+    // the event no longer has one, so asking for a line-level analysis no
+    // longer means having a word in hand. Which is exactly what the gutter
+    // needs, since hovering a gutter row has no word anywhere near it.
+    public void getPartOfSpeech(Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent();
+        taskBus.submit("Part of Speech: " + line.getText(), event, () -> {
             event.setAnalysis(partOfSpeechAnalyzer.get(line));
         });
     }
 
-    public void getMeter(Word word, Line line) {
-        HoverAnalyzedEvent event = new HoverAnalyzedEvent(word);
-        taskBus.submit("Meter: " + word.getWord(), event, () -> {
+    // Shared by both tooltips. Hover a word, then hover its gutter row, and
+    // the meter is already in the cache so that row draws immediately.
+    public void getMeter(Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent();
+        taskBus.submit("Meter: " + line.getText(), event, () -> {
             event.setAnalysis(meterAnalyzer.get(line));
+        });
+    }
+
+    // GUTTER HOVER ------------------------------------------------------------
+    //
+    // Same three lines each, same event, same everything. The only difference
+    // from the word tooltip is which analyses get asked for.
+
+    public void getLineSyllables(Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent();
+        taskBus.submit("Line Syllables: " + line.getText(), event, () -> {
+            event.setAnalysis(lineAnalyzer.get(line));
+        });
+    }
+
+    public void getRhymeGroup(Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent();
+        taskBus.submit("Rhyme Group: " + line.getText(), event, () -> {
+            event.setAnalysis(rhymeGroupAnalyzer.get(line));
+        });
+    }
+
+    public void getVerse(Line line) {
+        HoverAnalyzedEvent event = new HoverAnalyzedEvent();
+        taskBus.submit("Verse: " + line.getText(), event, () -> {
+            event.setAnalysis(verseAnalyzer.get(line));
         });
     }
 

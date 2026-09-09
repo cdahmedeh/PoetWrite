@@ -25,13 +25,16 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.border.Border;
 import javax.swing.text.Element;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * DISCLOSURE: some of the code in here was written with the help of Claude.
@@ -161,6 +164,160 @@ public class PoemGutter extends JComponent {
     public void setPattern(List<String> pattern) {
         this.pattern = pattern;
         refresh();
+    }
+
+    // -------------------------------------------------------------- tooltip
+    //
+    // Same arrangement as PoemTextArea. This component knows the geometry, so
+    // it answers "which line is the pointer on" and where the tooltip should
+    // be anchored, and the view supplies the text. Everything about what goes
+    // IN the tooltip, and the whole async dance behind it, lives in the view
+    // exactly like the word tooltip.
+    //
+    // JComponent has no ToolTipSupplier the way RSyntaxTextArea does, so this
+    // is the same idea done by hand: a callback the view installs, consulted
+    // from getToolTipText(..).
+
+    private Function<MouseEvent, String> toolTipSupplier;
+
+    // Document line the tooltip is currently anchored to, or -1. Set by the
+    // view from inside the supplier, same as PoemTextArea's hovered word.
+    private int hoveredLine = -1;
+
+    public void setToolTipSupplier(Function<MouseEvent, String> toolTipSupplier) {
+        this.toolTipSupplier = toolTipSupplier;
+    }
+
+    public void setHoveredLine(int hoveredLine) {
+        this.hoveredLine = hoveredLine;
+    }
+
+    @Override
+    public String getToolTipText(MouseEvent event) {
+        return toolTipSupplier == null ? null : toolTipSupplier.apply(event);
+    }
+
+    /**
+     * The document line under a point in this component, or -1 if there isn't
+     * one.
+     *
+     * The gutter shares its vertical coordinate system with the text area,
+     * which is the whole trick that makes this component work, so the line at
+     * a y here is the line at that same y in the editor. The x is forced to 0
+     * so the answer is the first character of the visual row rather than
+     * whatever column the pointer happens to be over.
+     */
+    public int lineAt(Point point) {
+        int offset = textArea.viewToModel2D(new Point(0, point.y));
+
+        if (offset < 0) {
+            return -1;
+        }
+
+        Element root = textArea.getDocument().getDefaultRootElement();
+        int line = root.getElementIndex(offset);
+
+        // Past the last line, viewToModel2D clamps to the end of the document
+        // rather than failing, which would otherwise light up the last line
+        // for the whole empty area below the poem.
+        try {
+            Rectangle2D rect = textArea.modelToView2D(root.getElement(line).getStartOffset());
+            if (rect == null || point.y >= rect.getY() + rect.getHeight() * wrappedRows(line)) {
+                return -1;
+            }
+        } catch (BadLocationException e) {
+            return -1;
+        }
+
+        return line;
+    }
+
+    /**
+     * How many visual rows a logical line occupies, so lineAt(..) can tell the
+     * bottom of a wrapped line from the empty space under the poem.
+     */
+    private int wrappedRows(int line) {
+        Element element = textArea.getDocument().getDefaultRootElement().getElement(line);
+        try {
+            Rectangle2D start = textArea.modelToView2D(element.getStartOffset());
+            Rectangle2D end = textArea.modelToView2D(Math.max(element.getStartOffset(),
+                    element.getEndOffset() - 1));
+            if (start == null || end == null || start.getHeight() <= 0) {
+                return 1;
+            }
+            return (int) Math.max(1, Math.round((end.getY() - start.getY()) / start.getHeight()) + 1);
+        } catch (BadLocationException e) {
+            return 1;
+        }
+    }
+
+    /**
+     * Anchors the tooltip just under the hovered row, lined up with the left
+     * edge of the gutter. Mirrors PoemTextArea.getToolTipLocation(..), which
+     * anchors under the hovered word.
+     */
+    @Override
+    public Point getToolTipLocation(MouseEvent event) {
+        if (hoveredLine < 0) {
+            return null; // default placement
+        }
+
+        Element root = textArea.getDocument().getDefaultRootElement();
+        if (hoveredLine >= root.getElementCount()) {
+            return null;
+        }
+
+        try {
+            Border border = UIManager.getBorder("ToolTip.border");
+            Insets insets = border != null
+                    ? border.getBorderInsets(this)
+                    : new Insets(0, 0, 0, 0);
+
+            Rectangle2D rect = textArea.modelToView2D(root.getElement(hoveredLine).getStartOffset());
+            if (rect == null) {
+                return null;
+            }
+
+            int lineHeight = (int) Math.round(rect.getHeight());
+
+            int x = HORIZONTAL_PADDING
+                    - insets.left
+                    - EditorConstants.TOOLTIP_HTML_FUDGE_X;
+            int y = (int) Math.round(rect.getY())
+                    + lineHeight
+                    + Math.round(lineHeight * EditorConstants.TOOLTIP_LINE_GAP_FACTOR);
+
+            return new Point(x, y);
+        } catch (BadLocationException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Nudges Swing into asking the tooltip supplier again, once an analysis
+     * has come back off the TaskBus.
+     *
+     * Identical to PoemTextArea.refreshToolTip(..), including the reason: the
+     * tooltip is already up showing Loading, there is no public way to poke
+     * text into one that is showing, so the last mouse move gets replayed at
+     * the ToolTipManager and it re-asks. Still Swing's own JToolTip with the
+     * post-it styling, and the timing is untouched because the tooltip is
+     * already visible when this runs.
+     */
+    public void refreshToolTip(MouseEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        // The pointer may have left the gutter while the task was running.
+        // Leaving fires no move, so the view still thinks that line is
+        // hovered, and replaying the move would pop a tooltip up over a gutter
+        // nobody is pointing at.
+        if (getMousePosition() == null) {
+            return;
+        }
+
+        ToolTipManager.sharedInstance().mouseMoved(event);
     }
 
     private void refresh() {

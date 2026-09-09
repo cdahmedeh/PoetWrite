@@ -28,12 +28,16 @@ import net.cdahmedeh.poetwrite.annotation.Helped;
 import net.cdahmedeh.poetwrite.annotation.Draft;
 import net.cdahmedeh.poetwrite.annotation.Duplicated;
 import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.LineAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.LineMeterAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.LineRhymeGroupAnalysis;
+import net.cdahmedeh.poetwrite.lib.analysis.LineVerseAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.LinePartOfSpeechAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PatternAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.WordDefinitionAnalysis;
 import net.cdahmedeh.poetwrite.lib.analysis.PoemSyllablesAnalysis;
 import net.cdahmedeh.poetwrite.lib.domain.Entity;
+import net.cdahmedeh.poetwrite.lib.domain.Line;
 import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.query.interfaces.QueryStep;
 import net.cdahmedeh.poetwrite.ui.component.*;
@@ -50,6 +54,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -107,6 +112,13 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // The last mouse move over a word, kept so the tooltip can be re-asked for
     // once the analyses land. See PoemTextArea.refreshToolTip(..).
     private MouseEvent hoverEvent;
+
+    // The same three things again for the gutter. The line under the pointer,
+    // and the last mouse move over it. The analyses themselves go in the SAME
+    // hoverAnalyses map above rather than a second one, which is what makes
+    // hovering a word and then its gutter row draw the shared rows instantly.
+    private Line gutterHovered;
+    private MouseEvent gutterHoverEvent;
 
     // Where the poem is actually written. Including gutter.
     private PoemTextArea textArea;
@@ -176,6 +188,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         textAreaScrollPane.setColumnHeaderView(poemGutter.createTextHeader());
         textAreaScrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, poemGutter.createHeader());
         textAreaScrollPane.setRowHeaderView(poemGutter);
+        setupGutterHover();
 
         // Some styling tweaks to get rid of the borders
         textAreaScrollPane.putClientProperty("FlatLaf.style", "focusWidth: 0");
@@ -365,11 +378,11 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         // another word on a line already looked at draws both immediately and
         // only the definition is asked for.
         if (hoverAnalysis(LinePartOfSpeechAnalysis.class, context.getLine()) == null) {
-            viewController.getPartOfSpeech(context.getWord(), context.getLine());
+            viewController.getPartOfSpeech(context.getLine());
         }
 
         if (hoverAnalysis(LineMeterAnalysis.class, context.getLine()) == null) {
-            viewController.getMeter(context.getWord(), context.getLine());
+            viewController.getMeter(context.getLine());
         }
     }
 
@@ -378,6 +391,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     private void setHoverIndex(NavigableMap<Integer, HoverContext> index) {
         hoverIndex = index;
         clearHover();
+        clearGutterHover();
     }
 
     private void clearHover() {
@@ -394,9 +408,12 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         // to be asked for a second time.
         hoverAnalyses.put(event.getAnalysis().getClass(), event.getAnalysis());
 
-        if (isHovering(event.getWord())) {
-            textArea.refreshToolTip(hoverEvent);
-        }
+        // Which of the two tooltips wants this is not worth working out. Both
+        // refreshes are no-ops unless the pointer is actually over that
+        // component, and the one that is showing re-asks its supplier and
+        // redraws whatever it can now draw.
+        textArea.refreshToolTip(hoverEvent);
+        poemGutter.refreshToolTip(gutterHoverEvent);
     }
 
     // Whether that word is the one under the pointer right now. Compared by
@@ -429,16 +446,169 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
         StringBuilder html = new StringBuilder("<html>");
         html.append("<b>").append(context.getWord().getWord()).append("</b>");
 
-        html.append(row("Definition",
+        html.append(row(html, "Definition",
                 definition == null ? null : definition.getDefinition()));
 
-        html.append(row("Part of Speech",
+        html.append(row(html, "Part of Speech",
                 partOfSpeech == null ? null : italic(partOfSpeech.getTag(context.getWord()))));
 
-        html.append(row("Meter",
+        html.append(row(html, "Meter",
                 meter == null ? null : meter.getMeter()));
 
         return html.append("</html>").toString();
+    }
+
+    // GUTTER HOVER ------------------------------------------------------------
+    //
+    // The same thing as the word tooltip, one column to the left. Hovering a
+    // row in the gutter says what that LINE is: its rhyme group, its syllable
+    // count, which verse it belongs to, its meter.
+    //
+    // Everything about how it works is the same. The supplier answers Swing
+    // immediately with rows that say Loading, the analyses come back off the
+    // TaskBus one at a time, and each arrival re-asks the supplier so that row
+    // fills in. Same appearance too, since the UIManager keys setupHover()
+    // pushes are global to tooltips.
+    //
+    // Worth noting what is NOT duplicated: no second analyses map, no second
+    // event, no second delivery path. The word tooltip and this one both drop
+    // their answers in hoverAnalyses and both get refreshed by deliverHover().
+    // That falls out of the analyses being keyed on entities rather than on
+    // which tooltip asked, so the meter of a line is the meter of that line no
+    // matter which of the two went looking for it.
+    private void setupGutterHover() {
+        poemGutter.setToolTipSupplier(event -> {
+            int documentLine = poemGutter.lineAt(event.getPoint());
+            Line line = lineAt(documentLine);
+
+            // Below the poem, or on a line the parser produced nothing for.
+            if (line == null) {
+                clearGutterHover();
+                return null;
+            }
+
+            poemGutter.setHoveredLine(documentLine);
+            gutterHoverEvent = event;
+
+            if (!isHoveringLine(line)) {
+                requestGutterHover(line);
+            }
+
+            return renderGutterTooltip(line);
+        });
+
+        ToolTipManager.sharedInstance().registerComponent(poemGutter);
+    }
+
+    // Ask for whatever cannot already be drawn, same rule as requestHover(..).
+    // Hovering down the gutter re-asks for each new line, but hovering back
+    // onto a line already looked at draws every row at once.
+    private void requestGutterHover(Line line) {
+        gutterHovered = line;
+
+        if (hoverAnalysis(LineRhymeGroupAnalysis.class, line) == null) {
+            viewController.getRhymeGroup(line);
+        }
+
+        if (hoverAnalysis(LineAnalysis.class, line) == null) {
+            viewController.getLineSyllables(line);
+        }
+
+        if (hoverAnalysis(LineVerseAnalysis.class, line) == null) {
+            viewController.getVerse(line);
+        }
+
+        // Shared with the word tooltip. Hover a word first and this is already
+        // in the map, so the row is drawn straight away and never asked for.
+        if (hoverAnalysis(LineMeterAnalysis.class, line) == null) {
+            viewController.getMeter(line);
+        }
+    }
+
+    private void clearGutterHover() {
+        gutterHovered = null;
+        poemGutter.setHoveredLine(-1);
+    }
+
+    // Compared on the line's text, same as isHovering(..) does for a word, so
+    // a re-parse that rebuilds the entity tree does not invalidate what is on
+    // screen but a real edit to the line does.
+    private boolean isHoveringLine(Line line) {
+        return gutterHovered != null && gutterHovered.getText().equals(line.getText());
+    }
+
+    // The Line entity for a document line, or null if there isn't one.
+    //
+    // Reuses the hover index rather than building a second one. The index is
+    // keyed on word positions, so this finds the first word starting at or
+    // after the document line's first character and takes its Line, as long as
+    // that word is still inside the line. A blank line has no words and so has
+    // no entity to show, which is the right answer anyway.
+    private Line lineAt(int documentLine) {
+        if (documentLine < 0) {
+            return null;
+        }
+
+        Element root = textArea.getDocument().getDefaultRootElement();
+        if (documentLine >= root.getElementCount()) {
+            return null;
+        }
+
+        Element element = root.getElement(documentLine);
+        Map.Entry<Integer, HoverContext> entry = hoverIndex.ceilingEntry(element.getStartOffset());
+
+        if (entry == null || entry.getKey() >= element.getEndOffset()) {
+            return null;
+        }
+
+        return entry.getValue().getLine();
+    }
+
+    // The gutter tooltip, built out of whatever has come back so far. Same
+    // deal as renderTooltip(..): rows in a fixed order, Loading for anything
+    // still out on the bus.
+    //
+    // Adding a row is a line here plus a line in requestGutterHover(..).
+    private String renderGutterTooltip(Line line) {
+        LineRhymeGroupAnalysis rhyme = hoverAnalysis(LineRhymeGroupAnalysis.class, line);
+        LineAnalysis syllables = hoverAnalysis(LineAnalysis.class, line);
+        LineVerseAnalysis verse = hoverAnalysis(LineVerseAnalysis.class, line);
+        LineMeterAnalysis meter = hoverAnalysis(LineMeterAnalysis.class, line);
+
+        // No heading. The word tooltip puts the word in bold at the top, but
+        // the equivalent here is the whole line, which would make the tooltip
+        // as wide as the poem for no real gain. The pointer is already on the
+        // row, so there is no doubt about which line this is about.
+        StringBuilder html = new StringBuilder("<html>");
+
+        html.append(row(html, "Rhyming Pattern",
+                rhyme == null ? null : rhymeGroup(rhyme)));
+
+        html.append(row(html, "Syllables",
+                syllables == null ? null : String.valueOf(syllables.getTotalSyllables())));
+
+        html.append(row(html, "Verse",
+                verse == null ? null : verseText(verse)));
+
+        html.append(row(html, "Meter",
+                meter == null ? null : meter.getMeter()));
+
+        return html.append("</html>").toString();
+    }
+
+    // "A - ions", or a plain statement when the line rhymes with nothing.
+    private String rhymeGroup(LineRhymeGroupAnalysis analysis) {
+        if (analysis.getGroup() == null) {
+            return italic("no group");
+        }
+        return analysis.getGroup() + " - " + analysis.getSound();
+    }
+
+    private String verseText(LineVerseAnalysis analysis) {
+        if (analysis.getVerse() == 0) {
+            return italic("not in a verse");
+        }
+        return "Verse " + analysis.getVerse();
     }
 
     // One heading and its text. A null body means the analysis is still out on
@@ -448,8 +618,13 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
     // TODO: The wizard animates the dots. Doing that here means driving a
     //       Timer against a tooltip that Swing owns, so it is left alone for
     //       now.
-    private String row(String name, String body) {
-        return "<br><br><font color='#9A9A9A'>" + name + "</font><br>"
+    private String row(StringBuilder html, String name, String body) {
+        // No gap before the first row. The word tooltip has a bold heading
+        // above its rows so it always needs one, the gutter tooltip has no
+        // heading and would otherwise open with an empty line.
+        String gap = html.length() > "<html>".length() ? "<br><br>" : "";
+
+        return gap + "<font color='#9A9A9A'>" + name + "</font><br>"
                 + (body == null ? "<font color='#969696'>Loading...</font>" : body);
     }
 
