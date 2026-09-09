@@ -22,12 +22,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.cdahmedeh.poetwrite.lib.analysis.FeatureAnalysis;
-import net.cdahmedeh.poetwrite.lib.domain.Word;
 import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
 
 /**
  * Various analysis are done for a single word when hovering over it in the
- * editor.
+ * editor, and for a single line when hovering over its row in the gutter.
  *
  * For example, the meaning, the part of speech, or information about metering.
  * The requests for getting that information all done at the same time, but
@@ -39,14 +38,14 @@ import net.cdahmedeh.poetwrite.ui.event.interfaces.AppEvent;
  * and the UI takes care of determining which type it is.
  *
  * TODO: Still consider keeping it seperated. It's just that this is so clean
- *      but breaks our convention a little bit. I don't like that the UI
- *      is aware of the analysis type or even has to check for it.
+ *       but breaks our convention a little bit. I don't like that the UI
+ *       is aware of the analysis type or even has to check for it.
+ * NOTE: You'd expect the Entity to be part of the event, but the analysis
+ *       already knows that. Also means we can have different types of hovers.
+ *       Such as hovering over a single word, or an entire line in the gutter.
  */
 @RequiredArgsConstructor
 public class HoverAnalyzedEvent extends AppEvent {
-    @Getter
-    private final Word word;
-
     @Getter @Setter
     private FeatureAnalysis analysis;
 }
