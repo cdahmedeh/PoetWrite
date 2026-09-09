@@ -33,6 +33,10 @@ import lombok.ToString;
  *
  * This entity will change a lot probably once we get to the point where we do
  * some parsing and represent the poem as an object structure.
+ *
+ * TODO: Add equality for word. (Need to be careful because some word properties
+ *       like parts of speech can be based on the line. That's why the tags are
+ *       currently in Line right now.
  */
 @ToString
 public class Word implements Entity {
