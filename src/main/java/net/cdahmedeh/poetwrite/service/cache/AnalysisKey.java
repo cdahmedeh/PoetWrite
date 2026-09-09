@@ -33,8 +33,9 @@ import net.cdahmedeh.poetwrite.lib.domain.Entity;
  * See the documentation for details on the cache implementation.
  * Poem Analysis Implementation and Cache Design - /docs/entity-architecture.md
  *
- * TODO: There's no fancy implementation here yet, I don't know what the
- * performance is like yet. So we're just letting Lombok do the job for us.
+ * TODO: There's no fancy comparison implementation here yet, I don't know what
+ *       the performance is like yet. So we're just letting Lombok do the job
+ *       for us.
  */
 @RequiredArgsConstructor(staticName = "of")
 @EqualsAndHashCode
