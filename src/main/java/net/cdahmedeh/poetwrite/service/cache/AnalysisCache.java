@@ -107,6 +107,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * FeatureAnalysis class has a constructor with a single parameter
  * of type Entity.
  *
+ * TODO: Should also consider using compute if absent for thread safety.
+ * TODO: The reflective operation exception should be handled in some way. Not
+ *       because it's supposed to be impossible. But I've made the mistake of
+ *       forgetting to create a default constrctur so many times.
+ *
  * @author Ahmed El-Hajjar
  */
 @Singleton
@@ -115,7 +120,7 @@ public class AnalysisCache {
     @Inject
     public AnalysisCache() {}
 
-    private Map<AnalysisKey, FeatureAnalysis> cache = new ConcurrentHashMap<>();
+    private final Map<AnalysisKey, FeatureAnalysis> cache = new ConcurrentHashMap<>();
 
     @SneakyThrows
     public <E extends Entity, A extends FeatureAnalysis> A get(E entity, Class<A> analysisClass) {
