@@ -60,6 +60,12 @@ public class Line implements Entity {
     @Getter
     private final List<Node> nodes = Lists.newArrayList();
 
+    // The line number of the poem. Keep in mind that it is index 1 based.
+    // Lines that are empty or have no words are counted. Their line is based
+    // on what is in the editor. Not based on the content.
+    @Getter
+    private final Integer number;
+
     /**
      * Gets the last word of a line.
      *
@@ -92,6 +98,12 @@ public class Line implements Entity {
             }
         }
         return allWords;
+    }
+
+    // Check if the Line has words. As some lines can be blank or only have
+    // notes and comments.
+    public boolean hasWords() {
+        return getAllWords().size() > 0;
     }
 
     // TODO: Right now, the lines are compared using the text directly, rather

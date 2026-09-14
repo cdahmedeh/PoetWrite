@@ -73,7 +73,10 @@ public class PoemExtendedVisitor extends PoemBaseVisitor<Object> {
 
     @Override
     public Object visitLine(PoemParser.LineContext ctx) {
-        Line line = new Line(sourceText(ctx));
+        // Line number is pulled directly from the parser.
+        // NOTE: Keep in mind that ANTRL reports the first line as 1, not 0.
+        int lineNumber = ctx.getStart().getLine();
+        Line line = new Line(sourceText(ctx), lineNumber);
 
         for (var child : ctx.children) {
             Object result = child.accept(this);
