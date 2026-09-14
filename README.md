@@ -29,7 +29,7 @@ The current focus is on architecture and design, which is nearing completion. I 
 
 ## Development
 
-PoetWrite is an open-querySource project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
+PoetWrite is an open-source project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
 
 The design is UX first, meaning that the user-experience dictates the design and architecture of the application rather than the other way around. Throughout the development, you'll see [wireframes](/docs/ux-wireframes.md) being added into the repository. 
 
