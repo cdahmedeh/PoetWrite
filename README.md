@@ -39,7 +39,7 @@ As a technical writer, I believe that good documentation is part of the developm
 
 As the first iteration of early PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! 
 
-This demonstrates PoetWrite's minimalist editor. But along with powerful rhetorical analysis features, and an auto-complete wizard-style lexicographic assistance system. And of course, the ridiculous responsiveness of the UI.
+This demonstrates PoetWrite's minimalist and very responsive editor. But along with powerful rhetorical analysis features, and an auto-complete wizard-style lexicographic assistance system.
 
 ![PoetWrite Demo](./assets/poetwrite-demo.gif)
 
