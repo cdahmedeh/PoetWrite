@@ -51,6 +51,8 @@ import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
 import org.fife.ui.rsyntaxtextarea.*;
 
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -683,6 +685,17 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
             }
         });
 
+        // When the user selected another line by moving the cursor, let the
+        // service know.
+        // NOTE: TextArea reports the first line as zero. While ANTLR starts
+        //       at 1. For consistency, Line also has 1 starting index.
+        textArea.addCaretListener(new CaretListener() {
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                viewController.updateStatus(textArea.getCaretLineNumber() + 1);
+            }
+        });
+
         // Remember how the close operationg wsa set to DO_NOTHING_ON_CLOSE?
         // This is where the actual closing flow is done.
         frame.addWindowListener(new WindowAdapter() {
@@ -755,6 +768,7 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                     viewController.analyzeSyllables(poem);
                     viewController.analyzePattern(poem);
                     viewController.indexPoem(poem);
+                    viewController.updateStatus(poem);
                 }
         );
         disposable.add(poemSubscriber);
@@ -864,6 +878,12 @@ public class MainView extends View<MainViewModel, MainViewController, JFrame> {
                     }
                 }));
         disposable.add(queryPreviewSubscriber);
+
+        Disposable editorStatusChangedSubscriber = viewModel.statusChanged().subscribe(
+                event -> {
+                    // Do nothing
+                }
+        );
     }
 
     // Shows the auto-completed wizard. The request to display come from the

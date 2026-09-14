@@ -143,6 +143,12 @@ public class MainViewModel extends ViewModel {
     public Observable<QueryStep> queryTreeBuilt() { return this.queryTreeBuilt.hide(); }
     // END OF AUTO-COMPLETE STUFF
 
+    // When the user changes what line they're on based on the cursor position,
+    // there's an event that is thrown into the TaskBus via the controller
+    // when the view detects it.
+    private PublishSubject<Boolean> statusChanged = PublishSubject.create();
+    public Observable<Boolean> statusChanged() { return this.statusChanged.hide(); }
+
     @AssistedInject
     public MainViewModel(TaskBus taskBus) {
         super(taskBus);
@@ -276,6 +282,13 @@ public class MainViewModel extends ViewModel {
         if (event instanceof FileEvent fileEvent) {
             this.fileName.onNext(fileEvent.getFile());
             this.fileStatus.onNext(fileEvent.getFileStatus());
+        }
+
+        // Announce when the cursor is moved or when the Poem is parsed or a
+        // different line is selected by moving the cursor. Comes from the loop
+        // from the View all the back way from the TaskBus.
+        if (event instanceof EditorStatusChangedEvent editorStatusChangedEvent) {
+            this.statusChanged.onNext(true);
         }
     }
 }

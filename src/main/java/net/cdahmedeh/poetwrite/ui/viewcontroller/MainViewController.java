@@ -51,6 +51,7 @@ import net.cdahmedeh.poetwrite.ui.event.file.SaveFileEvent;
 import net.cdahmedeh.poetwrite.ui.event.request.AutoCompleteWizardRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.event.request.SaveFileRequestedEvent;
 import net.cdahmedeh.poetwrite.ui.services.ApplicationHandler;
+import net.cdahmedeh.poetwrite.ui.services.EditorStatusHolder;
 import net.cdahmedeh.poetwrite.ui.services.PersistenceManager;
 import net.cdahmedeh.poetwrite.ui.async.TaskBus;
 import net.cdahmedeh.poetwrite.ui.viewmodel.MainViewModel;
@@ -62,6 +63,7 @@ import java.util.NavigableMap;
 public class MainViewController extends ViewController<MainViewModel> {
     private final ApplicationHandler applicationHandler;
     private final PersistenceManager persistenceManager;
+    private final EditorStatusHolder editorStatusHolder;
 
     private final PoemSyllablesAnalyzer poemSyllablesAnalyzer;
     private final PatternAnalyzer patternAnalyzer;
@@ -80,10 +82,11 @@ public class MainViewController extends ViewController<MainViewModel> {
     private final VerseAnalyzer verseAnalyzer;
 
     @AssistedInject
-    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder, DefinitionAnalyzer definitionAnalyzer, PartOfSpeechAnalyzer partOfSpeechAnalyzer, MeterAnalyzer meterAnalyzer, LineAnalyzer lineAnalyzer, RhymeGroupAnalyzer rhymeGroupAnalyzer, VerseAnalyzer verseAnalyzer) {
+    public MainViewController(@Assisted MainViewModel viewModel, TaskBus taskBus, ApplicationHandler applicationHandler, PersistenceManager persistenceManager, EditorStatusHolder editorStatusHolder, PoemSyllablesAnalyzer poemSyllablesAnalyzer, PatternAnalyzer patternAnalyzer, PoemLookupIndexer poemLookupIndexer, PoemAnalyzer poemAnalyzer, AutoCompleteTreeHolder autoCompleteTreeHolder, DefinitionAnalyzer definitionAnalyzer, PartOfSpeechAnalyzer partOfSpeechAnalyzer, MeterAnalyzer meterAnalyzer, LineAnalyzer lineAnalyzer, RhymeGroupAnalyzer rhymeGroupAnalyzer, VerseAnalyzer verseAnalyzer) {
         super(viewModel, taskBus);
         this.applicationHandler = applicationHandler;
         this.persistenceManager = persistenceManager;
+        this.editorStatusHolder = editorStatusHolder;
         this.poemSyllablesAnalyzer = poemSyllablesAnalyzer;
         this.patternAnalyzer = patternAnalyzer;
         this.poemLookupIndexer = poemLookupIndexer;
@@ -239,6 +242,8 @@ public class MainViewController extends ViewController<MainViewModel> {
         });
     }
 
+
+
     @AssistedFactory
     public interface MainViewControllerFactory {
         MainViewController create(MainViewModel mainViewModel);
@@ -289,6 +294,24 @@ public class MainViewController extends ViewController<MainViewModel> {
         taskBus.submit("Saving Poem", event, () -> {
             persistenceManager.save(selectedFile);
             event.setFile(persistenceManager.getFile().getFileName().toString());
+        });
+    }
+
+    // Send the parsed Poem to the editor status holder.
+    public void updateStatus(Poem poem) {
+        EditorStatusChangedEvent event = new EditorStatusChangedEvent();
+        taskBus.submit("Updating Status", event, () -> {
+            editorStatusHolder.poem(poem);
+            event.setPoem(poem);
+        });
+    }
+
+    // Send the line number to the editor status holder.
+    public void updateStatus(int lineNumber) {
+        EditorStatusChangedEvent event = new EditorStatusChangedEvent();
+        taskBus.submit("Updating Status", event, () -> {
+            editorStatusHolder.update(lineNumber);
+            event.setCurrentLine(lineNumber);
         });
     }
 
