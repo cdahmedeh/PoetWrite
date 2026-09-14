@@ -43,6 +43,8 @@ This demonstrates PoetWrite's minimalist and very responsive editor. But along w
 
 ![PoetWrite Demo](./assets/poetwrite-demo.gif)
 
+A few things to take note of. First, notice how when a rhetorical analysis is being calculated, the fields in the popups are lazily loaded and filled when they're ready. This ensures that the UI is never blocking even when lots is going on, since everything is differed to the background thread. The auto-complete is totally dynamic, in fact, it is not fully loaded on invocation. Some of the analyses are still in-progress and there are a few hard-coded values for the demo.
+
 ## Wireframe Prototype
 This is how the PoetWrite idea was born.
 
