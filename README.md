@@ -11,7 +11,7 @@ And maybe another trend that irks me a bit. PoetWrite is not a web app of any ki
 ## Status
 PoetWrite is still in an early stage of development with the beginnings of elementary analysis features. If you want to see what PoetWrite is already capable of, start with the included [unit tests](/src/test/java/net/cdahmedeh/poetwrite/test/).
 
-The current focus is on architecture and design, which is nearing completion. I spent almost a year designing it. The result was very rewarding and totally worth it, as implementing features is easy as inheriting a few interfaces. What's already done is the MVVM UI architecture, the asynchronous TaskBus system, subscribe-publish event style communication, inspired by micro-kernels. What's left is gutter display for the basic analyses, word hover for definitions and parts of speech, and the auto-complete system. There's some documentation below showing off how these parts are designed.
+The current focus is on architecture and design, which is nearing completion. I spent almost a year designing it. The result was very rewarding and totally worth it, as implementing features is easy as inheriting a few interfaces. What's already done is the MVVM UI architecture, auto-complete wizard handling, word hover, line and pattern hover, the asynchronous TaskBus system, subscribe-publish event style communication, inspired by micro-kernels.
 
 ## Documentation
 
@@ -29,17 +29,19 @@ The current focus is on architecture and design, which is nearing completion. I 
 
 ## Development
 
-PoetWrite is an open-source project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
+PoetWrite is an open-querySource project under the [GPLv3 license](/LICENSE.md) with no pecuniary interests.
 
 The design is UX first, meaning that the user-experience dictates the design and architecture of the application rather than the other way around. Throughout the development, you'll see [wireframes](/docs/ux-wireframes.md) being added into the repository. 
 
 As a technical writer, I believe that good documentation is part of the development process. Feel free to explore the ever-growing collection in the [documentation](/docs/) folder.
 
-## Very First Screenshots
+## PoetWrite in Action
 
-As the first iteration of early PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! Look at the next section (with the wireframes) below to get an idea on how it will evolve further.
+As the first iteration of early PoetWrite is coming to life, we can finally see PoetWrite taking shape in the real world! 
 
-![PoetWrite Auto-Complete Screenshot](./assets/second-screenshot.png)
+This demonstrates PoetWrite's minimalist editor. But along with powerful rhetorical analysis features, and an auto-complete wizard-style lexicographic assistance system. And of course, the ridiculous responsiveness of the UI.
+
+![PoetWrite Demo](./assets/poetwrite-demo.gif)
 
 ## Wireframe Prototype
 This is how the PoetWrite idea was born.
