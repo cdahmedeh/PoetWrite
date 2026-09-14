@@ -123,7 +123,7 @@ public class TaskBus {
                 set(task);
                 run.run();
             } catch (Throwable t) {
-                t.printStackTrace();
+                LOG.warn(t.getMessage(), t);
             } finally {
                 publish(task);
                 progress(task);
